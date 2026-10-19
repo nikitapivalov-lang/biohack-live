@@ -183,6 +183,38 @@ body>footer { background:transparent!important; border-color:#e9e1e5!important; 
 @supports not (backdrop-filter:blur(20px)) { .bio-shell-header { background:#fff; } }
 
 </style>
+
+<style id="biohack-readability">
+:root { --shell-font:var(--bio-font)!important; --bio-font: -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; }
+html { font-size:18px; }
+body,button,input,select,textarea,summary,svg text,svg tspan { font-family:var(--bio-font)!important; }
+body { line-height:1.6; }
+.tab-content.fade-in { animation:none; opacity:1; transform:none; }
+.text-xs { font-size:.8rem; line-height:1.5; }
+.text-sm { font-size:.94rem; line-height:1.6; }
+#tab-translation .tl-card { padding:18px 22px; }
+#tab-translation > .tl-card:first-of-type { padding:14px 22px; }
+#tab-translation > .tl-card:first-of-type h2 { font-size:30px; margin-top:6px; }
+#tab-translation > .tl-card:first-of-type p { margin-top:6px; font-size:16px; line-height:1.5; }
+#tab-translation > .tl-card:first-of-type > .mt-6 { margin-top:12px; }
+#tab-translation #tl-phase-progress { margin-block:12px; gap:8px; }
+#tl-scene-wrap { display:flex; align-items:center; justify-content:center; padding:4px; }
+#tl-scene { width:100%; min-width:0!important; max-height:360px; }
+#tab-translation .tl-btn { font-size:16px; padding:10px 14px; }
+#tl-scene-wrap.tl-expanded #tl-scene { max-height:75vh; }
+#tl-view-size { margin-left:auto; }
+@media(min-width:1100px) {
+ .tl-workspace { display:grid; grid-template-columns:minmax(0,1fr) 270px; gap:18px; align-items:start; }
+ .tl-workspace #tl-scene-wrap { grid-row:1 / span 2; }
+ .tl-workspace .tl-controls { display:flex; flex-direction:column; align-items:stretch; margin:0; }
+ .tl-workspace .tl-peptide-panel { margin:0; }
+}
+@media(max-width:700px) {
+ #tab-translation .tl-card { padding:14px; }
+ #tl-scene { max-height:330px; }
+ #tab-translation .tl-btn { font-size:15px; }
+}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col selection:bg-burgundy-500 selection:text-white">
 
@@ -1084,9 +1116,10 @@ body>footer { background:transparent!important; border-color:#e9e1e5!important; 
  <div class="tl-card">
   <div class="flex flex-wrap items-center justify-between gap-3"><div><span class="text-xs font-bold uppercase tracking-wider text-burgundy-700">Эукариотическая клетка · учебная модель</span><h3 id="tl-title" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2"></h3></div><span id="tl-step-badge" class="text-xs font-bold bg-burgundy-50 text-burgundy-800 border border-burgundy-100 rounded-full px-3 py-2"></span></div>
   <ol id="tl-phase-progress" class="grid grid-cols-3 gap-3 my-5" aria-label="Этапы трансляции"></ol>
-  <div id="tl-scene-wrap"><svg id="tl-scene" viewBox="0 0 900 470" role="img" aria-labelledby="tl-svg-title tl-svg-desc"></svg></div>
-  <div class="mt-4 grid md:grid-cols-[1fr_auto] gap-4 items-center"><p id="tl-explanation" class="text-sm text-slate-700 leading-relaxed min-h-12"></p><div class="flex flex-wrap gap-2"><button id="tl-back" class="tl-btn disabled:opacity-40 disabled:cursor-not-allowed" onclick="tlBack()" disabled>← Назад</button><button id="tl-replay-motion" class="tl-btn hidden" onclick="tlScene()" aria-label="Повторить движение в текущем кадре">Повторить движение</button><button id="tl-next" class="tl-btn tl-primary" onclick="tlAdvance()"></button></div></div>
-  <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"><span class="text-xs uppercase tracking-wider text-slate-500 font-bold">Растущий полипептид</span><p id="tl-peptide" class="text-lg font-extrabold text-burgundy-800 mt-1"></p></div>
+  <div class="flex justify-end mb-2"><button id="tl-view-size" class="tl-btn" type="button" aria-expanded="false" onclick="const expanded=this.getAttribute('aria-expanded')!=='true';this.setAttribute('aria-expanded',expanded);document.getElementById('tl-scene-wrap').classList.toggle('tl-expanded',expanded);this.textContent=expanded?'Уменьшить схему':'Увеличить схему'">Увеличить схему</button></div><div class="tl-workspace"><div id="tl-scene-wrap"><svg id="tl-scene" viewBox="0 0 900 470" role="img" aria-labelledby="tl-svg-title tl-svg-desc"></svg></div>
+  <div class="tl-controls mt-3 grid md:grid-cols-[1fr_auto] gap-3 items-center"><p id="tl-explanation" class="text-sm text-slate-700 leading-relaxed min-h-12"></p><div class="flex flex-wrap gap-2"><button id="tl-back" class="tl-btn disabled:opacity-40 disabled:cursor-not-allowed" onclick="tlBack()" disabled>← Назад</button><button id="tl-replay-motion" class="tl-btn hidden" onclick="tlScene()" aria-label="Повторить движение в текущем кадре">Повторить движение</button><button id="tl-next" class="tl-btn tl-primary" onclick="tlAdvance()"></button></div></div>
+  <div class="tl-peptide-panel mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"><span class="text-xs uppercase tracking-wider text-slate-500 font-bold">Растущий полипептид</span><p id="tl-peptide" class="text-lg font-extrabold text-burgundy-800 mt-1"></p></div>
+</div>
   <details class="mt-5 border border-slate-200 rounded-2xl p-4"><summary class="font-bold text-sm cursor-pointer text-slate-700">Опора для ЕГЭ: что важно увидеть</summary><div class="grid md:grid-cols-3 gap-4 mt-4 text-sm text-slate-600 leading-relaxed"><p><b class="text-slate-800">Инициация.</b> Малая субъединица связывается с иРНК и находит старт-кодон АУГ. Инициаторная тРНК с метионином занимает P-сайт; затем присоединяется большая субъединица.</p><p><b class="text-slate-800">Элонгация.</b> тРНК приносит аминокислоту в A-сайт. После образования пептидной связи рибосома смещается на один кодон: тРНК проходят через P- и E-сайты.</p><p><b class="text-slate-800">Терминация.</b> Стоп-кодон не кодирует аминокислоту и не распознаётся тРНК. Фактор высвобождения помогает отделить полипептид; рибосома распадается на субъединицы.</p></div></details>
   <details class="mt-3 border border-slate-200 rounded-2xl p-4"><summary class="font-bold text-sm cursor-pointer text-slate-700">Источники и границы схемы</summary><p class="mt-3 text-xs text-slate-600 leading-relaxed">Схема пересказывает механизм трансляции эукариот и упрощает молекулярные детали для урока. Для проверки: <a class="underline text-burgundy-700" href="https://www.ncbi.nlm.nih.gov/books/NBK586875/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf · Translation Phases in Eukaryotes</a>, <a class="underline text-burgundy-700" href="https://www.ncbi.nlm.nih.gov/books/NBK9849/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf · Translation of mRNA</a>, <a class="underline text-burgundy-700" href="https://openstax.org/books/biology-2e/pages/15-5-ribosomes-and-protein-synthesis" target="_blank" rel="noopener noreferrer">OpenStax Biology 2e · Ribosomes and Protein Synthesis</a>.</p></details>
  </div>
@@ -3871,6 +3904,24 @@ const divisionOldMeiDraw=meiDraw;meiDraw=function(step){divisionOldMeiDraw(step)
 const divisionOldMitosisPhase=setMitosisPhase;setMitosisPhase=function(idx){divisionOldMitosisPhase(idx);divisionPlay('mit',idx);};
 divisionPlay('mit',currentMitosisIdx);
 
+</script>
+
+<script id="biohack-diagram-type">
+// Preserve each diagram's hierarchy and coordinates while improving label readability.
+(()=>{
+ const resize=root=>{
+  const labels=root.matches?.('svg text')?[root]:[...(root.querySelectorAll?.('svg text')||[])];
+  labels.forEach(text=>{
+   if(text.closest('#draw-layer,#draw-board,#live-cursor,[id^="draw-"]'))return;
+   const size=Number(text.getAttribute('font-size'));
+   if(!Number.isFinite(size)||size<=0)return;
+   const next=Math.round(size*1.1*10)/10;
+   if(text.style.fontSize!==next+'px')text.style.fontSize=next+'px';
+  });
+ };
+ resize(document);
+ new MutationObserver(records=>{for(const record of records){if(record.type==='attributes')resize(record.target);else for(const node of record.addedNodes)if(node.nodeType===1)resize(node);}}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['font-size']});
+})();
 </script>
 </body>
 </html>
