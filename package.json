@@ -1,0 +1,23 @@
+{
+  "name": "biohack-live",
+  "private": true,
+  "version": "1.2.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test.mjs group-test.mjs ui-test.mjs"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@y/websocket-server": "0.1.0",
+    "ws": "8.18.3",
+    "yjs": "13.6.27"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "jsdom": "26.1.0",
+    "y-websocket": "2.1.0"
+  }
+}
