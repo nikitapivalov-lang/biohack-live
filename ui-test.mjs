@@ -26,7 +26,7 @@ test('actual group UI module: participant list, three cursors, teacher control a
   w.HTMLElement.prototype.getClientRects=function(){return [this.getBoundingClientRect()];};
   w.document.elementFromPoint=()=>w.document.querySelector('#test-action');
   w.BIOHACK_LOCAL_SERVER={wsBase};w.__testY=Y;w.__testProvider=class extends WebsocketProvider{constructor(_base,room,doc,options){super(wsBase,room,doc,{...options,WebSocketPolyfill:WebSocket});}};
-  w.eval(source);w.document.querySelector('#live-name').value=name;return w;
+  w.eval([...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes('window.BioHackAnchors=')));w.eval(source);w.document.querySelector('#live-name').value=name;return w;
  }
  try{
   const teacher=page(base,'Учитель');teacher.document.querySelector('#live-create').click();
@@ -45,6 +45,16 @@ test('actual group UI module: participant list, three cursors, teacher control a
   teacher.document.querySelector('#live-control').checked=true;teacher.document.querySelector('#live-control').dispatchEvent(new teacher.Event('change'));
   windows[1].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:'same-action'});windows[2].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:'same-action'});
   await waitFor(()=>actions.length===2);
+  // A 390 px guest uses its own viewport, with an explicit legacy mirror fallback.
+  const guest=windows[1],inner=guest.document.getElementById('live-mirror-inner'),frame=guest.document.getElementById('live-frame');
+  Object.defineProperty(inner,'clientWidth',{value:390,configurable:true});
+  guest.dispatchEvent(new guest.Event('resize'));
+  assert.equal(frame.style.width,'390px');assert.equal(frame.style.transform,'scale(1)');
+  const adaptive=guest.document.getElementById('live-adaptive');assert.equal(adaptive.checked,true);
+  adaptive.checked=false;adaptive.dispatchEvent(new guest.Event('change'));
+  assert.equal(frame.style.width,'1200px');assert.equal(frame.style.transform,'scale(0.325)');
+  adaptive.checked=true;adaptive.dispatchEvent(new guest.Event('change'));
+  assert.equal(frame.style.width,'390px');
   // Continuous mutations must reach peers before the animation stops.
   const lesson=teacher.document.querySelector('#tab-test');
   const svg=teacher.document.createElementNS('http://www.w3.org/2000/svg','svg');
