@@ -45,6 +45,28 @@ test('actual group UI module: participant list, three cursors, teacher control a
   teacher.document.querySelector('#live-control').checked=true;teacher.document.querySelector('#live-control').dispatchEvent(new teacher.Event('change'));
   windows[1].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:'same-action'});windows[2].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:'same-action'});
   await waitFor(()=>actions.length===2);
+  // Continuous mutations must reach peers before the animation stops.
+  const lesson=teacher.document.querySelector('#tab-test');
+  const svg=teacher.document.createElementNS('http://www.w3.org/2000/svg','svg');
+  const motion=teacher.document.createElementNS(svg.namespaceURI,'animateTransform');
+  motion.setAttribute('begin','indefinite');motion.setAttribute('dur','2s');
+  svg.getCurrentTime=()=>2.5;motion.getStartTime=()=>1;motion.getSimpleDuration=()=>2;
+  svg.append(motion);lesson.append(svg);
+  let tick=0;const stream=setInterval(()=>svg.setAttribute('data-frame',String(++tick)),15);
+  try{
+   await waitFor(()=>/data-frame="[1-9]/.test(JSON.parse(windows[1].BioHackLive.doc().getMap('lesson').get('scene')).html));
+   assert.match(JSON.parse(windows[1].BioHackLive.doc().getMap('lesson').get('scene')).html,/begin="-1.5s"/);
+   assert(tick>0);
+  }finally{clearInterval(stream);}
+  const animated=teacher.document.createElement('div');lesson.append(animated);
+  const clock=Date.now(),effect={target:animated};
+  animated.getAnimations=()=>[{animationName:'test-motion',effect,playState:'running',currentTime:Date.now()-clock}];
+  lesson.getAnimations=()=>animated.getAnimations();
+  let previous=teacher.BioHackLive.doc().getMap('lesson').get('scene');
+  await waitFor(()=>{const next=teacher.BioHackLive.doc().getMap('lesson').get('scene');return next!==previous&&next.includes('animation-delay');});
+  previous=teacher.BioHackLive.doc().getMap('lesson').get('scene');
+  await waitFor(()=>teacher.BioHackLive.doc().getMap('lesson').get('scene')!==previous);
+  lesson.getAnimations=()=>[];animated.getAnimations=()=>[];
   windows[2].document.querySelector('#live-leave').click();await waitFor(()=>teacher.BioHackLive.participants().length===2);
   assert.equal(teacher.document.querySelectorAll('.live-cursor:not([hidden])').length,2);assert.equal(teacher.document.querySelectorAll('#live-participant-list li').length,3);
   assert.equal(errors.length,0);
