@@ -3167,10 +3167,37 @@ class BioHackGroupRoster {
  function sendLarge(msg){if(S.role==='host'&&S.mail&&S.conn?.open){const raw=JSON.stringify(msg);if(raw.length<7500000)S.mail.set('scene',raw);}}
  function lessonRoot(){return Array.from(document.querySelectorAll('main .tab-content')).find(el=>!el.classList.contains('hidden'));}
  // Assign control tokens before removing hidden nodes so structural changes cannot misaddress a click.
+ // SMIL start times may become unavailable after a frozen animation ends (WebKit).
+ // Remember starts, and flatten finished animations into ordinary SVG attributes.
+ const smilStarts=new WeakMap();
+ function smilTiming(animation){
+  let start=Number(animation.dataset.liveSmilStart);if(!animation.hasAttribute('data-live-smil-start'))start=NaN;
+  if(!Number.isFinite(start)){try{start=animation.getStartTime();if(Number.isFinite(start))smilStarts.set(animation,start);}catch{start=smilStarts.get(animation);}}
+  if(!Number.isFinite(start)){const begin=animation.getAttribute('begin')||'0';if(/^-?\d*\.?\d+(?:s|ms)?$/.test(begin))start=parseFloat(begin)*(begin.endsWith('ms')?.001:1);}
+  let duration;try{duration=animation.getSimpleDuration();}catch{const dur=animation.getAttribute('dur')||'';duration=parseFloat(dur)*(dur.endsWith('ms')?.001:1);}
+  const repeats=animation.getAttribute('repeatCount')||'1',count=repeats==='indefinite'?Infinity:Number(repeats);
+  return {elapsed:animation.ownerSVGElement?.getCurrentTime()-start,duration:duration*(Number.isFinite(count)&&count>0?count:Infinity)};
+ }
+ function copySmil(animation,copy){
+  try{
+   const {elapsed,duration}=smilTiming(animation);if(!Number.isFinite(elapsed))return;
+   if(Number.isFinite(duration)&&elapsed>=duration&&animation.getAttribute('fill')==='freeze'){
+    const attr=animation.getAttribute('attributeName'),parent=copy.parentElement,source=animation.parentElement;if(!attr||!parent)return;
+    let value=animation.getAttribute('to')||animation.getAttribute('values')?.split(';').at(-1)?.trim();
+    if(attr==='transform'){
+     const list=source.transform?.animVal;
+     if(list?.numberOfItems){let m=[1,0,0,1,0,0];for(let i=0;i<list.numberOfItems;i++){const n=list.getItem(i).matrix,[a,b,c,d,e,f]=m;m=[a*n.a+c*n.b,b*n.a+d*n.b,a*n.c+c*n.d,b*n.c+d*n.d,a*n.e+c*n.f+e,b*n.e+d*n.f+f];}value='matrix('+m.join(' ')+')';}
+     else if(value&&animation.getAttribute('type'))value=animation.getAttribute('type')+'('+value+')';
+    }
+    if(value!==undefined&&value!==null){parent.setAttribute(attr,value);copy.remove();}return;
+   }
+   copy.setAttribute('begin',(-elapsed)+'s');
+  }catch{}
+ }
  function snapshotClone(root){S.controls.clear();const clone=root.cloneNode(true),live=Array.from(root.querySelectorAll('*')),copied=Array.from(clone.querySelectorAll('*'));copied.forEach((el,i)=>{const target=live[i];el.dataset.liveNode=String(i);if(target.matches(window.BioHackAnchors.selector)){const anchor=window.BioHackAnchors.key(target);if(anchor)el.dataset.liveAnchor=anchor;}
    // A cloned SVG has no running SMIL timeline. Carry its actual playhead across.
    if(el.matches('animate,animateTransform,animateMotion')){
-    try{const elapsed=target.ownerSVGElement.getCurrentTime()-target.getStartTime();if(Number.isFinite(elapsed))el.setAttribute('begin',(-elapsed)+'s');}catch{}
+    copySmil(target,el);
    }
    // CSS animations also need their current position, rather than restarting per snapshot.
    if(typeof target.getAnimations==='function'){
@@ -3292,12 +3319,13 @@ class BioHackGroupRoster {
  $('live-adaptive').onchange=e=>{S.adaptive=e.target.checked;resizeMirror();placeCursor();window.dispatchEvent(new Event('biohack-scene-layout'));};$('live-controller').onchange=renderControl;$('live-grant').onclick=()=>setController($('live-controller').value);$('live-reclaim').onclick=()=>setController(null);$('live-banner-reclaim').onclick=()=>setController(null);$('live-request').onclick=()=>{if(S.ready&&!ownsControl()){send({type:'control-request'});status('Запрос отправлен преподавателю.');}};$('live-return').onclick=()=>send({type:'control-return'});$('live-follow').onchange=e=>{if(ownsControl()){renderControl();return;}S.follow=e.target.checked;refreshUI();if(S.follow){if(S.remoteScene)receiveScene(S.remoteScene);send({type:'refresh'});}};$('live-refresh').onclick=()=>S.role==='host'?capture(true):send({type:'refresh'});
  new MutationObserver(records=>{if(records.some(r=>r.target.closest?.('main')||r.target===document.querySelector('main')))scheduleCapture();}).observe(document.querySelector('main'),{subtree:true,childList:true,attributes:true,characterData:true});
  if(window.ResizeObserver)new ResizeObserver(scheduleCapture).observe(document.querySelector('main'));
+ let motionWasActive=false;
  const motionSampler=setInterval(()=>{
   if(S.role!=='host'||!S.ready)return;
   const root=lessonRoot();if(!root)return;
   const cssMoving=typeof root.getAnimations==='function'&&root.getAnimations({subtree:true}).some(a=>a.playState==='running');
-  const svgMoving=Array.from(root.querySelectorAll('animate,animateTransform,animateMotion')).some(a=>{try{const t=a.ownerSVGElement.getCurrentTime()-a.getStartTime(),duration=a.getSimpleDuration();return t>=0&&(a.getAttribute('repeatCount')==='indefinite'||t<duration*(Number(a.getAttribute('repeatCount'))||1));}catch{return false;}});
-  if(cssMoving||svgMoving)scheduleCapture();
+  const svgMoving=Array.from(root.querySelectorAll('animate,animateTransform,animateMotion')).some(a=>{try{const t=smilTiming(a);return Number.isFinite(t.elapsed)&&t.elapsed<t.duration;}catch{return false;}});
+  const moving=cssMoving||svgMoving;if(moving||motionWasActive)scheduleCapture();motionWasActive=moving;
  },150);
 
  function handMode(){const bar=$('draw-toolbar'),hand=bar?.querySelector('[data-tool="hand"]');return !!bar&&!bar.hidden&&hand?.getAttribute('aria-pressed')==='true';}
@@ -3651,6 +3679,7 @@ function tlStartTrnaMotion(scene){
  scene.querySelectorAll('[data-tl-motion]').forEach(animation=>{
   const delay=Number(animation.dataset.tlDelay)||0;
   if(delay)animation.beginElementAt(delay);else animation.beginElement();
+  animation.dataset.liveSmilStart=String(animation.ownerSVGElement.getCurrentTime()+delay);
  });
 }
 
