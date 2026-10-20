@@ -2996,7 +2996,7 @@ gmRender();gmSelect('sperm',0);gmSelect('egg',0);
 <script id="biohack-lesson-anchors">
 // Coordinates belong to a diagram or a word, not to the full page.
 (()=>{
- const selector='svg,p,h1,h2,h3,h4,h5,li,td,th,button,label,summary,[role="img"]';
+ const selector='svg,img,canvas,p,h1,h2,h3,h4,h5,li,td,th,button,label,summary,[role="img"]';
  function scene(){const frame=document.getElementById('live-frame');return document.body.classList.contains('live-follow')?frame?.contentDocument?.querySelector('.tab-content'):Array.from(document.querySelectorAll('main .tab-content')).find(e=>!e.classList.contains('hidden'));}
  function key(el){const root=scene();if(!root||!el||!root.contains(el))return null;if(el.dataset.liveAnchor)return el.dataset.liveAnchor;if(el.id)return 'id:'+el.id;const path=[];while(el!==root){const parent=el.parentElement;if(!parent)return null;path.unshift(Array.prototype.indexOf.call(parent.children,el));el=parent;}return 'node:'+path.join('.');}
  function element(id){if(typeof id!=='string'||id.length>300)return null;const root=scene();if(!root)return null;const mirrored=root.ownerDocument!==document;if(mirrored)return Array.from(root.querySelectorAll('[data-live-anchor]')).find(el=>el.dataset.liveAnchor===id)||null;if(id.startsWith('id:')){const el=document.getElementById(id.slice(3));return root.contains(el)?el:null;}if(!/^node:(\d+\.)*\d*$/.test(id))return null;let el=root;for(const n of id.slice(5).split('.').filter(Boolean)){el=el?.children[Number(n)];}return el||null;}
