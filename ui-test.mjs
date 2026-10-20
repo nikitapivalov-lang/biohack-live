@@ -14,7 +14,7 @@ const html=readFileSync(new URL('index.html',import.meta.url),'utf8');
 let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("const VERSION='biohack-live-1'"));
 const loadStart=source.indexOf(' async function loadLiveModules('),loadEnd=source.indexOf('\n',loadStart);
 source=source.slice(0,loadStart)+' async function loadLiveModules(){return [window.__testY,{WebsocketProvider:window.__testProvider}];}'+source.slice(loadEnd);
-const testEnd=source.lastIndexOf('})();');source=source.slice(0,testEnd)+'window.__control={patch:patchSceneBody,bind:bindGuestControls};'+source.slice(testEnd);
+const testEnd=source.lastIndexOf('})();');source=source.slice(0,testEnd)+'window.__control={patch:patchSceneBody,bind:bindGuestControls,frameReady:()=>{S.frameReady=true;}};'+source.slice(testEnd);
 test('actual group UI module: participant list, three cursors, teacher control and participant exit',async()=>{
  const service=createBiohackServer();service.server.listen(0,'127.0.0.1');await once(service.server,'listening');
  const base='http://127.0.0.1:'+service.server.address().port+service.prefix,wsBase=base.replace('http:','ws:')+'sync';
@@ -47,6 +47,16 @@ test('actual group UI module: participant list, three cursors, teacher control a
   chooser.value=String(windows[1].BioHackLive.doc().clientID);chooser.dispatchEvent(new teacher.Event('change'));teacher.document.querySelector('#live-grant').click();
   await waitFor(()=>windows[1].BioHackLive.state().canControl);
   scene=JSON.parse(teacher.BioHackLive.doc().getMap('lesson').get('scene'));
+  // Actual teacher scroll messages must not reposition the student who is solving.
+  for(const guest of windows.slice(1)){guest.__scrolls=[];guest.scrollTo=position=>guest.__scrolls.push(position);guest.__control.frameReady();}
+  assert.equal(windows[1].document.querySelector('#live-follow').checked,false);
+  assert.equal(windows[1].document.querySelector('#live-follow').disabled,true);
+  assert.equal(windows[1].BioHackLive.state().follow,false);
+  for(let i=0;i<3;i++){
+   teacher.BioHackLive.awareness().setLocalStateField('scroll',{type:'scroll',center:.2+i*.2,nonce:randomUUID()});await delay(60);
+  }
+  await waitFor(()=>windows[2].__scrolls.length>0);
+  assert.equal(windows[1].__scrolls.length,0,'teacher scrolling must not pin the controlling student');
   const epoch=scene.controlEpoch;
   const relay=(w,msg)=>w.BioHackLive.awareness().setLocalStateField('action',{type:'action',nonce:randomUUID(),epoch,...msg});
   relay(windows[2],{id:actionId,kind:'click',seq:1});await delay(120);assert.equal(actions.length,0);
@@ -69,6 +79,10 @@ test('actual group UI module: participant list, three cursors, teacher control a
   mirror.window.close();stale.window.close();
   teacher.document.querySelector('#test-action').click();assert.equal(actions.length,1,'host lesson input is paused while guest owns control');
   teacher.document.querySelector('#live-reclaim').click();await waitFor(()=>!windows[1].BioHackLive.state().canControl);
+  assert.equal(windows[1].document.querySelector('#live-follow').checked,true);
+  assert.equal(windows[1].document.querySelector('#live-follow').disabled,false);
+  teacher.BioHackLive.awareness().setLocalStateField('scroll',{type:'scroll',center:.7,nonce:randomUUID()});
+  await waitFor(()=>windows[1].__scrolls.length>0);
   relay(windows[1],{id:actionId,kind:'click',seq:5});await delay(120);assert.equal(actions.length,1);
   teacher.document.querySelector('#test-action').click();assert.equal(actions.length,2);
   // A 390 px guest uses its own viewport, with an explicit legacy mirror fallback.
