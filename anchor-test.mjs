@@ -36,11 +36,24 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.HTMLElement.prototype.getBoundingClientRect=function(){return {left:0,top:0,right:1000,bottom:800,width:1000,height:800};};
   const svg=w.document.getElementById('diagram');svg.getScreenCTM=()=>({a:scale,b:0,c:0,d:scale,e:0,f:0});
   let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('function anchorWorldBox'));
-  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id)};`+source.slice(end);
+  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
   w.eval(source);
   const ink={id:'stroke',key:'lesson:tab-test:main',type:'pen',color:'#800020',size:3,points:[[100,100],[200,100]],anchor:{ref:{key:'id:diagram',kind:'svg'},box:[0,0,600,400]}};
   w.__ink.add(ink);scale=.5;
   const mapping=w.__ink.mapping(ink);assert.equal(mapping.sx,.5);assert.equal(mapping.sy,.5);assert.equal(w.__ink.shape(ink).getAttribute('transform'),'matrix(0.5 0 0 0.5 0 0)');
   w.__ink.eraseAt(75,50);const erased=w.__ink.read('stroke');assert.equal(erased.erasures.length,1);assert.equal(erased.erasures[0].points[0][0],150);assert.equal(erased.erasures[0].points[0][1],100);assert.equal(erased.erasures[0].r,20);
+  scale=1;
+  const second={...ink,id:'second',points:[[100,140],[200,140]]};w.__ink.add(second);
+  const third={...ink,id:'third',points:[[400,400],[500,400]]};w.__ink.add(third);
+  w.__ink.pick([[80,80],[220,80],[220,170],[80,170]]);
+  assert.deepEqual(Array.from(w.__ink.selected()).sort(),['second','stroke']);
+  w.__ink.begin([150,120]);w.__ink.move([180,150]);w.__ink.finish();
+  assert.equal(w.__ink.read('second').points[0][0],130);assert.equal(w.__ink.read('second').points[0][1],170);
+  assert.equal(w.__ink.read('stroke').erasures[0].points[0][0],180);assert.equal(w.__ink.read('third').points[0][0],400);
+  w.document.getElementById('draw-undo').click();assert.equal(w.__ink.read('second').points[0][0],100);
+  const before=JSON.stringify(w.__ink.read('stroke'));w.__ink.scale(1.15);assert(w.__ink.read('stroke').size>3);
+  w.document.getElementById('draw-undo').click();assert.equal(JSON.stringify(w.__ink.read('stroke')),before);
+  w.__ink.begin([150,120]);w.__ink.move([190,160]);w.__ink.finish(true);assert.equal(JSON.stringify(w.__ink.read('stroke')),before);
+
  }finally{w.close();}
 });

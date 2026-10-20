@@ -14,12 +14,13 @@ const html=readFileSync(new URL('index.html',import.meta.url),'utf8');
 let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes("const VERSION='biohack-live-1'"));
 const loadStart=source.indexOf(' async function loadLiveModules('),loadEnd=source.indexOf('\n',loadStart);
 source=source.slice(0,loadStart)+' async function loadLiveModules(){return [window.__testY,{WebsocketProvider:window.__testProvider}];}'+source.slice(loadEnd);
+const testEnd=source.lastIndexOf('})();');source=source.slice(0,testEnd)+'window.__control={patch:patchSceneBody,bind:bindGuestControls};'+source.slice(testEnd);
 test('actual group UI module: participant list, three cursors, teacher control and participant exit',async()=>{
  const service=createBiohackServer();service.server.listen(0,'127.0.0.1');await once(service.server,'listening');
  const base='http://127.0.0.1:'+service.server.address().port+service.prefix,wsBase=base.replace('http:','ws:')+'sync';
  const windows=[],doms=[],errors=[];
  function page(url,name){
-  const dom=new JSDOM('<header><nav></nav></header><div id="course-trail">Тестовый урок</div><main><section id="tab-test" class="tab-content"><h2>Клетка</h2><button id="test-action">Следующий этап</button></section></main><div id="draw-toolbar"><button data-tool="hand" aria-pressed="true">Рука</button></div>',{url,runScripts:'outside-only',pretendToBeVisual:true});
+  const dom=new JSDOM('<header><nav></nav></header><div id="course-trail">Тестовый урок</div><main><section id="tab-test" class="tab-content"><h2>Клетка</h2><button id="test-action">Следующий этап</button><input id="answer"><select id="choice"><option value="a">А</option><option value="b">Б</option></select><textarea id="written"></textarea></section></main><div id="draw-toolbar"><button data-tool="hand" aria-pressed="true">Рука</button></div>',{url,runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;doms.push(dom);windows.push(w);w.addEventListener('error',e=>errors.push(e.error));
   Object.defineProperty(w.crypto,'randomUUID',{value:randomUUID});Object.defineProperty(w,'innerWidth',{value:1200});Object.defineProperty(w,'innerHeight',{value:900});
   w.scrollTo=()=>{};w.HTMLElement.prototype.getBoundingClientRect=function(){return {left:100,top:100,width:800,height:600,right:900,bottom:700};};
@@ -42,9 +43,34 @@ test('actual group UI module: participant list, three cursors, teacher control a
   const actions=[];teacher.document.querySelector('#test-action').onclick=()=>actions.push('clicked');
   let scene=JSON.parse(teacher.BioHackLive.doc().getMap('lesson').get('scene'));const actionId=/data-live-action="([^"]+)"/.exec(scene.html)[1];
   windows[1].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:randomUUID()});await delay(120);assert.equal(actions.length,0);
-  teacher.document.querySelector('#live-control').checked=true;teacher.document.querySelector('#live-control').dispatchEvent(new teacher.Event('change'));
-  windows[1].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:'same-action'});windows[2].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:'same-action'});
-  await waitFor(()=>actions.length===2);
+  const chooser=teacher.document.querySelector('#live-controller');
+  chooser.value=String(windows[1].BioHackLive.doc().clientID);chooser.dispatchEvent(new teacher.Event('change'));teacher.document.querySelector('#live-grant').click();
+  await waitFor(()=>windows[1].BioHackLive.state().canControl);
+  scene=JSON.parse(teacher.BioHackLive.doc().getMap('lesson').get('scene'));
+  const epoch=scene.controlEpoch;
+  const relay=(w,msg)=>w.BioHackLive.awareness().setLocalStateField('action',{type:'action',nonce:randomUUID(),epoch,...msg});
+  relay(windows[2],{id:actionId,kind:'click',seq:1});await delay(120);assert.equal(actions.length,0);
+  relay(windows[1],{id:actionId,kind:'click',seq:1});await waitFor(()=>actions.length===1);
+  const parse=new JSDOM(scene.html),answerId=parse.window.document.querySelector('#answer').dataset.liveAction;
+  relay(windows[1],{id:answerId,kind:'input',seq:2,value:'митоз'});await waitFor(()=>teacher.document.querySelector('#answer').value==='митоз');
+  const choiceId=parse.window.document.querySelector('#choice').dataset.liveAction;
+  relay(windows[1],{id:choiceId,kind:'change',seq:3,value:'b'});await waitFor(()=>teacher.document.querySelector('#choice').value==='b');
+  const writtenId=parse.window.document.querySelector('#written').dataset.liveAction;
+  relay(windows[1],{id:writtenId,kind:'input',seq:4,value:'Развёрнутый ответ'});await waitFor(()=>teacher.document.querySelector('#written').value==='Развёрнутый ответ');parse.window.close();
+  // Exercise the actual guest input relay and reconciliation, preserving the focused field.
+  const mirror=new JSDOM(scene.html,{pretendToBeVisual:true}),doc=mirror.window.document;
+  windows[1].__control.bind(doc);const focused=doc.querySelector('#answer');focused.focus();focused.value='Пишу ответ';focused.setSelectionRange(4,4);
+  focused.dispatchEvent(new mirror.window.Event('input',{bubbles:true}));
+  const stale=new JSDOM(scene.html);windows[1].__control.patch(doc,stale.window.document.body,0);
+  assert.equal(doc.querySelector('#answer'),focused);assert.equal(doc.activeElement,focused);assert.equal(focused.value,'Пишу ответ');assert.equal(focused.selectionStart,4);
+  // Earlier manual messages above used sequence 1..4; repeat through the guest relay until its own sequence advances.
+  for(let i=0;i<5;i++)focused.dispatchEvent(new mirror.window.Event('input',{bubbles:true}));
+  await waitFor(()=>teacher.document.querySelector('#answer').value==='Пишу ответ');
+  mirror.window.close();stale.window.close();
+  teacher.document.querySelector('#test-action').click();assert.equal(actions.length,1,'host lesson input is paused while guest owns control');
+  teacher.document.querySelector('#live-reclaim').click();await waitFor(()=>!windows[1].BioHackLive.state().canControl);
+  relay(windows[1],{id:actionId,kind:'click',seq:5});await delay(120);assert.equal(actions.length,1);
+  teacher.document.querySelector('#test-action').click();assert.equal(actions.length,2);
   // A 390 px guest uses its own viewport, with an explicit legacy mirror fallback.
   const guest=windows[1],inner=guest.document.getElementById('live-mirror-inner'),frame=guest.document.getElementById('live-frame');
   Object.defineProperty(inner,'clientWidth',{value:390,configurable:true});
