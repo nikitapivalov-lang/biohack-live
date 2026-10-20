@@ -73,6 +73,8 @@ test('actual group UI module: participant list, three cursors, teacher control a
   teacher.document.querySelector('#test-action').click();assert.equal(actions.length,2);
   // A 390 px guest uses its own viewport, with an explicit legacy mirror fallback.
   const guest=windows[1],inner=guest.document.getElementById('live-mirror-inner'),frame=guest.document.getElementById('live-frame');
+  assert(frame.sandbox?.contains?.('allow-scripts')||frame.getAttribute('sandbox').split(' ').includes('allow-scripts'),'parent-realm event listeners need scripts enabled in the frame sandbox');
+  assert.match(frame.srcdoc,/script-src &apos;none&apos;/,'the mirrored scene must still forbid copied scripts');
   Object.defineProperty(inner,'clientWidth',{value:390,configurable:true});
   guest.dispatchEvent(new guest.Event('resize'));
   assert.equal(frame.style.width,'390px');assert.equal(frame.style.transform,'scale(1)');
