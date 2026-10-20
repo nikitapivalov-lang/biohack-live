@@ -102,6 +102,7 @@ test('actual group UI module: participant list, three cursors, teacher control a
   const svg=teacher.document.createElementNS('http://www.w3.org/2000/svg','svg');
   const motion=teacher.document.createElementNS(svg.namespaceURI,'animateTransform');
   motion.setAttribute('begin','indefinite');motion.setAttribute('dur','2s');
+  motion.setAttribute('attributeName','transform');motion.setAttribute('type','translate');motion.setAttribute('from','40 -34');motion.setAttribute('to','0 0');motion.setAttribute('fill','freeze');svg.id='frozen-motion';svg.setAttribute('transform','translate(40 -34)');
   svg.getCurrentTime=()=>2.5;motion.getStartTime=()=>1;motion.getSimpleDuration=()=>2;
   svg.append(motion);lesson.append(svg);
   let tick=0;const stream=setInterval(()=>svg.setAttribute('data-frame',String(++tick)),15);
@@ -110,6 +111,12 @@ test('actual group UI module: participant list, three cursors, teacher control a
    assert.match(JSON.parse(windows[1].BioHackLive.doc().getMap('lesson').get('scene')).html,/begin="-1.5s"/);
    assert(tick>0);
   }finally{clearInterval(stream);}
+  // After the native SMIL clock forgets a completed interval, its final pose must
+  // survive the final sample and every later snapshot, instead of reverting to `from`.
+  svg.getCurrentTime=()=>4;motion.getStartTime=()=>{throw Error('No active interval');};
+  await waitFor(()=>{const view=new JSDOM(JSON.parse(windows[1].BioHackLive.doc().getMap('lesson').get('scene')).html);const el=view.window.document.getElementById('frozen-motion'),ok=el?.getAttribute('transform')==='translate(0 0)'&&!el.querySelector('animateTransform');view.window.close();return ok;});
+  lesson.setAttribute('data-later-update','true');
+  await waitFor(()=>{const scene=JSON.parse(windows[1].BioHackLive.doc().getMap('lesson').get('scene')).html;return scene.includes('data-later-update')&&scene.includes('transform="translate(0 0)"');});
   const animated=teacher.document.createElement('div');lesson.append(animated);
   const clock=Date.now(),effect={target:animated};
   animated.getAnimations=()=>[{animationName:'test-motion',effect,playState:'running',currentTime:Date.now()-clock}];
