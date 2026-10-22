@@ -85,18 +85,36 @@ test('actual group UI module: participant list, three cursors, teacher control a
   await waitFor(()=>windows[1].__scrolls.length>0);
   relay(windows[1],{id:actionId,kind:'click',seq:5});await delay(120);assert.equal(actions.length,1);
   teacher.document.querySelector('#test-action').click();assert.equal(actions.length,2);
-  // A 390 px guest uses its own viewport, with an explicit legacy mirror fallback.
+  // A tablet fits the teacher's full scene and adjusts its own zoom without control.
   const guest=windows[1],inner=guest.document.getElementById('live-mirror-inner'),frame=guest.document.getElementById('live-frame');
-  assert(frame.sandbox?.contains?.('allow-scripts')||frame.getAttribute('sandbox').split(' ').includes('allow-scripts'),'parent-realm event listeners need scripts enabled in the frame sandbox');
-  assert.match(frame.srcdoc,/script-src &apos;none&apos;/,'the mirrored scene must still forbid copied scripts');
-  Object.defineProperty(inner,'clientWidth',{value:390,configurable:true});
-  guest.dispatchEvent(new guest.Event('resize'));
-  assert.equal(frame.style.width,'390px');assert.equal(frame.style.transform,'scale(1)');
-  const adaptive=guest.document.getElementById('live-adaptive');assert.equal(adaptive.checked,true);
-  adaptive.checked=false;adaptive.dispatchEvent(new guest.Event('change'));
+  assert(frame.getAttribute('sandbox').split(' ').includes('allow-scripts'));
+  assert.match(frame.srcdoc,/script-src &apos;none&apos;/);
+  Object.defineProperty(inner,'clientWidth',{value:390,configurable:true});guest.dispatchEvent(new guest.Event('resize'));
   assert.equal(frame.style.width,'1200px');assert.equal(frame.style.transform,'scale(0.325)');
-  adaptive.checked=true;adaptive.dispatchEvent(new guest.Event('change'));
-  assert.equal(frame.style.width,'390px');
+  const adaptive=guest.document.getElementById('live-adaptive');assert.equal(adaptive.checked,false);
+  const otherScale=windows[2].document.getElementById('live-frame').style.transform;
+  const sharedScene=teacher.BioHackLive.doc().getMap('lesson').get('scene');
+  guest.document.getElementById('live-view-plus').click();
+  assert.equal(frame.style.transform,'scale(0.40625)');
+  assert.equal(guest.document.getElementById('live-view-percent').textContent,'125%');
+  assert.equal(guest.BioHackLive.state().canControl,false);assert.equal(guest.BioHackLive.state().follow,false);
+  assert.equal(windows[2].document.getElementById('live-frame').style.transform,otherScale);
+  assert.equal(teacher.BioHackLive.doc().getMap('lesson').get('scene'),sharedScene);
+  teacher.document.querySelector('#tab-test').setAttribute('data-zoom-update','yes');
+  await waitFor(()=>guest.BioHackLive.doc().getMap('lesson').get('scene').includes('data-zoom-update'));
+  assert.equal(guest.document.getElementById('live-view-percent').textContent,'125%','teacher updates preserve local zoom');
+  const range=guest.document.getElementById('live-view-range');range.value='200';range.dispatchEvent(new guest.Event('input'));
+  assert.equal(frame.style.transform,'scale(0.65)');
+  guest.document.getElementById('live-view-fit').click();assert.equal(frame.style.transform,'scale(0.325)');
+  assert.equal(guest.document.getElementById('live-overlay').style.pointerEvents,'none','read-only students may scroll diagrams');
+  const readOnly=new JSDOM(scene.html);guest.__control.bind(readOnly.window.document);
+  readOnly.window.document.querySelector('#test-action').click();await delay(80);assert.equal(actions.length,2,'zoom does not grant lesson control');readOnly.window.close();
+  guest.document.getElementById('live-view-follow').click();assert.equal(guest.BioHackLive.state().follow,true);
+  adaptive.checked=true;adaptive.dispatchEvent(new guest.Event('change'));assert.equal(frame.style.width,'390px');
+  const wide=frame.contentDocument.createElement('section');wide.className='tab-content';Object.defineProperty(wide,'scrollWidth',{value:1600});Object.defineProperty(wide,'scrollHeight',{value:600});frame.contentDocument.body.replaceChildren(wide);
+  guest.document.getElementById('live-view-fit').click();assert.equal(frame.style.width,'1600px');assert.equal(frame.style.transform,'scale(0.24375)','fit includes drawings wider than the host viewport');
+  assert.equal(guest.document.getElementById('live-mirror-stage').style.width,'390px','fitted content must not leave blank horizontal overflow');wide.remove();
+
   // Continuous mutations must reach peers before the animation stops.
   const lesson=teacher.document.querySelector('#tab-test');
   const svg=teacher.document.createElementNS('http://www.w3.org/2000/svg','svg');
