@@ -5113,7 +5113,7 @@ function vgBookScaleMount(canvas,d){
 </script>
 
 <style id="biohack-theme-base">
-html[data-theme="dark"]{color-scheme:dark;--shell-ink:#f1e9ef;--shell-muted:#b4a6b0;--shell-accent:#d6a1b7;--shell-line:#493441}
+html[data-theme="dark"]{color-scheme:dark;--shell-ink:#f1e9ef;--shell-muted:#b4a6b0;--shell-accent:#ef9bb7;--shell-line:#493441}
 html[data-theme="dark"] body{background:#151419!important;color:#ede6ec}
 html[data-theme="dark"] .bio-shell-header{background:rgba(27,24,32,.94);border-color:#40303b}
 html[data-theme="dark"] :where(input,textarea,select){background-color:#27232d;color:#f0e7ee;border-color:#584252;accent-color:#e68eae}
@@ -5124,11 +5124,10 @@ html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="t
 html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="true"]):not(#draw-board-svg) text{fill:#eae1ee}
 html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="true"]):not(#draw-board-svg) :is(mask,clipPath,filter) *{color-scheme:light}
 html[data-theme="dark"] :where(dialog)::backdrop{background:#000b}
-html[data-theme="dark"] #biohack-logo{filter:saturate(.55)}
-html[data-theme="dark"] .course-icon{filter:saturate(.4) brightness(1.5)}
+html[data-theme="dark"] .course-icon{filter:brightness(1.8) saturate(.85)}
 html[data-theme="dark"] :where(a){color:#eda0bf}
-html[data-theme="dark"] .bio-shell-header nav #live-launch{background:#795165;color:#fff}
-html[data-theme="dark"] .bio-shell-header nav #live-launch:hover{background:#8d6378}
+html[data-theme="dark"] .bio-shell-header nav #live-launch{background:#8e2448;color:#fff}
+html[data-theme="dark"] .bio-shell-header nav #live-launch:hover{background:#a32d54}
 html[data-theme="dark"] :where(button,[role="button"]):focus-visible{outline-color:#f0a3c1}
 .shell-theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:32px;padding:5px 11px;border:1px solid #e8dce1;border-radius:9px;background:#fff;color:#704354;font:600 12px/1.3 var(--shell-font);cursor:pointer;margin-right:8px}
 .shell-theme-toggle svg{width:16px;height:16px;flex:none}
@@ -5146,13 +5145,9 @@ html[data-theme="dark"] .shell-theme-toggle{background:#2e2330;color:#f0b3cb;bor
   if(value[0]==='#'){let h=value.slice(1);if(h.length===3||h.length===4)h=[...h].map(c=>c+c).join('');return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16),h.length===8?parseInt(h.slice(6,8),16)/255:1];}
   const n=value.match(/[\d.]+/g)?.map(Number);return n&&n.length>=3?[...n.slice(0,3),n[3]??1]:null;
  }
- function roseAccent(r,g,b){return r-g>30&&r>g*1.25&&r>b*.95&&b>=g*.65;}
- function recolor(value,kind){value=value.replace(/var\(--(?:gm|on|shell-accent)\)/g,()=>kind==='color'?'#d6abbe':kind==='border'?'#805769':'#795165');return value.replace(/#[\da-f]{3,8}\b|rgba?\((?:[^()]|\([^()]*\))*\)|\b(?:white|black)\b/gi,c=>{
+ function recolor(value,kind){return value.replace(/#[\da-f]{3,8}\b|rgba?\((?:[^()]|\([^()]*\))*\)|\b(?:white|black)\b/gi,c=>{
   const v=rgb(c.toLowerCase());if(!v||v[3]===0)return c;const [r,g,b,a]=v,L=(r*.2126+g*.7152+b*.0722)/255;
-  let out;if(roseAccent(r,g,b)&&kind==='background'&&L<.48)out=[118+r*.045,76+g*.035,96+b*.035];
-  else if(roseAccent(r,g,b)&&kind==='color'&&L<.6)out=[214,171,190];
-  else if(roseAccent(r,g,b)&&kind==='border')out=[126,84,105];
-  else if(kind==='color'&&L<.6)out=[r*.25+198,g*.25+187,b*.25+201];
+  let out;if(kind==='color'&&L<.6)out=[r*.25+198,g*.25+187,b*.25+201];
   else if(kind==='border'&&L>.45)out=[66+r*.025,48+g*.025,62+b*.025];
   else if(kind==='background'&&L>.48)out=[24+r*.018,21+g*.014,29+b*.018];else return c;
   return 'rgba('+out.map(x=>Math.min(255,Math.round(x))).join(',')+','+a+')';
@@ -5165,7 +5160,6 @@ html[data-theme="dark"] .shell-theme-toggle{background:#2e2330;color:#f0b3cb;bor
   else if(L>.73){out=[22+r*.13,19+g*.115,29+b*.13];}
   else if(L<.29){out=[r*.6+84,g*.6+73,b*.6+91];}
   else out=[r*.87,g*.87,b*.87];
-  if(roseAccent(r,g,b)){const gray=out[0]*.3+out[1]*.59+out[2]*.11;out=out.map((v,i)=>v*.55+gray*.45+(i===2?10:0));}
   return 'rgba('+out.map(v=>Math.min(255,Math.round(v))).join(',')+','+a+')';
  }
  function diagramRules(){
