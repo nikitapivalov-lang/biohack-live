@@ -20,12 +20,13 @@ test('actual group UI module: participant list, three cursors, teacher control a
  const base='http://127.0.0.1:'+service.server.address().port+service.prefix,wsBase=base.replace('http:','ws:')+'sync';
  const windows=[],doms=[],errors=[];
  function page(url,name){
-  const dom=new JSDOM('<header><nav></nav></header><div id="course-trail">Тестовый урок</div><main><section id="tab-test" class="tab-content"><h2>Клетка</h2><button id="test-action">Следующий этап</button><input id="answer"><select id="choice"><option value="a">А</option><option value="b">Б</option></select><textarea id="written"></textarea></section></main><div id="draw-toolbar"><button data-tool="hand" aria-pressed="true">Рука</button></div>',{url,runScripts:'outside-only',pretendToBeVisual:true});
+  const dom=new JSDOM('<header><nav></nav></header><div id="course-trail">Тестовый урок</div><main><section id="tab-test" class="tab-content"><h2>Клетка</h2><div id="ht-canvas"><canvas></canvas></div><button id="test-action">Следующий этап</button><input id="answer"><select id="choice"><option value="a">А</option><option value="b">Б</option></select><textarea id="written"></textarea></section></main><div id="draw-toolbar"><button data-tool="hand" aria-pressed="true">Рука</button></div>',{url,runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window;doms.push(dom);windows.push(w);w.addEventListener('error',e=>errors.push(e.error));
   Object.defineProperty(w.crypto,'randomUUID',{value:randomUUID});Object.defineProperty(w,'innerWidth',{value:1200});Object.defineProperty(w,'innerHeight',{value:900});
   w.scrollTo=()=>{};w.HTMLElement.prototype.getBoundingClientRect=function(){return {left:100,top:100,width:800,height:600,right:900,bottom:700};};
   w.HTMLElement.prototype.getClientRects=function(){return [this.getBoundingClientRect()];};
   w.document.elementFromPoint=()=>w.document.querySelector('#test-action');
+  w.BioHackHeart={snapshot:()=> 'data:image/png;base64,aGVhcnQ='};
   w.BIOHACK_LOCAL_SERVER={wsBase};w.__testY=Y;w.__testProvider=class extends WebsocketProvider{constructor(_base,room,doc,options){super(wsBase,room,doc,{...options,WebSocketPolyfill:WebSocket});}};
   w.eval([...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).find(s=>s.includes('window.BioHackAnchors=')));w.eval(source);w.document.querySelector('#live-name').value=name;return w;
  }
@@ -41,7 +42,7 @@ test('actual group UI module: participant list, three cursors, teacher control a
   const labels=[...teacher.document.querySelectorAll('.live-cursor:not([hidden]) span')].map(e=>e.textContent).sort();assert.deepEqual(labels,['Анна','Борис','Вера']);
   assert.equal(new Set([...teacher.document.querySelectorAll('.live-cursor:not([hidden]) path')].map(e=>e.getAttribute('fill'))).size,3);
   const actions=[];teacher.document.querySelector('#test-action').onclick=()=>actions.push('clicked');
-  let scene=JSON.parse(teacher.BioHackLive.doc().getMap('lesson').get('scene'));const actionId=/data-live-action="([^"]+)"/.exec(scene.html)[1];
+  let scene=JSON.parse(teacher.BioHackLive.doc().getMap('lesson').get('scene'));assert.match(scene.html,/data-heart-frame="true"/,'3D view reaches students as an image');assert(!scene.html.includes('<canvas'),'no blank cloned WebGL canvas');const actionId=/data-live-action="([^"]+)"/.exec(scene.html)[1];
   windows[1].BioHackLive.awareness().setLocalStateField('action',{type:'action',id:actionId,nonce:randomUUID()});await delay(120);assert.equal(actions.length,0);
   const chooser=teacher.document.querySelector('#live-controller');
   chooser.value=String(windows[1].BioHackLive.doc().clientID);chooser.dispatchEvent(new teacher.Event('change'));teacher.document.querySelector('#live-grant').click();

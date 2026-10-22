@@ -16,6 +16,8 @@ test('Render lesson server: public site, private files, isolated rooms and two-w
  try{
   assert.equal((await fetch(base+'/')).status,200);assert.deepEqual(await (await fetch(base+'/health')).json(),{status:'ok'});
   assert.equal((await fetch(base+'/.runtime/session.json')).status,404);
+  const modelResponse=await fetch(base+'/assets/heart.glb');assert.equal(modelResponse.status,200);assert.equal(modelResponse.headers.get('content-type'),'model/gltf-binary');assert.equal(Buffer.from(await modelResponse.arrayBuffer()).subarray(0,4).toString(),'glTF');
+  const viewerResponse=await fetch(base+'/assets/heart-viewer.js');assert.equal(viewerResponse.status,200);assert.match(viewerResponse.headers.get('content-type'),/javascript/);assert.match(await viewerResponse.text(),/createHeartViewer/);assert.equal((await fetch(base+'/heart-viewer-src.js')).status,404);
   assert.equal((await fetch(base+service.prefix+'../../server.mjs')).status,404);
   const response=await fetch(base+service.prefix);assert.equal(response.status,200);
   const html=await response.text();assert.ok(html.includes('window.BIOHACK_LOCAL_SERVER='));assert.ok(!html.includes("new WS.WebsocketProvider('wss://demos.yjs.dev/ws'"));

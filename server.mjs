@@ -14,11 +14,13 @@ export function createBiohackServer(){
  const config=`<script>window.BIOHACK_LOCAL_SERVER={wsBase:location.origin.replace(/^http/,'ws')+${JSON.stringify(prefix+'sync')},moduleURL:${JSON.stringify(prefix+'vendor/live.mjs')}};</script>`;
  const html=Buffer.from(input.replace('</head>',config+'</head>')),compressed=gzipSync(html);
  const bridge=readFileSync(join(root,'live.mjs'));
+ const heartAssets=new Map([['/assets/heart.glb',{type:'model/gltf-binary',body:readFileSync(join(root,'heart.glb'))}],['/assets/heart-viewer.js',{type:'text/javascript; charset=utf-8',body:readFileSync(join(root,'heart-viewer.js'))}]]);
  const wss=new WebSocketServer({noServer:true,maxPayload:16*1024*1024,perMessageDeflate:false});
  const server=http.createServer((req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname;
   const common={'Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'};
   if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405,common);res.end();return;}
+  if(heartAssets.has(path)){const asset=heartAssets.get(path);res.writeHead(200,{...common,'Content-Type':asset.type});res.end(req.method==='HEAD'?undefined:asset.body);return;}
   if(path==='/health'){res.writeHead(200,{...common,'Content-Type':'application/json'});res.end(JSON.stringify({status:'ok'}));return;}
   if(path===prefix||path===prefix+'index.html'){
    const gzip=/\bgzip\b/.test(req.headers['accept-encoding']||'');
