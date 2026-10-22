@@ -159,21 +159,30 @@ test('dark diagram palette covers authored SVG colors and keeps labels legible',
  const css=diagramRules();assert.match(css,/html\[data-theme="dark"\]/);assert.match(css,/:not\(#draw-board-svg\)/);assert.match(css,/:not\(mask \*,clipPath \*,filter \*\)/);
 });
 
-test('heart lesson: anatomy entry, on-demand viewer, attribution and cleanup',()=>{
+test('heart lesson: own viewer, lifecycle, controls, attribution and cleanup',async()=>{
  const dom=new JSDOM('<main><section id="tab-cell" class="tab-content"></section></main>',{runScripts:'outside-only',url:'https://biohack.test/'}),w=dom.window;
  try{
   const routing=html.slice(html.indexOf('const lessonScreenSets='),html.indexOf('function openLessonScreen('));
   w.eval("var biologyDirectory=[{id:'anatomy',topics:[]}],moduleCategory={};function switchTab(id){document.querySelectorAll('.tab-content').forEach(el=>el.classList.toggle('hidden',el.id!=='tab-'+id));}"+routing.replace('const lessonScreenSets=','var lessonScreenSets='));
-  const source=html.match(/<script id="biohack-heart-lesson">([\s\S]*?)<\/script>/)[1];w.eval(source);
+  let loads=0,disposals=0,zooms=[],resets=0,backs=0;
+  w.__loadHeartViewer=async()=>{loads++;return {createHeartViewer:(container,options)=>{container.append(w.document.createElement('canvas'));options.onReady();return {dispose:()=>disposals++,zoom:factor=>zooms.push(factor),reset:()=>resets++,back:()=>backs++,snapshot:()=>null};}};};
+  const source=html.match(/<script id="biohack-heart-lesson">([\s\S]*?)<\/script>/)[1];
+  assert(!source.includes('sketchfab.com/models/'),'no external embedded viewer');
+  w.eval(source.replace("await import('/assets/heart-viewer.js')","await window.__loadHeartViewer()"));
   const root=w.document.getElementById('tab-heart');assert(root.classList.contains('hidden'));
   assert.equal(w.eval('moduleCategory.heart'),'anatomy');assert.equal(w.eval('biologyDirectory[0].topics[0][1]'),'heart');
-  assert.equal(w.eval('!!lessonScreenSets.heart.screens.main'),true,'register real lesson route');
-  assert.equal(root.querySelectorAll('iframe').length,0,'no external requests until requested');
-  w.eval("switchTab('heart')");w.document.getElementById('ht-load').click();w.document.getElementById('ht-load').click();
-  const frame=root.querySelector('iframe');assert.equal(root.querySelectorAll('iframe').length,1);
-  assert.equal(new URL(frame.src).host,'sketchfab.com');assert.equal(new URL(frame.src).searchParams.get('annotations_visible'),'0');assert(frame.allowFullscreen);
+  assert.equal(w.eval('!!lessonScreenSets.heart.screens.main'),true);
+  assert.equal(loads,0);assert.equal(root.querySelectorAll('iframe').length,0);
+  w.eval("switchTab('heart')");w.document.getElementById('ht-load').click();w.document.getElementById('ht-load').click();await new Promise(resolve=>w.setTimeout(resolve,0));
+  assert.equal(loads,1);assert(root.querySelector('canvas'));assert.equal(w.document.getElementById('ht-placeholder').hidden,true);
+  for(const id of ['ht-zoom-in','ht-zoom-out','ht-reset','ht-back']){assert.equal(w.document.getElementById(id).disabled,false);w.document.getElementById(id).click();}
+  assert.deepEqual(zooms,[1.2,1/1.2]);assert.equal(resets,1);assert.equal(backs,1);
+  w.document.getElementById('ht-fullscreen').click();assert(root.querySelector('.ht-expanded'));assert.equal(root.querySelector('[aria-modal]').getAttribute('aria-modal'),'true');
+  w.document.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));assert.equal(root.querySelector('.ht-expanded'),null);
   assert.match(root.textContent,/CC BY 4.0/);assert.match(root.textContent,/eruwen/);assert.match(root.textContent,/marxtrax/);
   assert.equal(root.querySelectorAll('.ht-flow span').length,9);
-  w.eval("switchTab('cell')");assert.equal(root.querySelectorAll('iframe').length,0);assert.equal(w.document.getElementById('ht-placeholder').hidden,false);
+  w.eval("switchTab('cell')");assert.equal(disposals,1);assert.equal(root.querySelector('canvas'),null);assert.equal(w.document.getElementById('ht-placeholder').hidden,false);
+  // A module that finishes importing after navigation must not mount a hidden GPU viewer.
+  let release;w.__loadHeartViewer=()=>new Promise(resolve=>release=resolve);w.eval("switchTab('heart')");w.document.getElementById('ht-load').click();w.eval("switchTab('cell')");release({createHeartViewer:()=>{throw Error('stale load mounted');}});await new Promise(resolve=>w.setTimeout(resolve,0));assert.equal(root.querySelector('canvas'),null);
  }finally{w.close();}
 });
