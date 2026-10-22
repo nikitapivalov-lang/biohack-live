@@ -158,3 +158,22 @@ test('dark diagram palette covers authored SVG colors and keeps labels legible',
  assert.notEqual(diagramColor('#800020','stroke'),diagramColor('#7c65a4','stroke'),'RNA and DNA remain distinguishable');
  const css=diagramRules();assert.match(css,/html\[data-theme="dark"\]/);assert.match(css,/:not\(#draw-board-svg\)/);assert.match(css,/:not\(mask \*,clipPath \*,filter \*\)/);
 });
+
+test('heart lesson: anatomy entry, on-demand viewer, attribution and cleanup',()=>{
+ const dom=new JSDOM('<main><section id="tab-cell" class="tab-content"></section></main>',{runScripts:'outside-only',url:'https://biohack.test/'}),w=dom.window;
+ try{
+  const routing=html.slice(html.indexOf('const lessonScreenSets='),html.indexOf('function openLessonScreen('));
+  w.eval("var biologyDirectory=[{id:'anatomy',topics:[]}],moduleCategory={};function switchTab(id){document.querySelectorAll('.tab-content').forEach(el=>el.classList.toggle('hidden',el.id!=='tab-'+id));}"+routing.replace('const lessonScreenSets=','var lessonScreenSets='));
+  const source=html.match(/<script id="biohack-heart-lesson">([\s\S]*?)<\/script>/)[1];w.eval(source);
+  const root=w.document.getElementById('tab-heart');assert(root.classList.contains('hidden'));
+  assert.equal(w.eval('moduleCategory.heart'),'anatomy');assert.equal(w.eval('biologyDirectory[0].topics[0][1]'),'heart');
+  assert.equal(w.eval('!!lessonScreenSets.heart.screens.main'),true,'register real lesson route');
+  assert.equal(root.querySelectorAll('iframe').length,0,'no external requests until requested');
+  w.eval("switchTab('heart')");w.document.getElementById('ht-load').click();w.document.getElementById('ht-load').click();
+  const frame=root.querySelector('iframe');assert.equal(root.querySelectorAll('iframe').length,1);
+  assert.equal(new URL(frame.src).host,'sketchfab.com');assert.equal(new URL(frame.src).searchParams.get('annotations_visible'),'0');assert(frame.allowFullscreen);
+  assert.match(root.textContent,/CC BY 4.0/);assert.match(root.textContent,/eruwen/);assert.match(root.textContent,/marxtrax/);
+  assert.equal(root.querySelectorAll('.ht-flow span').length,9);
+  w.eval("switchTab('cell')");assert.equal(root.querySelectorAll('iframe').length,0);assert.equal(w.document.getElementById('ht-placeholder').hidden,false);
+ }finally{w.close();}
+});
