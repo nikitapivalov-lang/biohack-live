@@ -5124,7 +5124,8 @@ html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="t
 html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="true"]):not(#draw-board-svg) text{fill:#eae1ee}
 html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="true"]):not(#draw-board-svg) :is(mask,clipPath,filter) *{color-scheme:light}
 html[data-theme="dark"] :where(dialog)::backdrop{background:#000b}
-html[data-theme="dark"] :is(.course-icon,#biohack-logo){filter:url(#biohack-wine-accent)}
+html[data-theme="dark"] #biohack-logo{filter:url(#biohack-wine-accent)}
+html[data-theme="dark"] .course-icon{filter:url(#biohack-course-accent)}
 html[data-theme="dark"] :where(a){color:#eda0bf}
 html[data-theme="dark"] :is(#quiz-complete-card,#mitosis-exam-complete){background:#8e2448!important}
 html[data-theme="dark"] .bio-shell-header nav #live-launch{background:#8e2448;color:#fff}
@@ -5135,7 +5136,7 @@ html[data-theme="dark"] :where(button,[role="button"]):focus-visible{outline-col
 html[data-theme="dark"] .shell-theme-toggle{background:#2e2330;color:#f0b3cb;border-color:#634557}
 @media(prefers-reduced-motion:no-preference){.shell-theme-toggle{transition:background .15s,color .15s}}
 </style>
-<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none"><defs><filter id="biohack-wine-accent" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".889764 0 0 0 .110236 0 .858824 0 0 .141176 0 0 .820628 0 .179372 0 0 0 1 0"/></filter></defs></svg>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none"><defs><filter id="biohack-wine-accent" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".889764 0 0 0 .110236 0 .858824 0 0 .141176 0 0 .820628 0 .179372 0 0 0 1 0"/></filter><filter id="biohack-course-accent" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".125984 0 0 0 .874016 0 .392157 0 0 .607843 0 0 .322870 0 .677130 0 0 0 1 0"/></filter></defs></svg>
 <style id="biohack-theme-palette"></style>
 <script id="biohack-theme-controller">
 (()=>{
