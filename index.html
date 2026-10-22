@@ -5052,10 +5052,8 @@ function vgScaleDialog(title,visual,ratio,onclose,transport){
  const parent=visual.parentElement,next=visual.nextSibling,dialog=document.createElement('dialog');dialog.className='vg-zoom';dialog.setAttribute('aria-label',title);dialog.innerHTML='<header><h4></h4><button type="button" class="vg-modal-close" autofocus>Закрыть ✕</button></header><div class="vg-scale-controls"></div><div class="vg-scale-viewport"></div>';
  dialog.querySelector('h4').textContent=title;
  if(transport){const actions=document.createElement('div');actions.className='vg-modal-transport';for(const [label,fn] of transport){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=fn;actions.append(b);}dialog.append(actions);}
- function sizeDialog(){const r=(typeof ratio==='function'?ratio():ratio)||1;dialog.style.width=Math.min(1000,Math.max(410,Math.min(window.innerHeight*.58,680)*r+32))+'px';}
- sizeDialog();window.addEventListener('resize',sizeDialog);visual.addEventListener('load',sizeDialog);
  document.body.append(dialog);dialog.showModal();const scale=vgScaleMount(dialog.querySelector('.vg-scale-viewport'),visual,dialog.querySelector('.vg-scale-controls'),ratio);
- dialog.querySelector('.vg-modal-close').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{window.removeEventListener('resize',sizeDialog);visual.removeEventListener('load',sizeDialog);scale.destroy();if(parent.isConnected)parent.insertBefore(visual,next?.parentNode===parent?next:null);dialog.remove();onclose?.();},{once:true});return dialog;
+ dialog.querySelector('.vg-modal-close').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{scale.destroy();if(parent.isConnected)parent.insertBefore(visual,next?.parentNode===parent?next:null);dialog.remove();onclose?.();},{once:true});return dialog;
 }
 function vgBookScaleMount(canvas,d){
  const visual=canvas.querySelector('.vg-book img'),viewport=document.createElement('div'),controls=document.createElement('div');viewport.className='vg-book-viewport';visual.before(controls,viewport);viewport.append(visual);
