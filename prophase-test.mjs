@@ -146,3 +146,15 @@ test('Baltimore: seven landscape layouts preserve all stages and keep nodes apar
  }
  dom.window.close();
 });
+test('dark diagram palette covers authored SVG colors and keeps labels legible',()=>{
+ const controller=html.match(/<script id="biohack-theme-controller">([\s\S]*?)<\/script>/)[1];
+ const helpers=controller.slice(controller.indexOf(' function rgb('),controller.indexOf(' function themeSelectors('));
+ const {diagramColor,diagramColors,diagramRules}=new Function(helpers+';return {diagramColor,diagramColors,diagramRules};')();
+ const palette=new Set(diagramColors);
+ for(const [,color]of html.matchAll(/(?:fill|stroke|stop-color)=["'](#[\da-fA-F]{3,8})["']/g))assert(palette.has(color.toLowerCase()),'unmapped diagram color '+color);
+ function luminance(value){const channels=value.match(/[\d.]+/g).slice(0,3).map(Number).map(c=>c/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);return channels[0]*.2126+channels[1]*.7152+channels[2]*.0722;}
+ const background=luminance(diagramColor('#fff','fill')),label=luminance(diagramColor('#334155','text'));
+ assert((label+.05)/(background+.05)>4.5,'diagram labels need readable contrast');
+ assert.notEqual(diagramColor('#800020','stroke'),diagramColor('#7c65a4','stroke'),'RNA and DNA remain distinguishable');
+ const css=diagramRules();assert.match(css,/html\[data-theme="dark"\]/);assert.match(css,/:not\(#draw-board-svg\)/);assert.match(css,/:not\(mask \*,clipPath \*,filter \*\)/);
+});
