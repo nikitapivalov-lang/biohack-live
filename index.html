@@ -4793,9 +4793,7 @@ function vgGlyph(kind){
 function vgNodes(nodes){return nodes.map(([kind,title,detail,enzyme],i)=>(i?`<div class="vg-arrow">${enzyme||'Следующий этап'}</div>`:'')+`<div class="vg-node" data-kind="${kind}">${vgGlyph(kind)}<div><strong>${title}</strong><small>${detail}</small></div></div>`).join('');}
 function vgDiagram(d){return `<div class="vg-diagram" aria-label="Развёрнутая схема реализации генома"><div class="vg-origin">${vgNodes(d.start)}</div><div class="vg-fork"><section class="vg-lane"><h6>А · Экспрессия: путь к вирусным белкам</h6>${vgNodes(d.expression)}</section><section class="vg-lane"><h6>Б · Репликация: новые копии генома</h6>${vgNodes(d.replication)}</section></div><div class="vg-merge"><p>Белки и новые геномы соединяются ↓</p><div class="vg-node" data-kind="virus">${vgGlyph('virus')}<div><strong>Сборка и выход</strong><small>${d.end}</small></div></div></div></div>`;}
 function vgBook(d){const f=virusBookFigures[d.book];return `<figure class="vg-book"><div class="vg-book-head"><strong>Оригинальный рисунок из учебника</strong><button type="button" class="vg-zoom-button">Увеличить рисунок ↗</button></div><img src="${f}" alt="${d.bookTitle}" loading="lazy"><figcaption>${d.bookTitle}. М. Глэдвин, В. Трэттлер, С. С. Мэхэн, «Медицинская микробиология: проще не бывает», 6-е изд. ${d.source}</figcaption></figure>`;}
-function vgZoom(d){
- const dialog=document.createElement('dialog');dialog.className='vg-zoom';dialog.innerHTML=`<header><h4>${d.bookTitle}</h4><button type="button" autofocus>Закрыть ✕</button></header><p>На узком экране рисунок можно прокручивать по горизонтали.</p><div class="vg-zoom-scroll"><img src="${virusBookFigures[d.book]}" alt="${d.bookTitle}"></div>`;document.body.append(dialog);dialog.querySelector('button').onclick=()=>dialog.close();dialog.addEventListener('close',()=>dialog.remove());dialog.showModal();
-}
+
 function cyVirusBaltimore(panel){
  panel.innerHTML='<h4 class="text-xl font-extrabold text-slate-800">Семь путей реализации генома</h4><p class="virus-detail mt-3">Для каждой группы показаны ферменты, промежуточные формы нуклеиновых кислот и два результата: вирусные белки и новые геномы. Все вирусные белки синтезируются на рибосомах клетки-хозяина.</p><p class="virus-caption mt-2">оц — одноцепочечная; дц — двухцепочечная; RdRp — РНК-зависимая РНК-полимераза; RT — обратная транскрипция. (+)/(−) — полярность РНК.</p><div id="virus-groups" class="flex flex-wrap gap-2 mt-5" role="group" aria-label="Группы Балтимора"></div><article id="virus-group-card" class="mt-5 p-5 sm:p-6 rounded-2xl border border-burgundy-200 bg-slate-50"></article>';
  const buttons=panel.querySelector('#virus-groups'),card=panel.querySelector('#virus-group-card');let disposeCycle=()=>{};
@@ -4804,7 +4802,7 @@ function cyVirusBaltimore(panel){
   const g=virusBaltimore[i],d=virusGenomeDetailed[i];const refs={1:['https://viralzone.expasy.org/103','Parvoviridae'],2:['https://viralzone.expasy.org/107','Rotavirus'],5:['https://viralzone.expasy.org/4976','HIV'],6:['https://viralzone.expasy.org/1280','HBV']};const ref=refs[i];buttons.querySelectorAll('button').forEach((b,k)=>b.setAttribute('aria-pressed',String(i===k)));
   card.innerHTML=`<div class="vg-heading"><div><p class="text-xs font-bold text-burgundy-700 uppercase">Группа ${g.n}</p><h5 class="mt-2">${g.genome}</h5></div></div><p class="virus-caption mt-2"><strong>Примеры:</strong> ${g.examples}.</p><div class="vg-switch" role="group" aria-label="Вид схемы"></div><div class="vg-canvas"></div><section class="vg-reading"><h6>Что происходит по порядку</h6><ol>${d.steps.map(t=>`<li>${t}</li>`).join('')}</ol></section><p class="vg-callout">${d.note}</p><p class="vg-source"><strong>Источники схемы:</strong> ${d.source} ${ref?`<a href="${ref[0]}" target="_blank" rel="noopener noreferrer">ViralZone — ${ref[1]}</a>. `:''}<a href="https://viralzone.expasy.org/254" target="_blank" rel="noopener noreferrer">ViralZone — классификация по Балтимору</a>. Цветная схема — учебная адаптация; отдельные рисунки из книги приведены без перерисовки.</p>`;
   const controls=card.querySelector('.vg-switch'),canvas=card.querySelector('.vg-canvas');
-  function view(type){disposeCycle();controls.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===type)));canvas.innerHTML=type==='book'?vgBook(d):'';if(type==='cycle')disposeCycle=vgCycleMount(canvas,i);canvas.querySelector('.vg-zoom-button')?.addEventListener('click',()=>vgZoom(d));}
+  function view(type){disposeCycle();controls.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===type)));canvas.innerHTML=type==='book'?vgBook(d):'';if(type==='cycle')disposeCycle=vgCycleMount(canvas,i);else if(type==='book')disposeCycle=vgBookScaleMount(canvas,d);}
   for(const [key,label] of [['cycle','Подробная схема'],...(d.book?[['book','Рисунок из учебника']]:[])]){const b=document.createElement('button');b.type='button';b.dataset.view=key;b.textContent=label;b.onclick=()=>view(key);controls.append(b);}view('cycle');
  }
  virusBaltimore.forEach((g,i)=>{const b=cyButton(g.n+' · '+g.short,()=>select(i),'virus-chip');b.setAttribute('aria-pressed','false');buttons.append(b);});select(0);
@@ -4905,8 +4903,9 @@ function vcScene(plan,index,t){
 }
 function vgCycleMount(canvas,index){
  const plan=vcPlan(index),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- canvas.innerHTML=`<section class="vc-player"><div class="vc-top"><strong>Клетка в разрезе · группа ${virusBaltimore[index].n}</strong><button type="button" class="vc-zoom" aria-expanded="false">Увеличить схему ↗</button></div><div class="vc-viewport"><svg class="vc-scene" viewBox="0 0 900 920" role="img" aria-label="Круглая схема размножения вируса"></svg></div><div class="vc-current" aria-live="polite"><small></small><h6></h6><p></p></div><div class="vc-controls"><button type="button" class="vc-play">▶ Смотреть весь цикл</button><button type="button" class="vc-prev">← Назад</button><button type="button" class="vc-next">Далее →</button><button type="button" class="vc-repeat">↻ Повторить этап</button><button type="button" class="vc-reset">Сначала</button><label>Скорость <select aria-label="Скорость вирусного цикла"><option value=".5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><input type="range" min="0" max="1" step=".005" value="0" aria-label="Ход текущего этапа"></div><div class="vc-legend">Фиолетовый — ДНК · бургунди — РНК · золотистый — белки. Пунктирная стрелка от фермента означает участие в реакции. Бледные элементы — следующие этапы.</div><div class="vc-steps" role="group" aria-label="Этапы вирусного цикла"></div></section><p class="vc-source-note">Цветная поэтапная адаптация композиции учебника. Размеры, положение молекул и длительность условны. Для групп II, III, VI и VII маршрут дополнен промежуточными формами генома.</p>`;
- const box=canvas.querySelector('.vc-player'),svg=box.querySelector('svg'),play=box.querySelector('.vc-play'),range=box.querySelector('input');
+ canvas.innerHTML=`<section class="vc-player"><div class="vc-top"><strong>Клетка в разрезе · группа ${virusBaltimore[index].n}</strong><button type="button" class="vc-zoom" aria-haspopup="dialog">Открыть крупнее ↗</button></div><div class="vc-scale-controls"></div><div class="vc-viewport"><svg class="vc-scene" viewBox="0 0 900 920" role="img" aria-label="Круглая схема размножения вируса"></svg></div><div class="vc-current" aria-live="polite"><small></small><h6></h6><p></p></div><div class="vc-controls"><button type="button" class="vc-play">▶ Смотреть весь цикл</button><button type="button" class="vc-prev">← Назад</button><button type="button" class="vc-next">Далее →</button><button type="button" class="vc-repeat">↻ Повторить этап</button><button type="button" class="vc-reset">Сначала</button><label>Скорость <select aria-label="Скорость вирусного цикла"><option value=".5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><input type="range" min="0" max="1" step=".005" value="0" aria-label="Ход текущего этапа"></div><div class="vc-legend">Фиолетовый — ДНК · бургунди — РНК · золотистый — белки. Пунктирная стрелка от фермента означает участие в реакции. Бледные элементы — следующие этапы.</div><div class="vc-steps" role="group" aria-label="Этапы вирусного цикла"></div></section><p class="vc-source-note">Цветная поэтапная адаптация композиции учебника. Размеры, положение молекул и длительность условны. Для групп II, III, VI и VII маршрут дополнен промежуточными формами генома.</p>`;
+ const box=canvas.querySelector('.vc-player'),svg=box.querySelector('svg'),play=box.querySelector('.vc-play'),range=box.querySelector('.vc-controls input');
+ const inlineScale=vgScaleMount(box.querySelector('.vc-viewport'),svg,box.querySelector('.vc-scale-controls'),900/920);let expandedDialog=null;
  let stage=0,t=reduced?1:0,playing=false,single=false,last=0,raf=0,speed=1,painted=0,stopped=false;
  function draw(){svg.innerHTML=vcScene(plan,stage,t);range.value=t;svg.setAttribute('aria-label',`Группа ${virusBaltimore[index].n}. Этап ${stage+1}: ${plan.steps[stage].title}`);}
  function info(){const current=plan.steps[stage],block=box.querySelector('.vc-current');block.querySelector('small').textContent=`Этап ${stage+1} из ${plan.steps.length}`;block.querySelector('h6').textContent=current.title;block.querySelector('p').textContent=current.text;box.querySelectorAll('[data-vc-step]').forEach((b,i)=>{if(i===stage)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});box.querySelector('.vc-prev').disabled=stage===0;box.querySelector('.vc-next').disabled=stage===plan.steps.length-1;play.textContent=playing?'Ⅱ Пауза':'▶ Смотреть весь цикл';play.setAttribute('aria-pressed',String(playing));}
@@ -4922,8 +4921,8 @@ function vgCycleMount(canvas,index){
  for(const [i,s] of plan.steps.entries()){const b=document.createElement('button');b.type='button';b.dataset.vcStep=i;b.innerHTML=`<b>${i+1}</b>${s.title}`;b.onclick=()=>jump(i);box.querySelector('.vc-steps').append(b);}
  play.onclick=()=>{if(playing)stop();else{if(stage===plan.steps.length-1&&t>=1){stage=0;t=0;}else if(t>=1)t=0;run();}};
  box.querySelector('.vc-prev').onclick=()=>jump(stage-1);box.querySelector('.vc-next').onclick=()=>jump(stage+1);box.querySelector('.vc-repeat').onclick=()=>jump(stage);box.querySelector('.vc-reset').onclick=()=>{stop();stage=0;t=reduced?1:0;info();draw();};range.oninput=e=>{stop();t=Number(e.target.value);draw();};box.querySelector('select').onchange=e=>speed=Number(e.target.value);
- box.querySelector('.vc-zoom').onclick=e=>{const wide=box.querySelector('.vc-viewport').classList.toggle('vc-wide');e.currentTarget.setAttribute('aria-expanded',String(wide));e.currentTarget.textContent=wide?'Свернуть схему ↙':'Увеличить схему ↗';};
- info();draw();return ()=>{stopped=true;cancelAnimationFrame(raf);};
+ box.querySelector('.vc-zoom').onclick=()=>{inlineScale.setActive(false);expandedDialog=vgScaleDialog('Подробная схема · группа '+virusBaltimore[index].n,svg,900/920,()=>{expandedDialog=null;inlineScale.setActive(true);},[['▶ Весь цикл',()=>{if(stage===plan.steps.length-1&&t>=1){stage=0;t=0;}run();}],['Ⅱ Пауза',stop],['← Этап',()=>jump(stage-1)],['Этап →',()=>jump(stage+1)]]);};
+ info();draw();return ()=>{stopped=true;cancelAnimationFrame(raf);expandedDialog?.close();inlineScale.destroy();};
 }
 </script>
 
@@ -5007,5 +5006,62 @@ function ccMount(root){
 @media(max-width:650px){#draw-toolbar{padding:6px;gap:3px;border-radius:16px}#draw-toolbar button,#draw-toolbar .draw-icon-select{width:36px;height:38px;border-radius:10px}#draw-toolbar button svg{width:20px;height:20px}#draw-toolbar .draw-divider{margin:0 1px}}
 
 </style>
+<style>
+.vg-scale-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:10px 12px;background:#fffafc;border-block:1px solid #eee2e8;color:#7b4a63}
+.vg-scale-controls button{border:1px solid #ddc6d2;border-radius:9px;background:#fff;color:#800020;padding:6px 10px;min-height:32px;font-size:12px;font-weight:700}
+.vg-scale-controls button:focus-visible,.vg-scale-controls input:focus-visible{outline:3px solid #bc80a0;outline-offset:2px}
+.vg-scale-controls output{min-width:42px;text-align:center;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums}
+.vg-scale-controls input{width:100px;max-width:28vw;accent-color:#800020;margin-left:auto}
+.vg-scale-viewport{overflow:auto;position:relative;overscroll-behavior:contain;background:#fffafc}
+.vc-viewport.vg-scale-viewport{height:min(48vh,420px);min-height:220px}
+.vg-book-viewport.vg-scale-viewport{height:min(46vh,390px);min-height:210px}
+.vg-scale-content{display:grid;place-items:center;box-sizing:border-box}
+.vg-scale-content>.vg-scaled-visual{display:block!important;min-width:0!important;max-width:none!important;max-height:none!important;margin:0!important;width:var(--vg-image-width)!important;height:var(--vg-image-height)!important;object-fit:contain}
+.vg-zoom{padding:14px;width:1000px;max-width:96vw;max-height:95vh;border:1px solid #e0c9d4;border-radius:18px;overflow:hidden}
+.vg-zoom[open]{display:flex;flex-direction:column;gap:10px}
+.vg-zoom header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+.vg-zoom header h4{font-size:14px;font-weight:800;line-height:1.5}
+.vg-zoom header button{border:1px solid #decad4;border-radius:9px;padding:7px 10px;background:white;color:#800020;font-size:12px;white-space:nowrap}
+.vg-zoom .vg-scale-controls{padding:7px 9px;border-radius:10px;flex-shrink:0}
+.vg-zoom .vg-scale-viewport{height:min(58vh,680px);min-height:150px;border:1px solid #eadce4;border-radius:12px;flex-shrink:1}
+.vg-modal-transport{display:flex;gap:7px;flex-wrap:wrap;font-size:12px}
+.vg-modal-transport button{background:#f7edf2;color:#800020;border:1px solid #ddc6d2;border-radius:9px;padding:7px 10px;font-weight:700}
+.vg-book img{max-height:390px}
+@media(max-width:600px){.vg-zoom{padding:10px;gap:7px}.vg-zoom header h4{font-size:12px}.vg-scale-controls{gap:5px;padding:8px}.vg-scale-controls input{width:75px}.vc-viewport.vg-scale-viewport{height:280px;min-height:200px}.vg-book-viewport.vg-scale-viewport{height:270px;min-height:190px}.vg-zoom .vg-scale-viewport{height:54vh;min-height:150px}}
+</style>
+<script>
+function vgScaleMount(viewport,visual,controls,ratio){
+ viewport.classList.add('vg-scale-viewport');
+ const content=document.createElement('div');content.className='vg-scale-content';viewport.append(content);content.append(visual);visual.classList.add('vg-scaled-visual');
+ controls.classList.add('vg-scale-controls');controls.setAttribute('role','group');controls.setAttribute('aria-label','Масштаб схемы');controls.innerHTML='<button type="button" data-scale="minus" aria-label="Уменьшить масштаб" title="Уменьшить масштаб">−</button><output aria-live="polite">100%</output><button type="button" data-scale="plus" aria-label="Увеличить масштаб" title="Увеличить масштаб">+</button><button type="button" data-scale="fit" aria-label="Вместить схему">Вместить</button><input type="range" min="25" max="300" step="5" value="100" aria-label="Масштаб схемы в процентах">';
+ let percent=100,active=true,destroyed=false;
+ const getRatio=()=>typeof ratio==='function'?ratio():ratio;
+ function apply(){
+  if(!active||destroyed)return;
+  const r=getRatio()||1,w=Math.max(100,viewport.clientWidth-20),h=Math.max(100,viewport.clientHeight-20),baseH=Math.min(h,w/r),height=Math.round(baseH*percent/100),width=Math.round(height*r);
+  visual.style.setProperty('--vg-image-width',width+'px');visual.style.setProperty('--vg-image-height',height+'px');content.style.width=Math.max(viewport.clientWidth,width+20)+'px';content.style.height=Math.max(viewport.clientHeight,height+20)+'px';
+  controls.querySelector('output').textContent=percent+'%';controls.querySelector('input').value=percent;
+  controls.querySelector('[data-scale="minus"]').disabled=percent<=25;controls.querySelector('[data-scale="plus"]').disabled=percent>=300;
+ }
+ function set(value){percent=Math.max(25,Math.min(300,value));apply();if(percent<=100){viewport.scrollLeft=0;viewport.scrollTop=0;}}
+ controls.querySelector('[data-scale="minus"]').onclick=()=>set(percent-25);controls.querySelector('[data-scale="plus"]').onclick=()=>set(percent+25);controls.querySelector('[data-scale="fit"]').onclick=()=>set(100);controls.querySelector('input').oninput=e=>set(Number(e.target.value));
+ visual.addEventListener('load',apply);window.addEventListener('resize',apply);const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(apply):null;observer?.observe(viewport);apply();
+ return {setActive(value){active=value;apply();},destroy(){destroyed=true;observer?.disconnect();visual.removeEventListener('load',apply);window.removeEventListener('resize',apply);},fit(){set(100);}};
+}
+function vgScaleDialog(title,visual,ratio,onclose,transport){
+ const parent=visual.parentElement,next=visual.nextSibling,dialog=document.createElement('dialog');dialog.className='vg-zoom';dialog.setAttribute('aria-label',title);dialog.innerHTML='<header><h4></h4><button type="button" class="vg-modal-close" autofocus>Закрыть ✕</button></header><div class="vg-scale-controls"></div><div class="vg-scale-viewport"></div>';
+ dialog.querySelector('h4').textContent=title;
+ if(transport){const actions=document.createElement('div');actions.className='vg-modal-transport';for(const [label,fn] of transport){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=fn;actions.append(b);}dialog.append(actions);}
+ document.body.append(dialog);dialog.showModal();const scale=vgScaleMount(dialog.querySelector('.vg-scale-viewport'),visual,dialog.querySelector('.vg-scale-controls'),ratio);
+ dialog.querySelector('.vg-modal-close').onclick=()=>dialog.close();dialog.addEventListener('close',()=>{scale.destroy();if(parent.isConnected)parent.insertBefore(visual,next?.parentNode===parent?next:null);dialog.remove();onclose?.();},{once:true});return dialog;
+}
+function vgBookScaleMount(canvas,d){
+ const visual=canvas.querySelector('.vg-book img'),viewport=document.createElement('div'),controls=document.createElement('div');viewport.className='vg-book-viewport';visual.before(controls,viewport);viewport.append(visual);
+ const ratio=()=>visual.naturalWidth&&visual.naturalHeight?visual.naturalWidth/visual.naturalHeight:1,scale=vgScaleMount(viewport,visual,controls,ratio);let dialog=null;
+ canvas.querySelector('.vg-zoom-button').onclick=()=>{scale.setActive(false);dialog=vgScaleDialog(d.bookTitle,visual,ratio,()=>{dialog=null;scale.setActive(true);});};
+ return ()=>{dialog?.close();scale.destroy();};
+}
+</script>
+
 </body>
 </html>
