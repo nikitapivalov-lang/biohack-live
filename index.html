@@ -4895,6 +4895,20 @@ function vcPlan(i){
  const final=i===5?vcS('Выход и созревание ВИЧ','Вирусная протеаза расщепляет полипротеины. Нуклеокапсид перестраивается — частица становится зрелой и способной заражать следующую клетку.',[],[],'exit'):i===6?vcS('Приобретение оболочки и выход','Капсид с rcDNA приобретает оболочку и выходит из клетки. Часть капсидов может вернуться к ядру и пополнить запас cccDNA. Интеграция в хромосому для этого цикла не обязательна.',[],[],'exit'):vcS('Выход новых вирусных частиц','Собранные вирионы покидают клетку. Механизм зависит от вируса: возможны разрушение клетки, почкование или другие пути. Стрелка показывает результат без привязки к одному механизму.',[],[],'exit');
  return {nodes,edges,nucleus,genomeKind:['dna','ssdna','dsrna','rna','rna','rna','dna'][i],enveloped:i===5||i===6,steps:[...common,...steps,final]};
 }
+// A separate landscape composition keeps labels and molecules undistorted.
+function vcWidePlan(base,group){
+ const layouts=[
+  {g:[235,225],early:[310,465],enz:[520,465],copy:[615,220],late:[735,465],cap:[955,445],assembly:[945,290]},
+  {g:[230,225],ds:[450,225],mrna:[360,465],protein:[680,465],copy:[690,225],assembly:[945,290]},
+  {g:[200,245],mrna:[415,245],protein:[415,465],core:[680,245],copy:[905,245],assembly:[975,430]},
+  {g:[220,285],enzyme:[465,210],protein:[460,465],minus:[710,210],copy:[940,245],assembly:[975,430]},
+  {g:[220,285],mrna:[435,210],protein:[435,465],anti:[690,210],copy:[935,245],assembly:[975,430]},
+  {g:[170,330],hybrid:[330,210],dna:[530,210],provirus:[735,210],mrna:[385,465],protein:[620,465],copy:[945,240],assembly:[950,430]},
+  {g:[175,275],ccc:[430,210],mrna:[350,465],protein:[605,465],pg:[710,240],core:[835,465],assembly:[1005,390]}
+ ];
+ const nuclei=[{x:555,y:255,rx:455,ry:145},{x:555,y:255,rx:455,ry:145},null,{x:735,y:515,rx:78,ry:48,decorative:true},{x:735,y:515,rx:78,ry:48,decorative:true},{x:765,y:220,rx:325,ry:115},{x:475,y:225,rx:330,ry:125}];
+ return {...base,wide:true,nucleus:nuclei[group],nodes:base.nodes.map(n=>({...n,x:layouts[group][n.id][0],y:layouts[group][n.id][1]}))};
+}
 function vcMolecule(kind,x,y,scale=1,genome='rna',envelope=false){
  let shape='';
  if(kind==='protein')shape='<path d="M-31 0L-10-12 10 10 31-4" stroke="#bd9145" stroke-width="4" fill="none"/>'+[[-31,0],[-10,-12],[10,10],[31,-4]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="8" fill="#e8bb67" stroke="#a4782d" stroke-width="2"/>`).join('');
@@ -4903,39 +4917,42 @@ function vcMolecule(kind,x,y,scale=1,genome='rna',envelope=false){
  return `<g transform="translate(${x} ${y}) scale(${scale})">${shape}</g>`;
 }
 function vcScene(plan,index,t){
+ const wide=!!plan.wide,W=wide?1200:900,H=wide?680:920,entryX=wide?65:450,entryY=wide?55:65,exitX=wide?1140:450,exitY=wide?625:860;
  const step=plan.steps[index],map=Object.fromEntries(plan.nodes.map(n=>[n.id,n])),seen=new Set(plan.steps.slice(0,index+1).flatMap(s=>s.show)),used=new Set(plan.steps.slice(0,index+1).flatMap(s=>s.edges));
  const ease=v=>v*v*(3-2*v),u=ease(Math.min(1,t/.8));
- let v='<title>Поэтапная реализация вирусного генома в круглой клетке</title><desc>'+step.title+'. '+step.text+'</desc><defs><radialGradient id="vc-cell"><stop stop-color="#fffdfd"/><stop offset="1" stop-color="#f5eaf1"/></radialGradient><marker id="vc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#9b5776" stroke-width="1.7"/></marker></defs><rect width="900" height="920" fill="#fffafc"/><circle cx="450" cy="455" r="350" fill="url(#vc-cell)" stroke="#844565" stroke-width="5"/><circle cx="450" cy="455" r="340" fill="none" stroke="#d7b3c6" stroke-width="2"/>';
+ let v='<title>Поэтапная реализация вирусного генома в клетке</title><desc>'+step.title+'. '+step.text+'</desc><defs><radialGradient id="vc-cell"><stop stop-color="#fffdfd"/><stop offset="1" stop-color="#f5eaf1"/></radialGradient><marker id="vc-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#9b5776" stroke-width="1.7"/></marker></defs><rect width="'+W+'" height="'+H+'" fill="#fffafc"/>'+(wide?'<ellipse cx="600" cy="335" rx="560" ry="280" fill="url(#vc-cell)" stroke="#844565" stroke-width="4"/><ellipse cx="600" cy="335" rx="551" ry="271" fill="none" stroke="#d7b3c6" stroke-width="2"/>':'<circle cx="450" cy="455" r="350" fill="url(#vc-cell)" stroke="#844565" stroke-width="5"/><circle cx="450" cy="455" r="340" fill="none" stroke="#d7b3c6" stroke-width="2"/>');
  const text=(x,y,lines,size=16,fill='#614358')=>lines.map((line,k)=>`<text x="${x}" y="${y+k*(size+4)}" text-anchor="middle" font-family="sans-serif" font-size="${size}" fill="${fill}" font-weight="650" paint-order="stroke" stroke="#fffafc" stroke-width="4" stroke-linejoin="round">${line}</text>`).join('');
- v+=text(450,30,['ВНЕ КЛЕТКИ'],13,'#947083')+text(205,260,['ЦИТОПЛАЗМА'],13,'#947083');
- if(plan.nucleus){const n=plan.nucleus;v+=`<ellipse cx="${n.x}" cy="${n.y}" rx="${n.rx}" ry="${n.ry}" fill="#ede8f6" fill-opacity=".65" stroke="#b49cc7" stroke-width="2.5" stroke-dasharray="8 5"/>`+text(n.x,n.y+n.ry-15,['ЯДРО'],13,'#9674b1');}
+ v+=text(wide?85:450,wide?20:30,['ВНЕ КЛЕТКИ'],wide?14:13,'#947083')+text(wide?155:205,wide?380:260,['ЦИТОПЛАЗМА'],wide?15:13,'#947083');
+ if(plan.nucleus){const n=plan.nucleus;v+=`<ellipse cx="${n.x}" cy="${n.y}" rx="${n.rx}" ry="${n.ry}" fill="#ede8f6" fill-opacity=".65" stroke="#b49cc7" stroke-width="2.5" stroke-dasharray="8 5"/>`+text(n.x,wide?n.y-n.ry+24:n.y+n.ry-15,['ЯДРО'],wide?15:13,'#9674b1');}
  const curves=[];
  for(const [k,e] of plan.edges.entries()){
-  const a=map[e.a],b=map[e.b],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),ax=a.x+dx/len*50,ay=a.y+dy/len*45,bx=b.x-dx/len*54,by=b.y-dy/len*45,mx=(ax+bx)/2-(dy/len)*e.curve,my=(ay+by)/2+(dx/len)*e.curve;
-  curves.push({ax,ay,bx,by,mx,my});const active=step.edges.includes(k),opacity=active?1:used.has(k)?.68:.13,color=active?'#800020':'#ac7f97';
+  const a=map[e.a],b=map[e.b],dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy),pad=wide?1/Math.max(Math.abs(dx/len)/92,Math.abs(dy/len)/54):50,curve=wide&&Math.abs(dy)<75?-90:e.curve,ax=a.x+dx/len*pad,ay=a.y+(wide?10:0)+dy/len*(wide?pad:45),bx=b.x-dx/len*(wide?pad:54),by=b.y+(wide?10:0)-dy/len*(wide?pad:45),mx=(ax+bx)/2-(dy/len)*curve,my=(ay+by)/2+(dx/len)*curve;
+  curves.push({ax,ay,bx,by,mx,my});const active=step.edges.includes(k),opacity=active?1:used.has(k)?.8:.32,color=active?'#800020':'#ac7f97';
   v+=`<g opacity="${opacity}"><path d="M${ax} ${ay}Q${mx} ${my} ${bx} ${by}" fill="none" stroke="${color}" stroke-width="${active?3.5:2}" ${e.label==='Фермент'||e.label==='Ранние белки'?'stroke-dasharray="6 5"':''} marker-end="url(#vc-arrow)"/>`;
-  if(e.label)v+=text(mx,my-8,[e.label],12,color);v+='</g>';
+  if(e.label){const labels=wide&&e.label.length>21?e.label.replace(/(.{8,21})\s/,'$1|').split('|'):[e.label];v+=text(wide?(ax+2*mx+bx)/4:mx,(wide?(ay+2*my+by)/4:my)-10-(labels.length-1)*18,labels,wide?14:12,color);}v+='</g>';
  }
- for(const n of plan.nodes){const active=step.show.includes(n.id),opacity=active?1:seen.has(n.id)?.85:.13;v+=`<g opacity="${opacity}"><rect x="${n.x-83}" y="${n.y-34}" width="166" height="89" rx="15" fill="${active?'#fff6fa':'#fff'}" stroke="${active?'#9a365b':'#d4c0cc'}" stroke-width="${active?2.5:1}"/>${vcMolecule(n.kind,n.x,n.y-9,.75,n.kind==='virus'||n.id==='g'?plan.genomeKind:'rna',plan.enveloped&&n.kind==='virus')}${text(n.x,n.y+25,n.label,14,active?'#800020':'#67475c')}</g>`;}
+ for(const n of plan.nodes){const active=step.show.includes(n.id),opacity=active?1:seen.has(n.id)?.95:.4;v+=`<g opacity="${opacity}"><rect x="${n.x-83}" y="${n.y-34}" width="166" height="89" rx="15" fill="${active?'#fff6fa':'#fff'}" stroke="${active?'#9a365b':'#d4c0cc'}" stroke-width="${active?2.5:1}"/>${vcMolecule(n.kind,n.x,n.y-9,.75,n.kind==='virus'||n.id==='g'?plan.genomeKind:'rna',plan.enveloped&&n.kind==='virus')}${text(n.x,n.y+25,n.label,wide?16:14,active?'#800020':'#67475c')}</g>`;}
  // Новая молекула движется по стрелке; матрица остаётся на месте.
  if(!['entry','uncoat','exit'].includes(step.special))for(const k of step.edges){const e=plan.edges[k];if(e.label==='Фермент'||e.label==='Ранние белки')continue;const c=curves[k],x=(1-u)**2*c.ax+2*(1-u)*u*c.mx+u*u*c.bx,y=(1-u)**2*c.ay+2*(1-u)*u*c.my+u*u*c.by;v+=`<circle cx="${x}" cy="${y}" r="21" fill="#fff7fc" fill-opacity=".9" stroke="#d7a4bb" stroke-width="1"/>`+vcMolecule(['virus','core'].includes(map[e.b].kind)?map[e.a].kind:map[e.b].kind,x,y,.55);}
  if(step.special==='entry'){
-  const g=map.g,x=450+(g.x-450)*u,y=65+(g.y-65)*u;v+=`<path d="M450 65Q450 160 ${g.x} ${g.y}" fill="none" stroke="#ba8da2" stroke-width="2" stroke-dasharray="6 7"/>`+vcMolecule('virus',x,y,1.05,plan.genomeKind,plan.enveloped)+text(650,100,['ПРОНИКНОВЕНИЕ'],14,'#800020');
+  const g=map.g,x=entryX+(g.x-entryX)*u,y=entryY+(g.y-entryY)*u;v+=`<path d="M${entryX} ${entryY}Q${entryX} ${wide?145:160} ${g.x} ${g.y}" fill="none" stroke="#ba8da2" stroke-width="2" stroke-dasharray="6 7"/>`+vcMolecule('virus',x,y,1.05,plan.genomeKind,plan.enveloped)+text(wide?245:650,wide?85:100,['ПРОНИКНОВЕНИЕ'],wide?16:14,'#800020');
  }
  if(step.special==='uncoat'){const g=map.g;v+=vcMolecule(g.kind,g.x,g.y,.9,plan.genomeKind);for(let j=0;j<6;j++){const a=j*Math.PI/3,x=g.x+Math.cos(a)*(25+u*45),y=g.y+Math.sin(a)*(25+u*45);v+=`<path d="M-10-8L10 0L-10 8Z" transform="translate(${x} ${y}) rotate(${j*60})" fill="#bc91ab" opacity="${1-u}"/>`;}}
  if(step.special==='assembly'){const n=map.assembly;v+=`<g opacity="${.3+.7*u}">${vcMolecule('virus',n.x,n.y-9,.85+.15*u,plan.genomeKind,plan.enveloped)}</g>`;}
  if(step.special==='exit'){
-  const n=map.assembly,x=n.x+(450-n.x)*u,y=n.y+(860-n.y)*u;v+=`<path d="M${n.x} ${n.y}Q450 790 450 860" fill="none" stroke="#800020" stroke-width="3" marker-end="url(#vc-arrow)"/>`+vcMolecule('virus',x,y,1.05,plan.genomeKind,plan.enveloped)+text(450,911,['НОВОЕ ПОКОЛЕНИЕ ВИРУСА'],14,'#800020');
+  const n=map.assembly,x=n.x+(exitX-n.x)*u,y=n.y+(exitY-n.y)*u;v+=`<path d="M${n.x} ${n.y}Q${wide?1120:450} ${wide?520:790} ${exitX} ${exitY}" fill="none" stroke="#800020" stroke-width="3" marker-end="url(#vc-arrow)"/>`+vcMolecule('virus',x,y,1.05,plan.genomeKind,plan.enveloped)+text(wide?970:450,wide?662:911,['НОВОЕ ПОКОЛЕНИЕ ВИРУСА'],wide?16:14,'#800020');
  }
- v+=text(450,892,[step.special==='exit'?'':step.title.toUpperCase()],14,'#800020');return v;
+ v+=text(wide?600:450,wide?655:892,[step.special==='exit'?'':step.title.toUpperCase()],wide?16:14,'#800020');return v;
 }
 function vgCycleMount(canvas,index){
- const plan=vcPlan(index),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- canvas.innerHTML=`<section class="vc-player"><div class="vc-top"><strong>Клетка в разрезе · группа ${virusBaltimore[index].n}</strong><button type="button" class="vc-zoom" aria-haspopup="dialog">Открыть крупнее ↗</button></div><div class="vc-scale-controls"></div><div class="vc-viewport"><svg class="vc-scene" viewBox="0 0 900 920" role="img" aria-label="Круглая схема размножения вируса"></svg></div><div class="vc-current" aria-live="polite"><small></small><h6></h6><p></p></div><div class="vc-controls"><button type="button" class="vc-play">▶ Смотреть весь цикл</button><button type="button" class="vc-prev">← Назад</button><button type="button" class="vc-next">Далее →</button><button type="button" class="vc-repeat">↻ Повторить этап</button><button type="button" class="vc-reset">Сначала</button><label>Скорость <select aria-label="Скорость вирусного цикла"><option value=".5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><input type="range" min="0" max="1" step=".005" value="0" aria-label="Ход текущего этапа"></div><div class="vc-legend">Фиолетовый — ДНК · бургунди — РНК · золотистый — белки. Пунктирная стрелка от фермента означает участие в реакции. Бледные элементы — следующие этапы.</div><div class="vc-steps" role="group" aria-label="Этапы вирусного цикла"></div></section><p class="vc-source-note">Цветная поэтапная адаптация композиции учебника. Размеры, положение молекул и длительность условны. Для групп II, III, VI и VII маршрут дополнен промежуточными формами генома.</p>`;
+ const portrait=vcPlan(index),landscape=vcWidePlan(portrait,index),layoutMedia=matchMedia('(min-width:800px)'),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ canvas.innerHTML=`<section class="vc-player"><div class="vc-top"><strong>Клетка в разрезе · группа ${virusBaltimore[index].n}</strong><button type="button" class="vc-zoom" aria-haspopup="dialog">Открыть крупнее ↗</button></div><div class="vc-scale-controls"></div><div class="vc-viewport"><svg class="vc-scene" viewBox="0 0 900 920" role="img" aria-label="Поэтапная схема размножения вируса"></svg></div><div class="vc-current" aria-live="polite"><small></small><h6></h6><p></p></div><div class="vc-controls"><button type="button" class="vc-play">▶ Смотреть весь цикл</button><button type="button" class="vc-prev">← Назад</button><button type="button" class="vc-next">Далее →</button><button type="button" class="vc-repeat">↻ Повторить этап</button><button type="button" class="vc-reset">Сначала</button><label>Скорость <select aria-label="Скорость вирусного цикла"><option value=".5">0,5×</option><option value="1" selected>1×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><input type="range" min="0" max="1" step=".005" value="0" aria-label="Ход текущего этапа"></div><div class="vc-legend">Фиолетовый — ДНК · бургунди — РНК · золотистый — белки. Пунктирная стрелка от фермента означает участие в реакции. Бледные элементы — следующие этапы.</div><div class="vc-steps" role="group" aria-label="Этапы вирусного цикла"></div></section><p class="vc-source-note">Цветная поэтапная адаптация учебника. На широком экране клетка показана в горизонтальной компоновке. Размеры, положение молекул и длительность условны. Для групп II, III, VI и VII маршрут дополнен промежуточными формами генома.</p>`;
  const box=canvas.querySelector('.vc-player'),svg=box.querySelector('svg'),play=box.querySelector('.vc-play'),range=box.querySelector('.vc-controls input');
- const inlineScale=vgScaleMount(box.querySelector('.vc-viewport'),svg,box.querySelector('.vc-scale-controls'),900/920);let expandedDialog=null;
+ let plan=layoutMedia.matches?landscape:portrait;
+ const ratio=()=>plan.wide?1200/680:900/920;
+ const inlineScale=vgScaleMount(box.querySelector('.vc-viewport'),svg,box.querySelector('.vc-scale-controls'),ratio);let expandedDialog=null;
  let stage=0,t=reduced?1:0,playing=false,single=false,last=0,raf=0,speed=1,painted=0,stopped=false;
- function draw(){svg.innerHTML=vcScene(plan,stage,t);range.value=t;svg.setAttribute('aria-label',`Группа ${virusBaltimore[index].n}. Этап ${stage+1}: ${plan.steps[stage].title}`);}
+ function draw(){svg.setAttribute('viewBox',plan.wide?'0 0 1200 680':'0 0 900 920');box.classList.toggle('vc-landscape',!!plan.wide);svg.innerHTML=vcScene(plan,stage,t);range.value=t;svg.setAttribute('aria-label',`Группа ${virusBaltimore[index].n}. Этап ${stage+1}: ${plan.steps[stage].title}`);}
  function info(){const current=plan.steps[stage],block=box.querySelector('.vc-current');block.querySelector('small').textContent=`Этап ${stage+1} из ${plan.steps.length}`;block.querySelector('h6').textContent=current.title;block.querySelector('p').textContent=current.text;box.querySelectorAll('[data-vc-step]').forEach((b,i)=>{if(i===stage)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});box.querySelector('.vc-prev').disabled=stage===0;box.querySelector('.vc-next').disabled=stage===plan.steps.length-1;play.textContent=playing?'Ⅱ Пауза':'▶ Смотреть весь цикл';play.setAttribute('aria-pressed',String(playing));}
  function stop(){cancelAnimationFrame(raf);raf=0;playing=false;last=0;info();}
  function tick(now){
@@ -4949,8 +4966,10 @@ function vgCycleMount(canvas,index){
  for(const [i,s] of plan.steps.entries()){const b=document.createElement('button');b.type='button';b.dataset.vcStep=i;b.innerHTML=`<b>${i+1}</b>${s.title}`;b.onclick=()=>jump(i);box.querySelector('.vc-steps').append(b);}
  play.onclick=()=>{if(playing)stop();else{if(stage===plan.steps.length-1&&t>=1){stage=0;t=0;}else if(t>=1)t=0;run();}};
  box.querySelector('.vc-prev').onclick=()=>jump(stage-1);box.querySelector('.vc-next').onclick=()=>jump(stage+1);box.querySelector('.vc-repeat').onclick=()=>jump(stage);box.querySelector('.vc-reset').onclick=()=>{stop();stage=0;t=reduced?1:0;info();draw();};range.oninput=e=>{stop();t=Number(e.target.value);draw();};box.querySelector('select').onchange=e=>speed=Number(e.target.value);
- box.querySelector('.vc-zoom').onclick=()=>{inlineScale.setActive(false);expandedDialog=vgScaleDialog('Подробная схема · группа '+virusBaltimore[index].n,svg,900/920,()=>{expandedDialog=null;inlineScale.setActive(true);},[['▶ Весь цикл',()=>{if(stage===plan.steps.length-1&&t>=1){stage=0;t=0;}run();}],['Ⅱ Пауза',stop],['← Этап',()=>jump(stage-1)],['Этап →',()=>jump(stage+1)]]);};
- info();draw();return ()=>{stopped=true;cancelAnimationFrame(raf);expandedDialog?.close();inlineScale.destroy();};
+ box.querySelector('.vc-zoom').onclick=()=>{inlineScale.setActive(false);expandedDialog=vgScaleDialog('Подробная схема · группа '+virusBaltimore[index].n,svg,ratio,()=>{expandedDialog=null;inlineScale.setActive(true);},[['▶ Весь цикл',()=>{if(stage===plan.steps.length-1&&t>=1){stage=0;t=0;}run();}],['Ⅱ Пауза',stop],['← Этап',()=>jump(stage-1)],['Этап →',()=>jump(stage+1)]]);};
+ function updateLayout(){plan=layoutMedia.matches?landscape:portrait;draw();inlineScale.fit();}
+ layoutMedia.addEventListener?.('change',updateLayout);
+ info();draw();inlineScale.fit();return ()=>{layoutMedia.removeEventListener?.('change',updateLayout);stopped=true;cancelAnimationFrame(raf);expandedDialog?.close();inlineScale.destroy();};
 }
 </script>
 
@@ -5042,6 +5061,7 @@ function ccMount(root){
 .vg-scale-controls input{width:100px;max-width:28vw;accent-color:#800020;margin-left:auto}
 .vg-scale-viewport{overflow:auto;position:relative;overscroll-behavior:contain;background:#fffafc}
 .vc-viewport.vg-scale-viewport{height:min(48vh,420px);min-height:220px}
+.vc-landscape .vc-viewport.vg-scale-viewport{height:min(68vh,620px);min-height:340px}
 .vg-book-viewport.vg-scale-viewport{height:min(46vh,390px);min-height:210px}
 .vg-scale-content{display:grid;place-items:center;box-sizing:border-box}
 .vg-scale-content>.vg-scaled-visual{display:block!important;min-width:0!important;max-width:none!important;max-height:none!important;margin:0!important;width:var(--vg-image-width)!important;height:var(--vg-image-height)!important;object-fit:contain}
@@ -5052,6 +5072,7 @@ function ccMount(root){
 .vg-zoom header button{border:1px solid #decad4;border-radius:9px;padding:7px 10px;background:white;color:#800020;font-size:12px;white-space:nowrap}
 .vg-zoom .vg-scale-controls{padding:7px 9px;border-radius:10px;flex-shrink:0}
 .vg-zoom .vg-scale-viewport{height:min(58vh,680px);min-height:150px;border:1px solid #eadce4;border-radius:12px;flex-shrink:1}
+.vg-zoom:has(.vc-scene[viewBox="0 0 1200 680"]) .vg-scale-viewport{height:min(70vh,700px)}
 .vg-modal-transport{display:flex;gap:7px;flex-wrap:wrap;font-size:12px}
 .vg-modal-transport button{background:#f7edf2;color:#800020;border:1px solid #ddc6d2;border-radius:9px;padding:7px 10px;font-weight:700}
 .vg-book img{max-height:390px}

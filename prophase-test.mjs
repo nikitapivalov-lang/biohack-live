@@ -128,3 +128,21 @@ test('theme: saved preference, nested CSS colors and independent mirrored scene'
  button.click();assert.equal(w.localStorage.getItem('biohack-theme'),'light');assert.equal(w.document.querySelector('#live-frame').contentDocument.documentElement.dataset.theme,'light');
  w.eval(init);assert.equal(w.document.documentElement.dataset.theme,'light','saved choice wins over OS preference');button.click();assert.equal(w.localStorage.getItem('biohack-theme'),'dark');assert.equal(w.document.querySelector('#live-frame').contentDocument.documentElement.dataset.theme,'dark');dom.window.close();
 });
+test('Baltimore: seven landscape layouts preserve all stages and keep nodes apart',()=>{
+ const dom=new JSDOM('',{runScripts:'outside-only'}),w=dom.window;
+ w.eval(html.slice(html.indexOf('const vcN='),html.indexOf('function vgCycleMount('))+';window.plans={vcPlan,vcWidePlan,vcScene};');
+ for(let group=0;group<7;group++){
+  const portrait=w.plans.vcPlan(group),wide=w.plans.vcWidePlan(portrait,group);
+  assert.equal(wide.steps,portrait.steps);assert.equal(wide.edges,portrait.edges);
+  assert.equal(wide.nodes.length,portrait.nodes.length);
+  for(const [i,n]of wide.nodes.entries()){
+   assert(n.x>=100&&n.x<=1100&&n.y>=150&&n.y<=550);
+   for(const other of wide.nodes.slice(i+1))assert(Math.abs(n.x-other.x)>=166||Math.abs(n.y-other.y)>=89,'cards may not overlap');
+  }
+  for(let step=0;step<wide.steps.length;step++)for(const t of [0,.5,1]){
+   const frame=w.plans.vcScene(wide,step,t);assert.doesNotMatch(frame,/NaN|undefined|Infinity/);assert.match(frame,/rx="560" ry="280"/);
+  }
+  assert.match(w.plans.vcScene(portrait,0,0),/circle cx="450" cy="455" r="350"/,'portrait view stays available');
+ }
+ dom.window.close();
+});
