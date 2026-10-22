@@ -119,12 +119,12 @@ test('organelle atlas: eighteen diagrams and Golgi controls, cargo modification 
 });
 test('theme: saved preference, nested CSS colors and independent mirrored scene',()=>{
  const source=html.match(/<script id="biohack-theme-controller">([\s\S]*?)<\/script>/)[1],init=html.match(/<script id="biohack-theme-init">([\s\S]*?)<\/script>/)[1];
- const dom=new JSDOM('<head><meta name="theme-color"><style>.bg-white{background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.card:is(.a,.b){color:#334155}</style><style id="biohack-theme-palette"></style></head><body><header><div class="shell-panel-controls"></div></header><iframe id="live-frame"></iframe></body>',{url:'http://localhost',runScripts:'outside-only'}),w=dom.window;
+ const dom=new JSDOM('<head><meta name="theme-color"><style>.from-burgundy-600{--tw-gradient-from:#800020;--tw-gradient-to:#69001b}.bg-white{background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.card:is(.a,.b){color:#334155}</style><style id="biohack-theme-palette"></style></head><body><header><div class="shell-panel-controls"></div></header><iframe id="live-frame"></iframe></body>',{url:'http://localhost',runScripts:'outside-only'}),w=dom.window;
  w.matchMedia=()=>({matches:true,addEventListener(){}});w.requestAnimationFrame=()=>1;
  for(const node of w.document.querySelectorAll('style'))Object.defineProperty(node.sheet,'ownerNode',{value:node});
  w.eval(init);assert.equal(w.document.documentElement.dataset.theme,'dark');w.eval(source);
  const button=w.document.querySelector('#shell-theme-toggle');assert.equal(button.getAttribute('aria-pressed'),'true');
- const generated=w.document.querySelector('#biohack-theme-palette');assert.match(generated.textContent,/background-color:rgba\(29,25,34,1\)/);assert.match(generated.textContent,/:is\(\.a,\.b\)/);assert.doesNotMatch(generated.textContent,/rgba\([^)]*\)\)/);
+ const generated=w.document.querySelector('#biohack-theme-palette');assert.match(generated.textContent,/--tw-gradient-from:rgba\(142,36,72,1\)/,'gradient stops use the same wine accent as buttons');assert.match(generated.textContent,/background-color:rgba\(29,25,34,1\)/);assert.match(generated.textContent,/:is\(\.a,\.b\)/);assert.doesNotMatch(generated.textContent,/rgba\([^)]*\)\)/);
  button.click();assert.equal(w.localStorage.getItem('biohack-theme'),'light');assert.equal(w.document.querySelector('#live-frame').contentDocument.documentElement.dataset.theme,'light');
  w.eval(init);assert.equal(w.document.documentElement.dataset.theme,'light','saved choice wins over OS preference');button.click();assert.equal(w.localStorage.getItem('biohack-theme'),'dark');assert.equal(w.document.querySelector('#live-frame').contentDocument.documentElement.dataset.theme,'dark');dom.window.close();
 });

@@ -5126,6 +5126,7 @@ html[data-theme="dark"] :where(main,.tab-content,dialog) svg:not([aria-hidden="t
 html[data-theme="dark"] :where(dialog)::backdrop{background:#000b}
 html[data-theme="dark"] :is(.course-icon,#biohack-logo){filter:url(#biohack-wine-accent)}
 html[data-theme="dark"] :where(a){color:#eda0bf}
+html[data-theme="dark"] :is(#quiz-complete-card,#mitosis-exam-complete){background:#8e2448!important}
 html[data-theme="dark"] .bio-shell-header nav #live-launch{background:#8e2448;color:#fff}
 html[data-theme="dark"] .bio-shell-header nav #live-launch:hover{background:#a32d54}
 html[data-theme="dark"] :where(button,[role="button"]):focus-visible{outline-color:#f0a3c1}
@@ -5187,7 +5188,7 @@ html[data-theme="dark"] .shell-theme-toggle{background:#2e2330;color:#f0b3cb;bor
    if(rule.selectorText&&rule.style){
     if(/svg|:root|data-theme|shell-theme-toggle/i.test(rule.selectorText))continue;
     const declarations=[];
-    for(const prop of ['color','background','background-color','border','border-color','border-top','border-bottom','border-left','border-right','border-top-color','border-bottom-color']){
+    for(const prop of ['color','background','background-color','background-image','--tw-gradient-from','--tw-gradient-via','--tw-gradient-to','--tw-gradient-stops','border','border-color','border-top','border-bottom','border-left','border-right','border-top-color','border-bottom-color']){
      const value=rule.style.getPropertyValue(prop);if(!value)continue;
      const next=recolor(value,prop==='color'?'color':prop.startsWith('border')?'border':'background');
      if(next!==value)declarations.push(prop+':'+next+(rule.style.getPropertyPriority(prop)?'!important':'')+';');
