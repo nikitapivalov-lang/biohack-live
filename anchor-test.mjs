@@ -36,7 +36,7 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.HTMLElement.prototype.getBoundingClientRect=function(){return {left:0,top:0,right:1000,bottom:800,width:1000,height:800};};
   const svg=w.document.getElementById('diagram');svg.getScreenCTM=()=>({a:scale,b:0,c:0,d:scale,e:0,f:0});
   let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('function anchorWorldBox'));
-  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
+  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={openText:p=>openText({clientX:120,clientY:120},p),hit:textAtPoint,objects:()=>objects(),mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
   w.eval(source);
   const ink={id:'stroke',key:'lesson:tab-test:main',type:'pen',color:'#800020',size:3,points:[[100,100],[200,100]],anchor:{ref:{key:'id:diagram',kind:'svg'},box:[0,0,600,400]}};
   w.__ink.add(ink);scale=.5;
@@ -54,6 +54,29 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   const before=JSON.stringify(w.__ink.read('stroke'));w.__ink.scale(1.15);assert(w.__ink.read('stroke').size>3);
   w.document.getElementById('draw-undo').click();assert.equal(JSON.stringify(w.__ink.read('stroke')),before);
   w.__ink.begin([150,120]);w.__ink.move([190,160]);w.__ink.finish(true);assert.equal(JSON.stringify(w.__ink.read('stroke')),before);
+
+
+  // Editing keeps the same object, anchor, style and position; undo restores partial erasures.
+  const label={...ink,id:'caption',type:'text',text:'Старая подпись',color:'#2563eb',size:6,points:[[300,250]],erasures:[{r:3,points:[[320,240]]}]};
+  w.__ink.add(label);scale=.5;
+  assert.equal(w.__ink.hit([155,120]).id,'caption','hit testing follows the resized anchor');
+  w.__ink.openText([155,120]);
+  const input=w.document.getElementById('draw-text-value'),editor=w.document.getElementById('draw-text');
+  assert.equal(input.value,'Старая подпись');assert.equal(w.document.getElementById('draw-text-save').textContent,'Сохранить');
+  input.value='Исправленная подпись\nВторая строка';w.document.getElementById('draw-text-save').click();
+  const edited=w.__ink.read('caption');assert.equal(edited.text,'Исправленная подпись\nВторая строка');
+  assert.equal(edited.id,label.id);assert.equal(edited.color,label.color);assert.equal(edited.size,label.size);
+  assert.equal(JSON.stringify(edited.points),JSON.stringify(label.points));assert.equal(JSON.stringify(edited.anchor),JSON.stringify(label.anchor));
+  assert.equal(edited.erasures,undefined);assert.equal(editor.hidden,true);
+  w.document.getElementById('draw-undo').click();assert.equal(JSON.stringify(w.__ink.read('caption')),JSON.stringify(label));
+  w.__ink.openText([155,120]);input.value='Не сохранять';input.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+  assert.equal(editor.hidden,true);assert.equal(w.__ink.read('caption').text,label.text);
+  w.__ink.openText([155,120]);input.value='Моя правка';
+  w.__ink.add({...label,text:'Правка другого участника'});w.document.getElementById('draw-text-save').click();
+  assert.equal(w.__ink.read('caption').text,'Правка другого участника');
+  w.__ink.openText([800,700]);assert.equal(w.document.getElementById('draw-text-save').textContent,'Добавить');
+  input.value='Новая надпись';input.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',ctrlKey:true,bubbles:true}));
+  assert(w.__ink.objects().some(o=>o.text==='Новая надпись'));
 
  }finally{w.close();}
 });
