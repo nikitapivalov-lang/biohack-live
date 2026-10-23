@@ -62,7 +62,7 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   assert.equal(w.__ink.hit([155,120]).id,'caption','hit testing follows the resized anchor');
   w.__ink.openText([155,120]);
   const input=w.document.getElementById('draw-text-value'),editor=w.document.getElementById('draw-text');
-  assert.equal(input.value,'Старая подпись');assert.equal(w.document.getElementById('draw-text-save').textContent,'Сохранить');
+  assert.equal(input.value,'Старая подпись');assert.equal(parseFloat(editor.style.left),150,'editor starts at the label anchor, not the clicked point');assert.equal(input.style.fontSize,'42px');assert.equal(w.document.querySelector('#draw-layer [data-draw-id="caption"]'),null,'do not duplicate an edited SVG label under the text field');assert.equal(w.document.getElementById('draw-text-save').textContent,'Сохранить');
   input.value='Исправленная подпись\nВторая строка';w.document.getElementById('draw-text-save').click();
   const edited=w.__ink.read('caption');assert.equal(edited.text,'Исправленная подпись\nВторая строка');
   assert.equal(edited.id,label.id);assert.equal(edited.color,label.color);assert.equal(edited.size,label.size);
@@ -77,13 +77,17 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.__ink.openText([800,700]);assert.equal(w.document.getElementById('draw-text-save').textContent,'Добавить');
   input.value='Новая надпись';input.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',ctrlKey:true,bubbles:true}));
   assert(w.__ink.objects().some(o=>o.text==='Новая надпись'));
+  // Typing is an uncommitted preview; color/size changes apply live and outside click commits once.
+  w.__ink.openText([850,750]);input.value='  Текст на месте\nВторая строка';input.dispatchEvent(new w.Event('input'));const colors=w.document.getElementById('draw-color'),sizes=w.document.getElementById('draw-size');colors.value='#db2777';colors.dispatchEvent(new w.Event('change'));sizes.value='6';sizes.dispatchEvent(new w.Event('change'));w.__ink.render();assert.equal(input.style.fontSize,'42px');assert.equal(input.style.color,'rgb(219, 39, 119)');assert(!w.__ink.objects().some(o=>o.text==='  Текст на месте\nВторая строка'));w.document.querySelector('main').dispatchEvent(new w.MouseEvent('pointerdown',{bubbles:true}));const inline=w.__ink.objects().find(o=>o.text==='  Текст на месте\nВторая строка');assert(inline);assert.equal(inline.color,'#db2777');assert.equal(inline.size,6);assert.equal(editor.hidden,true);w.document.getElementById('draw-undo').click();assert.equal(w.__ink.read(inline.id),undefined);
+  // Emptying an existing field removes it; undo restores it. Escape remains a cancellation.
+  w.__ink.openText([155,120]);input.value='';w.document.querySelector('main').dispatchEvent(new w.MouseEvent('pointerdown',{bubbles:true}));assert.equal(w.__ink.read('caption'),undefined);w.document.getElementById('draw-undo').click();assert(w.__ink.read('caption'));
   // Native 3D labels keep a serialized surface frame, are sent to the renderer and remain editable/undoable.
   let rendered=[];const surfaceAnchor={ref:{kind:'surface3d',key:'heart-surface'},box:[150,120,1,1],frame:{origin:[0,.4,.1],normal:[0,0,1],u:[1,0,0],v:[0,-1,0],scale:.003}};
   w.BioHackHeart={anchor:()=>surfaceAnchor,annotations:list=>{rendered=list;},hitAnnotation:()=> 'surface-label',planePoint:()=>[170,140]};
   assert.equal(w.__ink.validAnchor(surfaceAnchor),true);assert.equal(w.__ink.validAnchor({...surfaceAnchor,frame:{...surfaceAnchor.frame,scale:Infinity}}),false);
   const surfaceLabel={...label,id:'surface-label',text:'Аорта',points:[[150,120]],anchor:surfaceAnchor,erasures:undefined};w.__ink.add(surfaceLabel);w.__ink.render();
   assert.equal(w.__ink.shape(surfaceLabel),null,'surface label must not be duplicated as a flat SVG');assert(rendered.some(o=>o.id==='surface-label'));
-  w.__ink.openText([800,700]);assert.equal(input.value,'Аорта','text tool finds label by 3D hit test');input.value='Аорта — сосуд';w.document.getElementById('draw-text-save').click();
+  w.__ink.openText([800,700]);assert.equal(input.value,'Аорта','text tool finds label by 3D hit test');input.value='Аорта — сосуд';input.dispatchEvent(new w.Event('input'));w.__ink.render();assert.equal(rendered.find(o=>o.id==='surface-label').text,'Аорта — сосуд','3D text renders the draft before saving');assert.equal(w.__ink.read('surface-label').text,'Аорта','3D draft stays local until committed');w.document.getElementById('draw-text-save').click();
   assert.equal(w.__ink.read('surface-label').anchor,surfaceAnchor);assert.equal(w.__ink.read('surface-label').text,'Аорта — сосуд');
   w.__ink.eraseAt(155,120);w.__ink.eraseFinish();assert.equal(w.__ink.read('surface-label'),undefined,'3D eraser removes the anchored label');w.document.getElementById('draw-undo').click();assert.equal(w.__ink.read('surface-label').text,'Аорта — сосуд');
 
