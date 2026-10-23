@@ -99,3 +99,27 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
 
  }finally{w.close();}
 });
+
+test('board model: catalog, native 3D annotations, restore, removal undo and isolated shared store',async()=>{
+ const dom=new JSDOM('<header><nav></nav></header><main><section id="tab-test" class="tab-content"></section></main><div id="live-mirror"></div>',{runScripts:'outside-only',url:'https://biohack.test'}),w=dom.window,handles=[];
+ try{
+  w.matchMedia=()=>({matches:false});w.scrollTo=()=>{};w.requestAnimationFrame=fn=>w.setTimeout(fn,0);w.SVGElement.prototype.getScreenCTM=()=>null;w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};
+  w.HTMLElement.prototype.getBoundingClientRect=()=>({left:0,top:0,right:1000,bottom:800,width:1000,height:800});
+  const frame={origin:[0,0,0],normal:[0,0,1],u:[1,0,0],v:[0,-1,0],scale:.002,callout:true,depth:.18},anchor={ref:{kind:'surface3d',key:'heart-surface'},box:[0,0,1,1],frame};
+  w.__loadBoardModel=async()=>({createHeartViewer:(container,callbacks)=>{const canvas=w.document.createElement('canvas');container.append(canvas);const h={dispose(){this.disposed=true;canvas.remove();},annotations(list){this.list=list;},anchor:()=>structuredClone(anchor),planePoint:()=>[100,100],hitAnnotation:()=>null,snapshot:()=>null,reset(){this.resetCalled=true;}};handles.push(h);w.queueMicrotask(callbacks.onReady);return h;}});
+  let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('function anchorWorldBox'));
+  source=source.replace("import('/assets/heart-viewer.js')","window.__loadBoardModel()");const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__board={read:id=>store().get(id),add:o=>set(o.id,o),anchor:drawingAnchor,mapping:anchorMapping,render,valid:validBoardModel};`+source.slice(end);w.eval(source);
+  const click=id=>w.document.getElementById(id).click(),tick=()=>new Promise(resolve=>w.setTimeout(resolve,10));
+  click('draw-open');click('draw-add-model');assert(w.document.getElementById('draw-model-catalog').open);w.document.querySelector('#draw-model-list button').click();await tick();
+  const placement=w.__board.read('@board-model');assert.equal(placement.model,'heart');assert.equal(handles.length,1);assert.equal(w.document.querySelector('#draw-board [data-tool="pointer"]').getAttribute('aria-pressed'),'true');assert.equal(w.__board.anchor(120,120).ref.kind,'surface3d');
+  const note={id:'board-callout',key:'board',type:'callout',color:'#db2777',size:3,text:'Аорта',points:[[0,0],[100,100]],anchor};w.__board.add(note);assert.equal(handles[0].list.length,1);assert.equal(w.__board.mapping(note),null);assert.equal(w.document.querySelector('#draw-board-svg [data-draw-id="board-callout"]'),null);
+  w.__board.add({...note,id:'lesson-note',key:'lesson:tab-test:main'});assert.equal(handles[0].list.length,1);
+  click('draw-model-smaller');assert(w.__board.read('@board-model').w<placement.w);click('draw-model-remove');assert(handles[0].disposed);assert.equal(w.__board.read('board-callout').text,'Аорта');click('draw-undo');await tick();assert.equal(handles.length,2);assert.equal(handles[1].list[0].text,'Аорта');
+  click('draw-board-close');assert(handles[1].disposed);click('draw-open');await tick();assert.equal(handles.length,3);assert.equal(handles[2].list[0].text,'Аорта');
+  await new Promise(resolve=>w.setTimeout(resolve,450));const saved=JSON.parse(w.localStorage.getItem('biohack-drawings-1'));assert(saved.some(([id,o])=>id==='@board-model'&&o.model==='heart'));
+  // A room has its own board model and ink, never the browser's personal model.
+  const shared=new Map();shared.observe=()=>{};shared.unobserve=()=>{};w.BioHackLive={state:()=>({role:'guest',room:'classroom',follow:false}),doc:()=>({getMap:()=>shared}),awareness:()=>({on(){},getStates:()=>new Map()})};w.dispatchEvent(new w.Event('biohack-live-change'));assert(handles[2].disposed);assert.equal(w.document.getElementById('draw-model-card').hidden,true);
+  shared.set('@board-model',{...placement,id:'room-heart'});shared.set(note.id,note);w.__board.render();await tick();assert.equal(handles.length,4);assert.equal(handles[3].list[0].text,'Аорта');assert.equal(w.__board.read('@board-model').id,'room-heart');
+  assert.equal(w.__board.valid({...placement,model:'untrusted-url'}),false);assert.equal(w.__board.valid({...placement,w:Infinity}),false);
+ }finally{w.close();}
+});

@@ -34,3 +34,9 @@ The source is `heart-viewer-src.js`; the prebuilt bundle is committed, so deploy
 npm install --no-save --package-lock=false three@0.180.0
 npx esbuild heart-viewer-src.js --bundle --minify --format=esm --target=es2020 --legal-comments=eof --outfile=heart-viewer.js
 ```
+
+## 3D models in Пространство
+
+The drawing board has an “Добавить 3D-модель” catalog. The first entry reuses the native heart viewer. `boardModelCatalog` registers the model name, description and lazy viewer factory; the board stores its placement under `@board-model` in the existing personal or shared drawing map. The current catalog places one heart on the board.
+
+Choose Курсор to rotate the model or move its card by the header. Card ± changes its dimensions; board zoom moves and scales the model with the canvas. 3D-выноска, text and surface strokes use the same world-space annotation format as the anatomy lesson, isolated by the `board` drawing key. Removing the card preserves its annotations and supports undo. Export SVG includes a snapshot of the current model view with its 3D annotations. Cameras are local to each participant; model placement and annotations belong to the shared board.
