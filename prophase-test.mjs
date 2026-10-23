@@ -186,3 +186,10 @@ test('heart lesson: own viewer, lifecycle, controls, attribution and cleanup',as
   let release;w.__loadHeartViewer=()=>new Promise(resolve=>release=resolve);w.eval("switchTab('heart')");w.document.getElementById('ht-load').click();w.eval("switchTab('cell')");release({createHeartViewer:()=>{throw Error('stale load mounted');}});await new Promise(resolve=>w.setTimeout(resolve,0));assert.equal(root.querySelector('canvas'),null);
  }finally{w.close();}
 });
+
+
+test('3D callout geometry retains fixed surface and spatial endpoints after serialization',async()=>{
+ const {calloutPoints}=await import('./heart-viewer.js');
+ const o={points:[[100,50],[150,25]],anchor:{box:[100,50,1,1],frame:{origin:[1,2,3],normal:[0,0,1],u:[1,0,0],v:[0,-1,0],scale:.01,callout:true,depth:.18}}};
+ const result=calloutPoints(o);assert.deepEqual(result.start,[1,2,3]);assert.deepEqual(result.elbow,[1,2,3.18]);assert.deepEqual(result.end,[1.5,2.25,3.18]);assert.deepEqual(calloutPoints(JSON.parse(JSON.stringify(o))),result);
+});
