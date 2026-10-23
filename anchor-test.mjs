@@ -36,7 +36,7 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.HTMLElement.prototype.getBoundingClientRect=function(){return {left:0,top:0,right:1000,bottom:800,width:1000,height:800};};
   const svg=w.document.getElementById('diagram');svg.getScreenCTM=()=>({a:scale,b:0,c:0,d:scale,e:0,f:0});
   let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('function anchorWorldBox'));
-  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={anchor:drawingAnchor,validAnchor,render,down,movePointer:move,finishPointer:finish,eraseFinish:finishErase,openText:p=>openText({clientX:120,clientY:120},p),hit:textAtPoint,objects:()=>objects(),mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
+  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={anchor:drawingAnchor,validAnchor,render,down,movePointer:move,finishPointer:finish,endPointer,eraseFinish:finishErase,openText:p=>openText({clientX:120,clientY:120},p),hit:textAtPoint,objects:()=>objects(),mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
   w.eval(source);
   const ink={id:'stroke',key:'lesson:tab-test:main',type:'pen',color:'#800020',size:3,points:[[100,100],[200,100]],anchor:{ref:{key:'id:diagram',kind:'svg'},box:[0,0,600,400]}};
   w.__ink.add(ink);scale=.5;
@@ -86,6 +86,15 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.__ink.openText([800,700]);assert.equal(input.value,'Аорта','text tool finds label by 3D hit test');input.value='Аорта — сосуд';w.document.getElementById('draw-text-save').click();
   assert.equal(w.__ink.read('surface-label').anchor,surfaceAnchor);assert.equal(w.__ink.read('surface-label').text,'Аорта — сосуд');
   w.__ink.eraseAt(155,120);w.__ink.eraseFinish();assert.equal(w.__ink.read('surface-label'),undefined,'3D eraser removes the anchored label');w.document.getElementById('draw-undo').click();assert.equal(w.__ink.read('surface-label').text,'Аорта — сосуд');
+
+  // A callout starts at the surface but stores a separate spatial endpoint and a text label.
+  w.BioHackHeart.hitAnnotation=()=>null;w.BioHackHeart.anchor=()=>({...surfaceAnchor,frame:{...surfaceAnchor.frame,callout:true,depth:.18}});
+  w.document.getElementById('draw-launch').click();w.document.querySelector('[data-tool="callout"]').click();
+  const pointer={button:0,buttons:1,pointerType:'mouse',pointerId:20,clientX:20,clientY:650,cancelable:true,preventDefault(){},currentTarget:w.document.getElementById('draw-layer')};
+  w.__ink.down(pointer);w.__ink.movePointer({...pointer,clientX:40,clientY:670});w.__ink.endPointer({...pointer,buttons:0});
+  assert.equal(w.document.getElementById('draw-text-title').textContent,'Подпись к структуре');input.value='Левый желудочек';w.document.getElementById('draw-text-save').click();
+  const callout=w.__ink.objects().find(o=>o.type==='callout');assert(callout);assert.equal(callout.points.length,2);assert.equal(callout.anchor.frame.callout,true);assert.equal(callout.text,'Левый желудочек');
+  const location=JSON.stringify({points:callout.points,anchor:callout.anchor});w.BioHackHeart.hitAnnotation=()=>callout.id;w.__ink.openText([800,700]);input.value='Стенка желудочка';w.document.getElementById('draw-text-save').click();assert.equal(JSON.stringify({points:w.__ink.read(callout.id).points,anchor:w.__ink.read(callout.id).anchor}),location,'editing text does not move either 3D endpoint');
 
 
  }finally{w.close();}
