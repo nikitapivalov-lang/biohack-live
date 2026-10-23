@@ -36,7 +36,7 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.HTMLElement.prototype.getBoundingClientRect=function(){return {left:0,top:0,right:1000,bottom:800,width:1000,height:800};};
   const svg=w.document.getElementById('diagram');svg.getScreenCTM=()=>({a:scale,b:0,c:0,d:scale,e:0,f:0});
   let source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).find(s=>s.includes('function anchorWorldBox'));
-  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={openText:p=>openText({clientX:120,clientY:120},p),hit:textAtPoint,objects:()=>objects(),mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
+  const end=source.lastIndexOf('})();');source=source.slice(0,end)+`window.__ink={anchor:drawingAnchor,validAnchor,render,down,movePointer:move,finishPointer:finish,eraseFinish:finishErase,openText:p=>openText({clientX:120,clientY:120},p),hit:textAtPoint,objects:()=>objects(),mapping:anchorMapping,map:mappedPoint,shape:placedShape,add:o=>local.set(o.id,o),eraseAt:(x,y)=>{eraseSession={radius:10,points:[],changes:new Map()};erase({clientX:x,clientY:y,pointerType:'mouse'});},read:id=>local.get(id),pick:pickLasso,selected:()=>[...selected],begin:beginSelection,move:moveSelection,finish:finishSelection,scale:scaleSelection};`+source.slice(end);
   w.eval(source);
   const ink={id:'stroke',key:'lesson:tab-test:main',type:'pen',color:'#800020',size:3,points:[[100,100],[200,100]],anchor:{ref:{key:'id:diagram',kind:'svg'},box:[0,0,600,400]}};
   w.__ink.add(ink);scale=.5;
@@ -77,6 +77,16 @@ test('anchored ink and partial eraser use the same local coordinates after resiz
   w.__ink.openText([800,700]);assert.equal(w.document.getElementById('draw-text-save').textContent,'Добавить');
   input.value='Новая надпись';input.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',ctrlKey:true,bubbles:true}));
   assert(w.__ink.objects().some(o=>o.text==='Новая надпись'));
+  // Native 3D labels keep a serialized surface frame, are sent to the renderer and remain editable/undoable.
+  let rendered=[];const surfaceAnchor={ref:{kind:'surface3d',key:'heart-surface'},box:[150,120,1,1],frame:{origin:[0,.4,.1],normal:[0,0,1],u:[1,0,0],v:[0,-1,0],scale:.003}};
+  w.BioHackHeart={anchor:()=>surfaceAnchor,annotations:list=>{rendered=list;},hitAnnotation:()=> 'surface-label',planePoint:()=>[170,140]};
+  assert.equal(w.__ink.validAnchor(surfaceAnchor),true);assert.equal(w.__ink.validAnchor({...surfaceAnchor,frame:{...surfaceAnchor.frame,scale:Infinity}}),false);
+  const surfaceLabel={...label,id:'surface-label',text:'Аорта',points:[[150,120]],anchor:surfaceAnchor,erasures:undefined};w.__ink.add(surfaceLabel);w.__ink.render();
+  assert.equal(w.__ink.shape(surfaceLabel),null,'surface label must not be duplicated as a flat SVG');assert(rendered.some(o=>o.id==='surface-label'));
+  w.__ink.openText([800,700]);assert.equal(input.value,'Аорта','text tool finds label by 3D hit test');input.value='Аорта — сосуд';w.document.getElementById('draw-text-save').click();
+  assert.equal(w.__ink.read('surface-label').anchor,surfaceAnchor);assert.equal(w.__ink.read('surface-label').text,'Аорта — сосуд');
+  w.__ink.eraseAt(155,120);w.__ink.eraseFinish();assert.equal(w.__ink.read('surface-label'),undefined,'3D eraser removes the anchored label');w.document.getElementById('draw-undo').click();assert.equal(w.__ink.read('surface-label').text,'Аорта — сосуд');
+
 
  }finally{w.close();}
 });
