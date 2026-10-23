@@ -6,7 +6,8 @@ import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 
 export function calloutPoints(o){const f=o.anchor.frame,p=o.points.at(-1),x=(p[0]-o.anchor.box[0])*f.scale,y=(p[1]-o.anchor.box[1])*f.scale,depth=f.depth||.18;const start=[...f.origin],elbow=start.map((v,i)=>v+f.normal[i]*depth),end=elbow.map((v,i)=>v+f.u[i]*x+f.v[i]*y);return {start,elbow,end};}
 
-export function createHeartViewer(container,{onProgress=()=>{},onReady=()=>{},onError=()=>{},onRender=()=>{}}={}){
+export function createHeartViewer(container,{onProgress=()=>{},onReady=()=>{},onError=()=>{},onRender=()=>{},spacePadding=0}={}){
+ const padding=Number.isFinite(spacePadding)?Math.max(0,Math.min(.5,spacePadding)):0;
  let disposed=false,model=null,env=null,environment=null,pmrem=null,renderer=null,controls=null,observer=null;
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(35,1,.01,100);
  const materials=new Set(),textures=new Set(),geometries=new Set();
@@ -16,7 +17,7 @@ export function createHeartViewer(container,{onProgress=()=>{},onReady=()=>{},on
  function anchor(x,y,p,unitPixels,callout=false){const r=ray(x,y);if(!r)return null;scene.updateMatrixWorld(true);const hit=r.intersectObject(model,true)[0];if(!hit?.face)return null;
   const n=hit.face.normal.clone().applyNormalMatrix(new THREE.Matrix3().getNormalMatrix(hit.object.matrixWorld)).normalize();if(n.dot(camera.position.clone().sub(hit.point))<0)n.negate();
   if(callout)n.copy(camera.position).sub(hit.point).normalize();const u=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0).projectOnPlane(n).normalize();if(u.length()<.1)return null;const v=new THREE.Vector3().crossVectors(u,n).normalize();
-  const depth=-hit.point.clone().applyMatrix4(camera.matrixWorldInverse).z,scale=2*depth*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/container.getBoundingClientRect().height*unitPixels;
+  const depth=-hit.point.clone().applyMatrix4(camera.matrixWorldInverse).z,scale=2*depth*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/(container.getBoundingClientRect().height/(1+padding*2))*unitPixels;
   return {ref:{key:'heart-surface',kind:'surface3d'},box:[p[0],p[1],1,1],frame:{origin:hit.point.toArray(),normal:n.toArray(),u:u.toArray(),v:v.toArray(),scale,...(callout?{callout:true,depth:.18}:{})}};
  }
  function planePoint(x,y,a){const r=ray(x,y);if(!r)return null;const f=a.frame,n=new THREE.Vector3().fromArray(f.normal),origin=new THREE.Vector3().fromArray(f.origin).addScaledVector(n,f.callout?(f.depth||.18):0),point=r.ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(n,origin),new THREE.Vector3());if(!point)return null;point.sub(origin);return [a.box[0]+point.dot(new THREE.Vector3().fromArray(f.u))/f.scale,a.box[1]+point.dot(new THREE.Vector3().fromArray(f.v))/f.scale];}
@@ -43,7 +44,7 @@ export function createHeartViewer(container,{onProgress=()=>{},onReady=()=>{},on
  function draw(){if(!disposed&&renderer){
   scene.updateMatrixWorld(true);camera.updateMatrixWorld();for(const entry of ink.values()){if(entry.callout){entry.mesh.visible=true;continue;}const origin=new THREE.Vector3().fromArray(entry.frame.origin),n=new THREE.Vector3().fromArray(entry.frame.normal),direction=origin.clone().sub(camera.position),distance=direction.length();raycaster.set(camera.position,direction.normalize());const hit=model&&raycaster.intersectObject(model,true)[0];entry.mesh.visible=n.dot(camera.position.clone().sub(origin))>0&&(!hit||hit.distance>=distance-.02);}
   renderer.render(scene,camera);onRender();}}
- function resize(){if(disposed||!renderer)return;const {width,height}=container.getBoundingClientRect();if(!width||!height)return;camera.aspect=width/height;camera.updateProjectionMatrix();renderer.setSize(width,height,false);draw();}
+ function resize(){if(disposed||!renderer)return;const {width,height}=container.getBoundingClientRect();if(!width||!height)return;const baseWidth=width/(1+padding*2),baseHeight=height/(1+padding*2);camera.aspect=baseWidth/baseHeight;if(padding)camera.setViewOffset(baseWidth,baseHeight,-baseWidth*padding,-baseHeight*padding,width,height);else camera.clearViewOffset();camera.updateProjectionMatrix();renderer.setSize(width,height,false);draw();}
  function distance(){return 1.15/Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/Math.min(1,camera.aspect);}
  function reset(back=false){if(!model||disposed)return;controls.target.set(0,0,0);camera.position.set(0,.04,Math.min(15,distance())*(back?-1:1));camera.up.set(0,1,0);controls.update();draw();}
  function zoom(factor){if(!model||disposed)return;const direction=camera.position.clone().sub(controls.target),length=THREE.MathUtils.clamp(direction.length()/factor,controls.minDistance,controls.maxDistance);camera.position.copy(controls.target).add(direction.setLength(length));controls.update();draw();}
