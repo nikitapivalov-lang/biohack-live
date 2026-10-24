@@ -201,3 +201,12 @@ test('text wrapping agrees between flat and 3D annotations; tablet pinch keeps t
  const a=new Function(extract(app)+';return annotationLines;')(),b=new Function(extract(viewer)+';return annotationLines;')();
  const note={text:'Стенка сердца состоит из нескольких слоёв\nМиокард',size:3,textWidth:140};assert.deepEqual(a(note),b(note));assert(a(note).length>2);assert.match(viewer,/controls.touches.ONE=THREE.TOUCH.ROTATE/);assert.match(viewer,/controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE/);
 });
+
+test('3D pointer gate rejects transparent canvas and cancels an admitted drag before board navigation',()=>{
+ const viewer=readFileSync(new URL('heart-viewer-src.js',import.meta.url),'utf8'),start=viewer.indexOf(' const orbitPointers='),end=viewer.indexOf(' function anchor(',start),events=[];
+ const gate=new Function('hitModel','renderer','PointerEvent','hitTestControls',viewer.slice(start,end)+';return {gateOrbit,forgetOrbit,cancelInteraction,gateWheel,orbitPointers};')((x,y)=>x<100,{domElement:{dispatchEvent:e=>events.push(e)}},class{constructor(type,opts){Object.assign(this,{type},opts);}},true);
+ const event=(id,x)=>({pointerId:id,pointerType:'touch',clientX:x,clientY:50,preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;}});
+ const empty=event(1,300);gate.gateOrbit(empty);assert(empty.stopped);assert.equal(gate.orbitPointers.size,0);
+ const heart=event(2,50);gate.gateOrbit(heart);assert.equal(heart.stopped,undefined);assert.equal(gate.orbitPointers.size,1);gate.cancelInteraction();assert.equal(gate.orbitPointers.size,0);assert.equal(events[0].type,'pointercancel');assert.equal(events[0].pointerId,2);
+ const wheel=event(3,300);gate.gateWheel(wheel);assert(wheel.stopped);const heartWheel=event(4,50);gate.gateWheel(heartWheel);assert.equal(heartWheel.stopped,undefined);
+});
