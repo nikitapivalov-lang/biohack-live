@@ -193,3 +193,11 @@ test('3D callout geometry retains fixed surface and spatial endpoints after seri
  const o={points:[[100,50],[150,25]],anchor:{box:[100,50,1,1],frame:{origin:[1,2,3],normal:[0,0,1],u:[1,0,0],v:[0,-1,0],scale:.01,callout:true,depth:.18}}};
  const result=calloutPoints(o);assert.deepEqual(result.start,[1,2,3]);assert.deepEqual(result.elbow,[1,2,3.18]);assert.deepEqual(result.end,[1.5,2.25,3.18]);assert.deepEqual(calloutPoints(JSON.parse(JSON.stringify(o))),result);
 });
+
+test('text wrapping agrees between flat and 3D annotations; tablet pinch keeps the rotation center',()=>{
+ const viewer=readFileSync(new URL('heart-viewer-src.js',import.meta.url),'utf8');
+ const app=readFileSync(new URL('index.html',import.meta.url),'utf8');
+ const extract=s=>s.slice(s.indexOf('function annotationLines(o){'),s.indexOf('return lines;',s.indexOf('function annotationLines(o){'))+14)+'}';
+ const a=new Function(extract(app)+';return annotationLines;')(),b=new Function(extract(viewer)+';return annotationLines;')();
+ const note={text:'Стенка сердца состоит из нескольких слоёв\nМиокард',size:3,textWidth:140};assert.deepEqual(a(note),b(note));assert(a(note).length>2);assert.match(viewer,/controls.touches.ONE=THREE.TOUCH.ROTATE/);assert.match(viewer,/controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE/);
+});
