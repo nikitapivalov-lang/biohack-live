@@ -60,3 +60,10 @@ The lymph card deliberately uses a **normal lymph-node preparation**, not a supp
 - **lymphnode**: [Нормальный лимфатический узел](https://commons.wikimedia.org/wiki/File:Normal_Lymph_Node.jpg), Ed Uthman, MD, CC BY-SA 2.0. Гематоксилин и эозин · препарат органа, через который проходит лимфа.
 
 Brown-adipose source page marks the image Public Domain; attribution records the Commons uploader, Lucasmcorso. Other photo derivatives retain their CC0 or CC BY-SA licenses as displayed on each source page. CC BY-SA 2.0: https://creativecommons.org/licenses/by-sa/2.0/ .
+
+
+## Revised overview drawings
+
+The connective overview now depicts nine fibroblasts, two macrophages, bundled collagen fibrils and thinner branching elastic fibers within ground substance. The detailed loose-connective scheme also contains more individual cells. The nervous overview shows a branching multipolar neuron, a segmented myelinated axon, terminals, two astrocytes and a capillary. Astrocytic branches contact portions of the soma/dendrites and vessel; they are not depicted as a continuous myelin sheath. Labels and explanatory cards distinguish astrocytes from oligodendrocytes and Schwann cells. All drawings are original SVGs with reversible dark-theme colors.
+
+Anatomical cross-check: [Neuroglial Cells, Neuroscience (Purves et al.)](https://www.ncbi.nlm.nih.gov/books/NBK10869/), [The Astrocyte: Powerhouse and Recycling Center](https://cshperspectives.cshlp.org/content/7/12/a020396.full).
