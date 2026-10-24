@@ -46,3 +46,7 @@ The board viewer has 25% extra transparent 3D space on every side. A camera view
 ## Inline text annotations
 
 The text tool opens an inline textarea at the annotation's baseline using its SVG or 3D projection. Existing SVG text is temporarily replaced by the editor; 3D text renders a local live preview in the native viewer. Multiline text, color and font size update while typing. Clicking outside or switching tools commits once with undo; Escape cancels. Emptying an existing field deletes it with undo. Editing preserves anchors and both endpoints of 3D callouts, and checks for concurrent edits before committing.
+
+## Ontogenesis: tissues and contraction
+
+Ontogenesis includes four additional screens: `tissues`, `atlas`, `skeletal`, `smooth`. The tissue overview links back to germ layers, compares four families and has five original EGE practice questions. Closed-by-default «Углублённо» details separate additional mechanisms from the core material. The atlas contains six embedded histology photographs, author/license credits, reading cues and an enlarged zoomable view. Skeletal and smooth contraction have separate interactive five-stage animations. See `HISTOLOGY-SOURCES.md` for references and image provenance; `histology-test.mjs` checks morphology, sources, controls and constant skeletal filament lengths.
