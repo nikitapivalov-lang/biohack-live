@@ -4125,12 +4125,13 @@ html[data-theme="dark"] .ts-photo-dialog{--ts-bg:#211c28;--ts-ink:#f0e5ed;--ts-a
  ];
  const connectiveGroups=[['fibrous','Волокнистые','3 вида'],['special','Жировая и ретикулярная','3 варианта'],['cartilage','Хрящ','3 вида'],['bone','Кость','2 варианта'],['fluid','Кровь и лимфа','2 ткани']];
  function connectiveDrawing(id){
+  if(id==='loose')return connectiveOverview().replaceAll('ts-connective-field','ct-clip-loose');
   const cell=(x,y,rx=23,ry=14)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#efd1dc" stroke="#8e2448" stroke-width="2"/><ellipse cx="${x}" cy="${y}" rx="${rx*.4}" ry="${ry*.55}" fill="#76528e"/>`,label=(x,y,tx,ty,text)=>`<g data-ct-label="true"><path d="M${x} ${y}L500 ${ty-6}H518" fill="none" stroke="#665672" stroke-width="1.5"/><circle cx="${x}" cy="${y}" r="3" fill="#665672"/>`+txt(528,ty,text,17)+'</g>',collagen=(y)=>`<path d="M45 ${y}Q120 ${y-25} 195 ${y}T345 ${y}T465 ${y}" fill="none" stroke="#c97f9c" stroke-width="10" stroke-linecap="round"/>`;
   let s='<rect x="24" y="25" width="465" height="320" rx="24" fill="#f8f2f5" stroke="#d8bdc9"/>';
   if(['loose','regular','irregular'].includes(id)){
    const n=id==='loose'?4:10;for(let i=0;i<n;i++)s+=`<g transform="${id==='irregular'?`rotate(${(i%3-1)*48} 250 185)`:''}">${collagen(65+i*(id==='loose'?65:26))}</g>`;
    if(id==='loose')for(let i=0;i<4;i++)s+=`<path d="M${60+i*105} 50q70 85 0 160t20 105" fill="none" stroke="#397c96" stroke-width="3"/>`;
-   for(const [x,y]of (id==='loose'?[[110,105],[210,170],[380,235],[160,295],[385,85],[95,225],[300,300],[295,125]]:[[110,105],[210,170],[380,235],[160,295]]))s+=cell(x,y,id==='regular'?25:19,id==='regular'?5:11);
+   for(const [x,y]of [[95,91],[190,120],[280,150],[390,180],[130,211],[230,240],[340,270],[410,300]]){s+=`<g data-fibroblast="true" transform="translate(${x} ${y}) rotate(${id==='regular'?-5:(x%3-1)*20})"><path d="M-35 0Q-13-13 2-8Q17-9 36 0Q17 8 0 8Q-18 11-35 0Z" fill="#c4afd7" stroke="#76528e" stroke-width="1.3"/><ellipse rx="12" ry="4" fill="#76528e"/></g>`;}
    s+=label(110,105,0,65,'Клетка и ядро')+label(315,75,0,150,'Пучки коллагена')+label(300,300,0,245,id==='loose'?'Основное вещество':'Межклеточный матрикс');
   }else if(['adipose','brown'].includes(id)){
    for(let row=0;row<3;row++)for(let col=0;col<4;col++){const x=85+col*106+(row%2)*13,y=90+row*100;s+=`<rect x="${x-43}" y="${y-43}" width="86" height="86" rx="32" fill="#f4e6bf" stroke="#c99b43" stroke-width="3"/>`;if(id==='adipose')s+=`<ellipse cx="${x+29}" cy="${y+23}" rx="5" ry="12" fill="#76528e"/>`;else{for(let j=0;j<7;j++)s+=`<circle cx="${x+Math.cos(j*2.4)*25}" cy="${y+Math.sin(j*2.4)*25}" r="9" fill="#f8f2f5" stroke="#c99b43"/>`;s+=cell(x,y,10,9);}}
