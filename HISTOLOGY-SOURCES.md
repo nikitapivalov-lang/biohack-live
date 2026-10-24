@@ -7,7 +7,7 @@
 - [Studarium: epithelium](https://studarium.ru/article/77), [connective tissues](https://studarium.ru/article/78), [muscle](https://studarium.ru/article/79), [nervous tissue](https://studarium.ru/article/80).
 - [Reactome: Smooth Muscle Contraction](https://www.reactome.org/content/detail/R-HSA-445355) and [Physiology, Smooth Muscle](https://www.ncbi.nlm.nih.gov/books/NBK526125/) for the optional calcium–calmodulin–MLCK pathway.
 
-The primary lesson stays at EGE level. Molecular regulation, germ-layer exceptions and myelin details are in closed-by-default «Углублённо» sections. The standalone anatomy lesson «Ткани человека» now contains main, epithelium, atlas, skeletal and smooth. Ontogenesis links to it; legacy ontogenesis tissue routes redirect to their canonical standalone routes. The epithelial screen uses original vector illustrations for six single-layer variants, three common stratified epithelia, two rarer stratified types in optional depth, and a separate glandular-function illustration. Classification, locations and functions were checked against Kuznetsov/Mushkambarov, sections 7.2–7.4 (especially pp.123–127). Ciliation and brush borders are specializations rather than new layer classes.
+The primary lesson stays at EGE level. Molecular regulation, germ-layer exceptions and myelin details are in closed-by-default «Углублённо» sections. The standalone anatomy lesson «Ткани человека» now contains main, epithelium-simple, epithelium-stratified, epithelium-glandular, atlas, skeletal and smooth. Ontogenesis links to it; legacy ontogenesis tissue routes redirect to their canonical standalone routes. The separate epithelial screens use original vector illustrations for six single-layer variants, three common stratified epithelia, two rarer stratified types in optional depth, and a separate glandular-function illustration. Classification, locations and functions were checked against Kuznetsov/Mushkambarov, sections 7.2–7.4 (especially pp.123–127). Ciliation and brush borders are specializations rather than new layer classes.
 
 ## Photographs
 
@@ -27,3 +27,12 @@ License links: [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/), [C
 - Skeletal: both actin lengths stay at 200 model units; the thick filament and A band stay at 220 units. Z-lines approach while overlap increases, then return for the schematic relaxation.
 - Smooth: one spindle-shaped cell shortens and thickens; its network is not organized into regular sarcomeres. Filament placement, geometry and speed are schematic.
 - Each animation has its own five stages, play/pause, slider and reset. Playback pauses when the screen or document is hidden. The existing shared-lesson DOM capture carries the rendered frames.
+
+## Stratified epithelium specimens
+
+Two additional photographs are embedded both in the atlas and directly beside their corresponding stratified subtype. Each opens the shared zoom dialog inside the currently visible lesson screen. Images retain their complete composition, staining and original labels; only resizing/re-encoding was applied.
+
+- **keratin**: [Histology of thick skin](https://commons.wikimedia.org/wiki/File:Histology_of_thick_skin.jpg), Bhavya akula, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), 720 × 738. The H&E preparation shows a broad superficial keratin layer, underlying living epidermis and connective dermis. Magnification was not specified by the author.
+- **nonkeratin**: [Thuc quan](https://commons.wikimedia.org/wiki/File:Thuc_quan.jpg), Nva1991, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), resized to 1400 × 1050 from 2048 × 1536. Normal esophagus; the original image label identifies non-keratinized stratified squamous epithelium and 400×. Superficial flattened cells retain their nuclei; no thick cornified layer is present.
+
+The adapted versions retain the respective share-alike licenses; author, source, license and preparation note appear with each image. The old `epithelium` bookmark redirects to the single-layer screen.
