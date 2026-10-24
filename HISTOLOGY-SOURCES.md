@@ -7,7 +7,7 @@
 - [Studarium: epithelium](https://studarium.ru/article/77), [connective tissues](https://studarium.ru/article/78), [muscle](https://studarium.ru/article/79), [nervous tissue](https://studarium.ru/article/80).
 - [Reactome: Smooth Muscle Contraction](https://www.reactome.org/content/detail/R-HSA-445355) and [Physiology, Smooth Muscle](https://www.ncbi.nlm.nih.gov/books/NBK526125/) for the optional calcium–calmodulin–MLCK pathway.
 
-The primary lesson stays at EGE level. Molecular regulation, germ-layer exceptions and myelin details are in closed-by-default «Углублённо» sections. The four new screens belong to ontogenesis: tissues, atlas, skeletal and smooth.
+The primary lesson stays at EGE level. Molecular regulation, germ-layer exceptions and myelin details are in closed-by-default «Углублённо» sections. The standalone anatomy lesson «Ткани человека» now contains main, epithelium, atlas, skeletal and smooth. Ontogenesis links to it; legacy ontogenesis tissue routes redirect to their canonical standalone routes. The epithelial screen uses original vector illustrations for six single-layer variants, three common stratified epithelia, two rarer stratified types in optional depth, and a separate glandular-function illustration. Classification, locations and functions were checked against Kuznetsov/Mushkambarov, sections 7.2–7.4 (especially pp.123–127). Ciliation and brush borders are specializations rather than new layer classes.
 
 ## Photographs
 
