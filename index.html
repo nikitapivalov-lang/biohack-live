@@ -4048,9 +4048,9 @@ html[data-theme="dark"] .ts-photo-dialog{--ts-bg:#211c28;--ts-ink:#f0e5ed;--ts-a
  function nervousOverview(){
   let s='<defs><clipPath id="ts-neural-field"><rect x="20" y="45" width="800" height="443" rx="24"/></clipPath></defs><g clip-path="url(#ts-neural-field)">';
   // Two astrocytes have local branches and longer processes reaching the neuronal surface and a capillary.
-  const astro=(x,y,rotation)=>{let a=`<g data-astrocyte="true" transform="translate(${x} ${y}) rotate(${rotation})">`;for(let i=0;i<8;i++){const angle=i*Math.PI/4,dx=Math.cos(angle),dy=Math.sin(angle),X=dx*64,Y=dy*64;a+=`<path d="M0 0Q${dx*28-dy*12} ${dy*28+dx*12} ${X} ${Y}m${-dx*22} ${-dy*22}q${-dy*22} ${dx*22} ${-dy*32+dx*5} ${dx*32+dy*5}" fill="none" stroke="#77a79b" stroke-width="${i%2?5:7}" stroke-linecap="round"/>`;}a+='<path d="M-20-6L-32-23L-10-21L-3-35L8-18L30-23L22-3L35 15L12 15L2 32L-11 17L-29 20L-20 4Z" fill="#a6c5b6" stroke="#527e70" stroke-width="2"/><circle r="10" fill="#527e70"/><circle cx="3" cy="-3" r="3" fill="#a6c5b6"/></g>';return a;};
+  const astro=(x,y,rotation)=>{let a=`<g data-astrocyte="true" transform="translate(${x} ${y}) rotate(${rotation})">`;for(let i=0;i<11;i++){const angle=i*Math.PI*2/11,dx=Math.cos(angle),dy=Math.sin(angle),X=dx*47,Y=dy*47;a+=`<path d="M0 0Q${dx*28-dy*12} ${dy*28+dx*12} ${X} ${Y}m${-dx*22} ${-dy*22}q${-dy*22} ${dx*22} ${-dy*32+dx*5} ${dx*32+dy*5}" fill="none" stroke="#77a79b" stroke-width="${i%2?4:5}" stroke-linecap="round"/>`;}a+='<path d="M-20-6L-32-23L-10-21L-3-35L8-18L30-23L22-3L35 15L12 15L2 32L-11 17L-29 20L-20 4Z" fill="#a6c5b6" stroke="#527e70" stroke-width="2"/><circle r="10" fill="#527e70"/><circle cx="3" cy="-3" r="3" fill="#a6c5b6"/></g>';return a;};
   // These terminal branches embrace portions of the soma/dendrites, not a continuous myelin sheath.
-  s+=`<g data-astrocyte-contact="soma" fill="none" stroke="#77a79b" stroke-linecap="round"><path d="M171 370C210 355 212 298 242 291Q263 278 268 257M191 361Q236 374 266 330Q284 314 302 319Q327 332 342 316" stroke-width="10"/><path d="M525 141Q470 139 439 166T363 205Q345 214 345 238M500 165Q452 184 421 223T372 251" stroke-width="9"/><path d="M239 290q-10-26-3-41m31 81q-17-20-16-35m111-90q-10-27-38-34m47 81q14 6 25-2" stroke-width="5"/></g>`;
+  s+=`<g data-astrocyte-contact="soma" fill="none" stroke="#77a79b" stroke-linecap="round"><path d="M218 347C237 326 226 303 242 291Q263 278 268 257M235 344Q250 352 266 330Q284 314 302 319Q327 332 342 316" stroke-width="10"/><path d="M419 162Q390 166 363 205Q345 214 345 238M412 181Q408 219 372 251" stroke-width="9"/><path d="M239 290q-10-26-3-41m31 81q-17-20-16-35m111-90q-10-27-38-34m47 81q14 6 25-2" stroke-width="5"/></g>`;
   // Branching, tapering dendrites merge into an organic soma rather than straight sticks.
   const dendrites=['M289 221C265 193 240 163 201 152S150 117 124 101','M278 245C239 237 195 247 164 229S112 211 87 217','M300 213C307 181 290 154 312 123S335 85 326 65','M276 274C238 281 222 309 191 304S141 318 123 338'];
   dendrites.forEach((d,i)=>s+=`<path data-dendrite="${i}" d="${d}" fill="none" stroke="#8e6ba8" stroke-width="${11-i}" stroke-linecap="round"/>`);
@@ -4061,14 +4061,16 @@ html[data-theme="dark"] .ts-photo-dialog{--ts-bg:#211c28;--ts-ink:#f0e5ed;--ts-a
   s+=`<g data-axon-terminals="true" fill="none" stroke="#8e6ba8" stroke-width="4" stroke-linecap="round"><path d="M725 281q25-5 33-35l25-19m-25 19l-2-28M728 282q42 15 52 4l16-16m-16 16l18 15M724 285q17 29 31 42l25 10m-25-10l-3 25"/></g>`;
   for(const [x,y]of [[783,227],[756,218],[796,270],[798,301],[780,337],[752,352]])s+=`<circle cx="${x}" cy="${y}" r="5" fill="#8e6ba8"/>`;
   s+=`<g data-capillary="true"><path d="M430 445Q583 420 792 442" fill="none" stroke="#d6a9bc" stroke-width="29" stroke-linecap="round"/><path d="M430 445Q583 420 792 442" fill="none" stroke="#efd1dc" stroke-width="18" stroke-linecap="round"/>`;for(let i=0;i<6;i++)s+=`<ellipse cx="${460+i*57}" cy="${438-(i<3?i*2:0)}" rx="12" ry="5" fill="#b76b8c"/>`;s+='</g>';
-  s+=`<path data-astrocyte-contact="capillary" d="M535 155C611 214 637 324 610 427M169 371C216 430 287 460 437 444" fill="none" stroke="#77a79b" stroke-width="8" stroke-linecap="round"/><path d="M590 430q22-8 43 0M425 443q10-7 25-3" fill="none" stroke="#a6c5b6" stroke-width="17" stroke-linecap="round"/>`;
-  s+=astro(164,374,15)+astro(526,143,-12);
+  s+=`<path data-astrocyte-contact="capillary" d="M430 177C526 224 582 327 610 427M223 352C259 403 314 456 437 444" fill="none" stroke="#77a79b" stroke-width="8" stroke-linecap="round"/><path d="M590 430q22-8 43 0M425 443q10-7 25-3" fill="none" stroke="#a6c5b6" stroke-width="17" stroke-linecap="round"/>`;
+  s+=astro(216,348,15)+astro(420,165,-12);
   s+='</g>';
-  const leader=(x,y,x2,y2,t)=>`<path d="M${x} ${y}L${x2} ${y2-7}" fill="none" stroke="#665672" stroke-width="1.5"/>`+txt(x2,y2,t,19);
+  // Names stay in reserved legend rows, outside the cellular drawing.
+  const marker=(n,x,y)=>`<g data-neural-marker="${n}"><circle cx="${x}" cy="${y}" r="14" fill="#f8f2f5" stroke="#665672" stroke-width="1.5"/>`+txt(x,y+6,n,17,'currentColor','middle')+'</g>';
   s+=txt(420,31,'Нейрон и окружающие его астроциты',25,'currentColor','middle');
-  s+=leader(202,151,35,65,'Дендриты')+leader(307,239,365,89,'Тело нейрона')+leader(550,137,620,91,'Астроцит')+leader(536,284,565,359,'Аксон и миелин')+leader(610,435,590,492,'Капилляр');
-  s+=txt(26,518,'Зелёные отростки контактируют с нейроном и сосудом.',18)+txt(26,548,'Астроциты поддерживают нейрон; миелин образует другая глия.',18);
-  return svg(s,'Нервная ткань ЦНС: ветвящийся нейрон, аксон с миелином и два астроцита, охватывающие участки нейрона и контактирующие с капилляром','0 0 840 575');
+  for(const [n,x,y]of [[1,172,149],[2,365,230],[3,420,107],[4,548,321],[5,708,450]])s+=marker(n,x,y);
+  for(const [n,x,y,text]of [[1,45,523,'Дендриты'],[2,280,523,'Тело нейрона'],[3,565,523,'Астроциты'],[4,45,567,'Аксон и миелин'],[5,365,567,'Капилляр']])s+=`<g data-neural-label="${n}">`+marker(n,x,y-7)+txt(x+24,y,text,20)+'</g>';
+  s+=txt(26,611,'Зелёные отростки контактируют с нейроном и сосудом.',18)+txt(26,641,'Астроциты поддерживают нейрон; миелин образует другая глия.',18);
+  return svg(s,'Нервная ткань ЦНС: ветвящийся нейрон, аксон с миелином и два астроцита, охватывающие участки нейрона и контактирующие с капилляром','0 0 840 665');
  }
 
  function tissueDrawing(index){let s='';if(index===0){s+=`<path d="M55 297H665" stroke="#8e2448" stroke-width="8"/>`;for(let i=0;i<9;i++){const x=62+i*66;s+=`<rect x="${x}" y="155" width="62" height="137" rx="10" fill="#eac3d2" stroke="#8e2448" stroke-width="2"/><ellipse cx="${x+31}" cy="248" rx="14" ry="20" fill="#76528e"/>`;}s+=txt(360,95,'Плотный слой клеток',24,'currentColor','middle')+txt(360,352,'Базальная мембрана',20,'currentColor','middle');}
