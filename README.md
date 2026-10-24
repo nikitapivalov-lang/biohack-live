@@ -49,7 +49,7 @@ The text tool opens an inline textarea at the annotation's baseline using its SV
 
 ## Ontogenesis: tissues and contraction
 
-Ontogenesis includes four additional screens: `tissues`, `atlas`, `skeletal`, `smooth`. The tissue overview links back to germ layers, compares four families and has five original EGE practice questions. Closed-by-default «Углублённо» details separate additional mechanisms from the core material. The atlas contains six embedded histology photographs, author/license credits, reading cues and an enlarged zoomable view. Skeletal and smooth contraction have separate interactive five-stage animations. See `HISTOLOGY-SOURCES.md` for references and image provenance; `histology-test.mjs` checks morphology, sources, controls and constant skeletal filament lengths.
+Anatomy includes the standalone «Ткани человека» lesson (`#lesson/tissues/main`) with `epithelium`, `atlas`, `skeletal` and `smooth` screens. Ontogenesis retains cross-links, and former ontogenesis tissue URLs redirect to the new lesson. The tissue overview links back to germ layers, compares four families and has five original EGE practice questions. Closed-by-default «Углублённо» details separate additional mechanisms from the core material. The atlas contains six embedded histology photographs, author/license credits, reading cues and an enlarged zoomable view. Skeletal and smooth contraction have separate interactive five-stage animations. See `HISTOLOGY-SOURCES.md` for references and image provenance; `histology-test.mjs` checks morphology, sources, controls and constant skeletal filament lengths.
 
 ## Cellular embryogenesis sections
 
