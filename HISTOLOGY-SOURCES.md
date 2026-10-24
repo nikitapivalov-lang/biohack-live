@@ -7,7 +7,7 @@
 - [Studarium: epithelium](https://studarium.ru/article/77), [connective tissues](https://studarium.ru/article/78), [muscle](https://studarium.ru/article/79), [nervous tissue](https://studarium.ru/article/80).
 - [Reactome: Smooth Muscle Contraction](https://www.reactome.org/content/detail/R-HSA-445355) and [Physiology, Smooth Muscle](https://www.ncbi.nlm.nih.gov/books/NBK526125/) for the optional calcium–calmodulin–MLCK pathway.
 
-The primary lesson stays at EGE level. Molecular regulation, germ-layer exceptions and myelin details are in closed-by-default «Углублённо» sections. The standalone anatomy lesson «Ткани человека» now contains main, epithelium-simple, epithelium-stratified, epithelium-glandular, atlas, skeletal and smooth. Ontogenesis links to it; legacy ontogenesis tissue routes redirect to their canonical standalone routes. The separate epithelial screens use original vector illustrations for six single-layer variants, three common stratified epithelia, two rarer stratified types in optional depth, and a separate glandular-function illustration. Classification, locations and functions were checked against Kuznetsov/Mushkambarov, sections 7.2–7.4 (especially pp.123–127). Ciliation and brush borders are specializations rather than new layer classes.
+The primary lesson stays at EGE level. Molecular regulation, germ-layer exceptions and myelin details are in closed-by-default «Углублённо» sections. The standalone anatomy lesson «Ткани человека» now contains main, epithelium-simple, epithelium-stratified, epithelium-glandular, connective, atlas, skeletal and smooth. Ontogenesis links to it; legacy ontogenesis tissue routes redirect to their canonical standalone routes. The separate epithelial screens use original vector illustrations for six single-layer variants, three common stratified epithelia, two rarer stratified types in optional depth, and a separate glandular-function illustration. Classification, locations and functions were checked against Kuznetsov/Mushkambarov, sections 7.2–7.4 (especially pp.123–127). Ciliation and brush borders are specializations rather than new layer classes.
 
 ## Photographs
 
@@ -36,3 +36,27 @@ Two additional photographs are embedded both in the atlas and directly beside th
 - **nonkeratin**: [Thuc quan](https://commons.wikimedia.org/wiki/File:Thuc_quan.jpg), Nva1991, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), resized to 1400 × 1050 from 2048 × 1536. Normal esophagus; the original image label identifies non-keratinized stratified squamous epithelium and 400×. Superficial flattened cells retain their nuclei; no thick cornified layer is present.
 
 The adapted versions retain the respective share-alike licenses; author, source, license and preparation note appear with each image. The old `epithelium` bookmark redirects to the single-layer screen.
+
+
+## Connective tissue atlas
+
+New standalone screen: `#lesson/tissues/connective`. Thirteen illustrated adult tissue types/variants are arranged in five groups. Embryonic and rare specialized tissues are outside this EGE-oriented atlas. Compact and spongy are explicitly described as organizations of bone, not separate tissue families. Basic information is synthesized from Kuznetsov/Mushkambarov, 2016, topics 8–10 (pp.133–181); OpenStax section 4.3 was used for cross-checking. The diagrams are original BioHack SVGs and adapt to dark mode; photographs preserve their staining and full composition.
+
+Twelve photographs were added; the existing white-adipose photograph is reused. Selected images use Commons preview sizes (500–1400 px wide), re-encoded to JPEG without cropping. Brown-adipose has a smaller original resolution. The spongy-bone image retains both ordinary and polarized-light panels and its original scale bar. Screen zoom is not a calibrated microscope magnification.
+
+The lymph card deliberately uses a **normal lymph-node preparation**, not a supposed lymph smear. Its title, caption, recognition notes and modal identify the organ, while a separate original diagram explains lymph inside a vessel. The distinction between tissue, cell and organ is explicit.
+
+- **loose**: [Рыхлая волокнистая соединительная ткань](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Loose_Aerolar_(39977987580).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Рыхлая ткань · исходное увеличение ×200.
+- **regular**: [Плотная оформленная соединительная ткань](https://commons.wikimedia.org/wiki/File:Dense_regular1.jpg), Echinaceapallida, CC BY-SA 4.0. Продольный срез · увеличение автором не указано.
+- **irregular**: [Плотная неоформленная соединительная ткань](https://commons.wikimedia.org/wiki/File:Dense_irregular.jpg), Echinaceapallida, CC BY-SA 4.0. Соединительная ткань кожи · увеличение автором не указано.
+- **reticular**: [Ретикулярная соединительная ткань](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Reticular_(40885194425).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Специальная окраска ретикулярной сети · исходное увеличение ×400.
+- **brown**: [Бурая жировая ткань](https://commons.wikimedia.org/wiki/File:Tecido_adiposo_multilocular_brown_adipose_tissue.gif), Wikimedia Commons / Lucasmcorso, Public domain. Многокапельная жировая ткань · увеличение не указано.
+- **hyaline**: [Гиалиновая хрящевая ткань](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Hyaline_Cartilage_(40958872915).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Поперечный срез хряща · исходное увеличение ×100.
+- **elastic**: [Эластическая хрящевая ткань](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Elastic_Cartilage_(41855667991).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Срез эластического хряща млекопитающего · исходное увеличение ×200.
+- **fibrocartilage**: [Волокнистая хрящевая ткань](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Fibrocartilage_(27988652098).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Срез волокнистого хряща · исходное увеличение ×400.
+- **compact**: [Компактное вещество кости](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Compact_Bone_(39978305360).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Шлиф человеческой кости · исходное увеличение ×200.
+- **spongy**: [Губчатое вещество кости](https://commons.wikimedia.org/wiki/File:Spongy_bone_in_polarized_light.jpg), Nataliia Maryenko и Oleksandr Stepanenko, CC BY-SA 4.0. Позвонок · обычный и поляризованный свет · объектив ×10.
+- **blood**: [Мазок крови человека](https://commons.wikimedia.org/wiki/File:Connective_Tissue_Human_Blood_Leukocyte_Survey_(39982278720).jpg), Berkshire Community College Bioscience Image Library, CC0 1.0. Мазок крови · гематоксилин и эозин · исходное увеличение ×200.
+- **lymphnode**: [Нормальный лимфатический узел](https://commons.wikimedia.org/wiki/File:Normal_Lymph_Node.jpg), Ed Uthman, MD, CC BY-SA 2.0. Гематоксилин и эозин · препарат органа, через который проходит лимфа.
+
+Brown-adipose source page marks the image Public Domain; attribution records the Commons uploader, Lucasmcorso. Other photo derivatives retain their CC0 or CC BY-SA licenses as displayed on each source page. CC BY-SA 2.0: https://creativecommons.org/licenses/by-sa/2.0/ .
