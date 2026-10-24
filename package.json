@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test test.mjs group-test.mjs ui-test.mjs anchor-test.mjs prophase-test.mjs histology-test.mjs"
+    "test": "node --test test.mjs group-test.mjs ui-test.mjs anchor-test.mjs prophase-test.mjs histology-test.mjs ontogenesis-test.mjs"
   },
   "engines": {
     "node": "24.x"
