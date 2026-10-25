@@ -107,3 +107,12 @@ Frame rendering patches existing SVG elements rather than replacing the connecte
 
 ### Непрерывная посадка кальция на тропонин
 Четыре постоянных иона Ca²⁺ перемещаются из разных точек сети к четырём конкретным комплексам тропонина, касаются их и остаются связанными при скольжении актина. Убраны исчезновение летящих ионов и независимое появление 16 других кружков. Смещение тропомиозина начинается после посадки. При расслаблении те же ионы возвращаются в сеть. Устранены скачки длины шеек и ориентации головок на границах фаз и при расслаблении; неизменные подписи не пересоздаются каждый кадр.
+
+
+## Redesign of smooth-muscle contraction (2026-10-25)
+
+Replaced the sparse drawing with a spindle-shaped whole cell, one central nucleus, eight cytoplasmic dense bodies, membrane anchoring sites and an oblique actin–myosin network. A dashed resting contour and a length bracket make shortening/thickening visible. A separate enlarged network segment shares the original play/pause/step/scrub/reset clock and keeps actin/myosin lengths fixed while anchors approach. Myosin is shown with heads on opposite sides acting on oppositely directed actin; this is an explanatory side-polar sketch, not a sarcomere.
+
+The enlarged panel shows persistent calcium ions approaching calmodulin, followed by MLCK activation and regulatory myosin phosphorylation. No troponin-based regulation or regular Z-lines are introduced. Dephosphorylation by MLCP and dependence of passive re-lengthening on tissue load are explained under optional depth.
+
+Sources: [Regulation of Vascular Smooth Muscle Function — Introduction](https://www.ncbi.nlm.nih.gov/books/NBK54584/), [Ca2+-Dependent Myosin Light Chain Phosphorylation](https://www.ncbi.nlm.nih.gov/books/NBK54596/). Geometry, timing and 25% example shortening are schematic.
