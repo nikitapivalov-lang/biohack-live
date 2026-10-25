@@ -75,3 +75,7 @@ Original SVGs in the existing tissue palette; morphological reference: S. L. Kuz
 ## Interactive skeletal muscle dissection (2026-10-25)
 
 Interaction reference: https://lab.neofamily.ru/muscle-contraction/ (progressive exploration from whole muscle to contractile structures). All BioHack drawings and implementation are original. Starts directly with an isolated muscle. Six levels: muscle, transverse cut, fascicle, multinucleated muscle fiber, myofibril, sarcomere. Connective sheaths and hierarchy follow Kuznetsov & Mushkambarov (2016), pp. 184–190, especially 186 (endo-/peri-/epimysium), 188–190 (sarcomeres, actin/myosin, sliding filaments and ATP-dependent cross-bridge cycle). Filament lengths and A-band stay constant during the shortened teaching cycle; relaxation shows recovery of length under external forces, not active pushing by filaments. Drawings are schematic, not to scale.
+
+## Sarcomere clarity revision (2026-10-25)
+
+The full-width sarcomere has direct, separated leaders for actin (blue double bead strands), myosin (burgundy thick filament with paddle-shaped heads), tropomyosin (continuous gold strand) and troponin (discrete violet three-lobed complexes). Enlarged thin/thick filament drawings and four shape/color keys reinforce the distinction. Calcium is drawn as small pale-blue ions binding near troponin; the gold tropomyosin strand shifts upon activation. Protein sizes and shifts are exaggerated for teaching. Morphological/regulatory basis remains Kuznetsov & Mushkambarov, 2016, pp. 188–190.
