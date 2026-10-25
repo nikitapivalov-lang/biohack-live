@@ -79,3 +79,7 @@ Interaction reference: https://lab.neofamily.ru/muscle-contraction/ (progressive
 ## Sarcomere clarity revision (2026-10-25)
 
 The full-width sarcomere has direct, separated leaders for actin (blue double bead strands), myosin (burgundy thick filament with paddle-shaped heads), tropomyosin (continuous gold strand) and troponin (discrete violet three-lobed complexes). Enlarged thin/thick filament drawings and four shape/color keys reinforce the distinction. Calcium is drawn as small pale-blue ions binding near troponin; the gold tropomyosin strand shifts upon activation. Protein sizes and shifts are exaggerated for teaching. Morphological/regulatory basis remains Kuznetsov & Mushkambarov, 2016, pp. 188–190.
+
+## Large molecular view and calcium (2026-10-25)
+
+Default sarcomere view now isolates a large local interaction site: two blue actin chains, a thick gold tropomyosin strand, two large purple troponin complexes and a red/pink myosin shaft with heads. Green ions carry Ca²⁺ labels in both states. A labeled sarcoplasmic-reticulum box shows calcium storage at rest; on activation the diagram shows released ions, the path toward troponin and a bound ion. Colors and protein sizes are intentionally exaggerated; whole-sarcomere geometry is available in a separate view. Mechanism follows the previously cited histology sections, pp. 187–190.
