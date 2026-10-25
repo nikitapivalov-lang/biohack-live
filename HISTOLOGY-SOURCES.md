@@ -83,3 +83,7 @@ The full-width sarcomere has direct, separated leaders for actin (blue double be
 ## Large molecular view and calcium (2026-10-25)
 
 Default sarcomere view now isolates a large local interaction site: two blue actin chains, a thick gold tropomyosin strand, two large purple troponin complexes and a red/pink myosin shaft with heads. Green ions carry Ca²⁺ labels in both states. A labeled sarcoplasmic-reticulum box shows calcium storage at rest; on activation the diagram shows released ions, the path toward troponin and a bound ion. Colors and protein sizes are intentionally exaggerated; whole-sarcomere geometry is available in a separate view. Mechanism follows the previously cited histology sections, pp. 187–190.
+
+## Restore whole-sarcomere default and retain calcium (2026-10-25)
+
+The enlarged isolated interaction view was removed at the user's request. The default again shows the complete sarcomere with both Z-lines, central myosin and actin from opposite sides. Retained a separate calcium-storage/release strip and green bound-calcium markers beside troponin. Reference supplied by the user: https://www.youtube.com/watch?v=jCIBcHGg4k0 — “Мышечное сокращение”, Сазонов С. В. (УГМУ); inspected the hierarchy and actin/myosin interaction frames. No video frames or assets are reproduced.
