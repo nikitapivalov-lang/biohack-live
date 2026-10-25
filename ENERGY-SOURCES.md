@@ -41,3 +41,12 @@ Browser review covers direct lesson URLs, catalog entry, light/dark themes, desk
 The two explanation levels also change the diagrams themselves: the EGE TCA overview groups the purpose into four stages, whereas the advanced diagram shows all eight intermediates; advanced glycolysis displays each enzyme-catalyzed transformation with carbon counts and formulas. In aldolase cleavage, six carbons produce two three-carbon molecules; the subsequent triose-isomerase diagram shows one DHAP-to-GAP conversion while noting the total pool of two GAP molecules. Completed reaction markers remain at the product.
 
 Large-view controls remain inside each diagram, the fit command measures both available width and height, focus stays within the expanded view, and leaving the screen restores page scrolling. Zoom is per diagram; students also retain the existing independent shared-scene viewport controls.
+
+
+## Повторная оценка учебной подачи — 25 октября 2026
+
+Сохранены локализация процессов, ферменты и балансы. Добавлены пояснения текущего действия и счётчики внутри увеличенного просмотра; смысловые контрольные точки для режима ЕГЭ; условный накопительный баланс одной глюкозы без повторного учёта АТФ переносчиков. Цитохром c переносит электроны последовательно, а не парой. Цветовая легенда разделяет электроны и протоны.
+
+Сравнение сопряжённого синтеза и обходного потока H⁺ иллюстрирует разобщение: поток вне F₀ не вращает ротор и не производит АТФ в показанном примере. Опора: Lippincott, раздел о сопряжении и разобщении окислительного фосфорилирования (страницы PDF 241–243). Это не кинетическая модель и не выход АТФ на глюкозу.
+
+Остаются ограничения: кружки C — счёт углеродов, не молекулярная геометрия; полный Q-цикл, внутренние центры комплексов и челноки не анимированы. Расширенный режим пока не заменяет вузовское изучение механизмов. Анализ с позиций учащихся — экспертная оценка, не результат пользовательского исследования.
