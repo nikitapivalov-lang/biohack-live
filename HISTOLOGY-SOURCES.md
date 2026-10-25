@@ -87,3 +87,13 @@ Default sarcomere view now isolates a large local interaction site: two blue act
 ## Restore whole-sarcomere default and retain calcium (2026-10-25)
 
 The enlarged isolated interaction view was removed at the user's request. The default again shows the complete sarcomere with both Z-lines, central myosin and actin from opposite sides. Retained a separate calcium-storage/release strip and green bound-calcium markers beside troponin. Reference supplied by the user: https://www.youtube.com/watch?v=jCIBcHGg4k0 — “Мышечное сокращение”, Сазонов С. В. (УГМУ); inspected the hierarchy and actin/myosin interaction frames. No video frames or assets are reproduced.
+
+## ATP-linked cross-bridge cycle and myosin detail (2026-10-25)
+
+The existing sarcomere scene is 78% of its previous desktop width. On narrow displays the drawing retains a readable internal width with local horizontal panning; the page itself fits 390 px. The thick filament is drawn as ten intertwined tail strands with staggered paired heads, curved necks, mirrored halves and a central head-free zone. Tail geometry remains fixed across animation frames.
+
+The enlarged single-head fragment uses the same player/progress as the main sarcomere. Two explicit teaching cycles each have four phases: ATP binding/detachment; ATP hydrolysis and recovery stroke with ADP + Pi retained; actin attachment/Pi release and power stroke; ADP release. Sliding occurs only during the power-stroke phase. The deterministic counter increments at hydrolysis once per represented cycle (0 → 1 → 2), stays unchanged through the power stroke and ADP release, follows scrubbing and resets with the trainer. The displayed ledger contains two ATP molecules and their ADP/Pi products. It is explicitly a single-head teaching count, not total muscle consumption. Head playback and microstepping share the existing player, including pause on leaving the screen.
+
+Mechanistic cross-check: [Molecular Motors, Molecular Biology of the Cell](https://www.ncbi.nlm.nih.gov/books/NBK26888/), [Myosin isoforms and the mechanochemical cross-bridge cycle](https://pubmed.ncbi.nlm.nih.gov/26792327/), and Kuznetsov & Mushkambarov (2016), pp. 188–190. ATP hydrolysis/recovery precedes force generation; phosphate release is associated with the power stroke. Visual dimensions, timing and paired-head phase relationships are schematic.
+
+Validation: `node --max-old-space-size=4096 --test histology-test.mjs` (16 tests), including nucleotide stoichiometry, no sliding during hydrolysis, sliding during power stroke, counter scrubbing/reset, head pairs/bare zone and fixed tail geometry. Browser review: desktop, 390 px mobile, full playback ending with two consumed ATP.
