@@ -18,6 +18,7 @@ All PDFs were read from the user's Desktop/биология folder; PDF files an
 - [The Mitochondrion — Molecular Biology of the Cell](https://www.ncbi.nlm.nih.gov/books/NBK26894/): overall ATP production, compartmental transport and different electron entry routes.
 - [Insulin Biosynthesis, Secretion, Structure, and Structure-Activity Relationships — Endotext](https://www.ncbi.nlm.nih.gov/books/NBK279029/): GLUT-mediated facilitated diffusion, insulin-dependent GLUT4 translocation and sodium-dependent transport.
 - [Intestinal absorption in health and disease — sugars](https://pubmed.ncbi.nlm.nih.gov/14642859/): apical SGLT1 and distinct glucose versus fructose transport.
+- [OpenStax Biology 2e, 7.2 Glycolysis](https://openstax.org/books/biology-2e/pages/7-2-glycolysis): the ten reaction sequence, aldolase products, NAD⁺ reduction, substrate-level ATP formation and net ATP yield.
 
 ## Explicit simplifications and corrections
 
@@ -54,3 +55,19 @@ Large-view controls remain inside each diagram, the fit command measures both av
 
 ## Структурные схемы реакций
 Гликолиз показан по одной реакции, с открытыми сокращёнными структурными формулами сахаров; стереохимия не обозначена. Фосфат P обозначает группу, а не атом. Для карбоновых кислот в схемах используется COO⁻; справочные брутто-формулы в тексте приведены для кислот. Удвоение реакций 6–10 учитывается в подписях и балансе. Цикл сохраняет круговую последовательность; отдельное увеличение синхронно показывает активную реакцию, фермент, входящие и выходящие вещества. Для сукцинатдегидрогеназы показан конечный перенос на Q; связанный FAD поясняется отдельно.
+
+
+## Переработка пищеварения — 26 октября 2026
+
+Повторно прочитаны предоставленные файлы из Desktop/биология: «учебник Северин.pdf», физические PDF-страницы 141 и 143 (переваривание углеводов); Lippincott, PDF-страницы 265–268, разделы 7.A–D и подпись к рис. 7.9.
+
+Отдельно показаны: слюнная α-амилаза, постепенная инактивация в желудке (активность может сохраняться внутри комка), панкреатическая α-амилаза в просвете тонкой кишки после нейтрализации кислоты, мальтаза–глюкоамилаза и сахараза–изомальтаза щёточной каймы, SGLT1/GLUT2 и воротная кровь. Амилазы не расщепляют α(1→6) и не завершают гидролиз до свободной глюкозы; продукты показаны как мальтоза, мальтотриоза и предельные декстрины. Олигосахариды изображены условными фрагментами, а не атомными формулами или полным стехиометрическим балансом. Иллюстрации оригинальные, изображения учебников не копировались.
+
+
+ЦТК: движение функциональных групп показано схематично; Pi переносится через сукцинилфосфат и фосфогистидин на концевой фосфат ГДФ. Структурные источники: https://pmc.ncbi.nlm.nih.gov/articles/PMC4528943/ и https://pmc.ncbi.nlm.nih.gov/articles/PMC7919408/.
+
+
+Дыхательная цепь: внутренние пути FMN/Fe–S, Q-цикл и CuA → гем a → a3/CuB показаны условно. Источники: https://pmc.ncbi.nlm.nih.gov/articles/PMC3311377/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC8361435/ ; https://pmc.ncbi.nlm.nih.gov/articles/PMC4343153/ . Визуальный референс приближения к белковым комплексам: Harvard Online, https://www.youtube.com/watch?v=LQmTKxI4Wn4 .
+
+
+Упрощённый режим дыхательной цепи: последовательность объяснения сверена с Dirty Medicine, https://www.youtube.com/watch?v=LsRQ5_EmxJA (разделы 2:03–12:31). Рисунки и текст оригинальные. FAD показан связанным с комплексом II; свободные ионы кислорода не изображаются.
