@@ -116,3 +116,26 @@ Replaced the sparse drawing with a spindle-shaped whole cell, one central nucleu
 The enlarged panel shows persistent calcium ions approaching calmodulin, followed by MLCK activation and regulatory myosin phosphorylation. No troponin-based regulation or regular Z-lines are introduced. Dephosphorylation by MLCP and dependence of passive re-lengthening on tissue load are explained under optional depth.
 
 Sources: [Regulation of Vascular Smooth Muscle Function — Introduction](https://www.ncbi.nlm.nih.gov/books/NBK54584/), [Ca2+-Dependent Myosin Light Chain Phosphorylation](https://www.ncbi.nlm.nih.gov/books/NBK54596/). Geometry, timing and 25% example shortening are schematic.
+
+## Osteon and ionotropic synapse (2026-10-28)
+
+User-requested sources were read from the Desktop folders «биология » and «физа»:
+
+- `биология /embryogenesis_tissues.pdf`, PDF p. 6 (compact bone, osteon, osteoblast/osteocyte/osteoclast distinction) and p. 10 (chemical synapse and ordered Ca²⁺-dependent transmission).
+- `биология /Teylor_Grin_Staut_2_tom_2013.pdf`, PDF p. 289, printed p. 288, chapter 17, “Механизм синаптической передачи” and beginning of “Роль синапсов”: calcium influx, vesicular exocytosis, acetylcholine diffusion, receptor gating, sodium/potassium permeability, acetylcholinesterase and choline recycling.
+- `физа/ВСЯ ФИЗИОЛОГИЯ МЕДВУЗА.pdf`, PDF pp. 13–14: presynaptic calcium entry, transmitter release, local graded EPSP and summation. Only the consistent core mechanism was used: the source's “0.2–1 мВ” delay units and older speculative molecular steps were not reproduced.
+
+The osteon is an original transverse SVG with concentric mineralized lamellae, a central vascular/nerve canal, osteocyte lacunae, canaliculi and a cement-line boundary. Supporting text explains canalicular exchange, Volkmann canals, interstitial lamellae and the distinction from spongy trabeculae. Existing histology reference: Kuznetsov/Mushkambarov, topic 10. The schematic uses illustrative sizes and cell counts.
+
+The nervous-family overview contains a persistent SVG synapse, with six checkpoints and smooth movement of calcium, a vesicle, acetylcholine and opposing Na⁺/K⁺ flux. The chosen example is an excitatory nicotinic cholinergic synapse; it is explicitly not presented as the universal transmitter/receptor combination. Calcium channels are voltage-gated, while the postsynaptic receptor itself is ligand-gated. A local EPSP does not automatically imply a new action potential. Optional depth distinguishes inhibitory ionotropic receptors and metabotropic transmission. Acetylcholine hydrolysis is distinguished from choline uptake. Play/pause, stage buttons, slider, speed selection, reset and replay share one clock; leaving the family, lesson or document stops playback. Timing is slowed for teaching and is not a kinetic simulation.
+
+### Synapse diagram revision (2026-10-28)
+The user-provided reference guided the bulb-shaped axon terminal and curved postsynaptic surface. Original BioHack SVG geometry, palette and labels are retained; the cleft is exaggerated for readability. Calcium, vesicle, acetylcholine and Na⁺/K⁺ trajectories now follow the new geometry. The image's branding and decorative artwork are not reproduced.
+
+### Synapse navigation and exocytosis correction (2026-10-28)
+«Работа синапса» is now an independent tissue-lesson screen (`#lesson/tissues/synapse`), reachable from the top navigation and the nervous-family action button. One persistent calcium ion enters through a channel beside the selected vesicle and remains associated with that release site. The same three transmitter nodes travel inside that vesicle, then leave through the fusion pore. Docking precedes an omega-shaped membrane fusion profile, followed by flattening into the presynaptic membrane; an intact vesicle is never transported through the membrane. Geometry and time remain schematic.
+
+### Synapse contrast and zoom (2026-10-28)
+Na+ and K+ now have saturated blue/orange nodes and outlined bold labels, with brighter dark-theme labels. Independent 50–300% zoom and fit controls resize the persistent SVG inside a scrollable viewport; they do not alter the animation clock or geometry.
+
+Ontogenesis stage animations use the local `биология /embryogenesis_tissues.pdf` (pp. 2–3: cleavage, blastula, invagination and neurulation) and the existing Kuznetsov/Mushkambarov §6.1–6.2 model. Cleavage retains a fixed outer contour; the drawings are schematic sections, not a cell-count reconstruction. Gastrulation follows the lancelet teaching model; paired mesodermal pouches illustrate enterocoelic formation, not human gastrulation. Neural-plate folding closes a cellular tube. Later stages use frog hatching and metamorphosis. Timeline duration and organ growth are illustrative, not measured biological timing.

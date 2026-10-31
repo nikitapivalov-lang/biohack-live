@@ -15,6 +15,10 @@ export function createBiohackServer(){
  const html=Buffer.from(input.replace('</head>',config+'</head>')),compressed=gzipSync(html);
  const bridge=readFileSync(join(root,'live.mjs'));
  const heartAssets=new Map([['/assets/heart.glb',{type:'model/gltf-binary',body:readFileSync(join(root,'heart.glb'))}],['/assets/heart-viewer.js',{type:'text/javascript; charset=utf-8',body:readFileSync(join(root,'heart-viewer.js'))}]]);
+ heartAssets.set('/assets/genetics-family-vector-v2.svg',{type:'image/svg+xml; charset=utf-8',body:readFileSync(join(root,'assets','genetics-family-vector-v2.svg'))});
+ heartAssets.set('/assets/genetics-human-family-schematic.svg',{type:'image/svg+xml; charset=utf-8',body:readFileSync(join(root,'assets','genetics-human-family-schematic.svg'))});
+ for(const name of ['digestion-user-reference.png','digestion-atlas-v2.png','genetics-human-family.png','genetics-family-editorial.png','genetics-family-selected.png','mendel-giant-peas.png','genetics-family-selected-dark.png'])heartAssets.set('/assets/'+name,{type:'image/png',body:readFileSync(join(root,'assets',name))});
+ heartAssets.set('/assets/fonts/Onest.ttf',{type:'font/ttf',body:readFileSync(join(root,'assets/fonts/Onest.ttf'))});
  const wss=new WebSocketServer({noServer:true,maxPayload:16*1024*1024,perMessageDeflate:false});
  const server=http.createServer((req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname;
