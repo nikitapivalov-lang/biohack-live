@@ -71,3 +71,8 @@ Large-view controls remain inside each diagram, the fit command measures both av
 
 
 Упрощённый режим дыхательной цепи: последовательность объяснения сверена с Dirty Medicine, https://www.youtube.com/watch?v=LsRQ5_EmxJA (разделы 2:03–12:31). Рисунки и текст оригинальные. FAD показан связанным с комплексом II; свободные ионы кислорода не изображаются.
+
+## Visual and playback corrections (2026-10-28)
+- The local server explicitly serves both retained digestion PNGs; no anatomy source or reference image was replaced.
+- Focused Krebs mechanisms fully suppress the ring's background nodes and edges. Reaction chemistry completes before camera return; an eased slower clock holds the product, with seek positions and accounting unchanged.
+- Pyruvate and acetyl-CoA are drawn with separated atom labels and explicit carbonyl double bonds. Both use the same alignment; C3 pyruvate loses CO2 and yields the C2 acetyl group. MPC transport and the one-glucose two-reaction balance are retained. This is a visual revision of the previously sourced PDH mechanism, with no new biological claims.
