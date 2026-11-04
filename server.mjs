@@ -17,7 +17,8 @@ export function createBiohackServer(){
  const heartAssets=new Map([['/assets/heart.glb',{type:'model/gltf-binary',body:readFileSync(join(root,'heart.glb'))}],['/assets/heart-viewer.js',{type:'text/javascript; charset=utf-8',body:readFileSync(join(root,'heart-viewer.js'))}]]);
  heartAssets.set('/assets/genetics-family-vector-v2.svg',{type:'image/svg+xml; charset=utf-8',body:readFileSync(join(root,'assets','genetics-family-vector-v2.svg'))});
  heartAssets.set('/assets/genetics-human-family-schematic.svg',{type:'image/svg+xml; charset=utf-8',body:readFileSync(join(root,'assets','genetics-human-family-schematic.svg'))});
- for(const name of ['digestion-user-reference.png','digestion-atlas-v2.png','genetics-human-family.png','genetics-family-editorial.png','genetics-family-selected.png','mendel-giant-peas.png','genetics-family-selected-dark.png'])heartAssets.set('/assets/'+name,{type:'image/png',body:readFileSync(join(root,'assets',name))});
+ for(const name of ['digestion-user-reference.png','digestion-atlas-v2.png','genetics-human-family.png','genetics-family-editorial.png','genetics-family-selected.png','mendel-giant-peas.png','genetics-family-selected-dark.png','cell-theory-scientists.png'])heartAssets.set('/assets/'+name,{type:'image/png',body:readFileSync(join(root,'assets',name))});
+ heartAssets.set('/assets/biohack-motion.js',{type:'text/javascript; charset=utf-8',body:readFileSync(join(root,'assets','biohack-motion.js'))});
  heartAssets.set('/assets/fonts/Onest.ttf',{type:'font/ttf',body:readFileSync(join(root,'assets/fonts/Onest.ttf'))});
  // Only the announcement is public; unreleased game code and styles stay offline.
  heartAssets.set('/assets/genetic-files-preview.png',{type:'image/png',body:readFileSync(join(root,'assets/genetic-files-preview.png'))});
