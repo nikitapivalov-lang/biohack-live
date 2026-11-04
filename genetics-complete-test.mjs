@@ -39,7 +39,7 @@ test('interaction classes always total sixteen; all four expected ratios are sho
 });
 test('all forty-two quiz answers support correction, persistence and isolated reset',()=>{
  const {dom,w,d}=setup(),correct=[[1,0,1,0,1,1],[1,0,1,1,1,1],[1,1,0,1,1,1],[1,1,0,1,1,0],[1,1,0,1,1,1],[0,1,0,0,0,0],[1,1,1,1,0,1]];
- ids.forEach((id,j)=>{const root=d.getElementById('tab-'+id),qs=[...root.querySelectorAll('.gc-question')];qs[0].querySelectorAll('button')[(correct[j][0]+1)%3].click();assert.match(root.querySelector('.gc-feedback').textContent,/Пока неверно/);qs.forEach((q,i)=>q.querySelectorAll('button')[correct[j][i]].click());assert.match(d.getElementById('gc-score-'+id).textContent,/6 \/ 6/);});
+ ids.forEach((id,j)=>{const root=d.getElementById('tab-'+id),qs=[...root.querySelectorAll('.gc-question')];qs[0].querySelectorAll('button')[(correct[j][0]+1)%3].click();assert.match(root.querySelector('.gc-feedback').textContent,/Мимо/);qs.forEach((q,i)=>q.querySelectorAll('button')[correct[j][i]].click());assert.match(d.getElementById('gc-score-'+id).textContent,/6 \/ 6/);});
  const saved=Object.fromEntries(ids.map(id=>['biohack-genetics-'+id+'-v1',JSON.parse(w.localStorage.getItem('biohack-genetics-'+id+'-v1'))])),again=setup(saved);ids.forEach(id=>assert.match(again.d.getElementById('gc-score-'+id).textContent,/6 \/ 6/));
  [...d.querySelectorAll('#tab-linkage button')].find(b=>b.textContent==='Сбросить ответы').click();assert.match(d.getElementById('gc-score-linkage').textContent,/0 \/ 6/);assert.match(d.getElementById('gc-score-pedigrees').textContent,/6 \/ 6/);again.dom.window.close();dom.window.close();
 });
