@@ -6174,38 +6174,37 @@ function mbMount(root){
 }
 </script>
 
-<style id="biohack-osmosis-style">
-.os-lab{margin-bottom:24px;border:1px solid #e4e8ed;border-radius:24px;background:#fff;overflow:hidden;font-family:var(--bio-font,inherit)}
+<style id="biohack-osmosis-style">.os-lab{margin-bottom:24px;border:1px solid #e5d4de;border-radius:22px;background:#fff;overflow:hidden;font-family:var(--bio-font,inherit)}
 .os-lab svg text{font-family:var(--bio-font,inherit)}
-.os-intro{padding:26px 26px 14px}.os-eyebrow{font-size:15px;font-weight:800;letter-spacing:.1em;color:var(--bio-ui-accent);text-transform:uppercase}
-.os-intro h3{font-size:30px;line-height:1.25;font-weight:800;margin:8px 0;color:#1e293b}.os-intro p{font-size:19px;line-height:1.75;color:#475569;max-width:46em}
+.os-intro{padding:26px 26px 14px}.os-eyebrow{font-size:15px;font-weight:700;letter-spacing:.1em;color:var(--bio-ui-accent);text-transform:uppercase}
+.os-intro h3{font-size:30px;line-height:1.25;font-weight:700;margin:8px 0;color:#251c21}.os-intro p{font-size:19px;line-height:1.75;color:#6b6171;max-width:46em}
 .os-terms{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:6px 26px 18px}
-.os-term{border:1px solid #ecdde3;border-radius:16px;background:#fbf6f8;padding:14px 15px}.os-term b{display:block;font-size:17px;color:#7a2745}.os-term span{display:block;font-size:15px;line-height:1.55;color:#5b4a52;margin-top:5px}
-.os-nav{display:flex;flex-wrap:wrap;gap:8px;padding:12px 26px;border-block:1px solid #eee3e7;background:#fcf9fa;align-items:center}
-.os-nav button{font-size:16px;font-weight:700;padding:10px 15px;border:1px solid #e2d3da;border-radius:12px;background:#fff;color:#713b50;cursor:pointer}
+.os-term{border:1px solid #e5d4de;border-radius:16px;background:#fbf6f8;padding:14px 15px}.os-term b{display:block;font-size:17px;color:#7a2745}.os-term span{display:block;font-size:15px;line-height:1.55;color:#5b4a52;margin-top:5px}
+.os-nav{display:flex;flex-wrap:wrap;gap:8px;padding:12px 26px;border-block:1px solid #e5d4de;background:#fbf6f9;align-items:center}
+.os-nav button{font-size:15px;font-weight:600;padding:10px 15px;border:1px solid #e5d4de;border-radius:12px;background:#fff;color:#6b6171;cursor:pointer}
 .os-nav button[aria-pressed=true]{background:var(--bio-ui-accent);border-color:var(--bio-ui-accent);color:#fff}
 .os-nav .os-pause{margin-left:auto;font-size:15px}
 .os-lab button:focus-visible,.os-lab input:focus-visible{outline:3px solid #bd8da0;outline-offset:3px}
-.os-body{padding:22px 26px 26px}.os-head h4{font-size:25px;font-weight:800;color:#1e293b}.os-head p{font-size:19px;line-height:1.75;color:#475569;margin-top:8px;max-width:46em}
+.os-body{padding:22px 26px 26px}.os-head h4{font-size:25px;font-weight:700;color:#251c21}.os-head p{font-size:19px;line-height:1.75;color:#6b6171;margin-top:8px;max-width:46em}
 .os-controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:18px 0 12px}
-.os-controls button,.os-seg button{font-size:15px;font-weight:700;padding:9px 14px;border:1px solid #e2d3da;border-radius:11px;background:#fff;color:#713b50;cursor:pointer}
+.os-controls button,.os-seg button{font-size:15px;font-weight:600;padding:9px 14px;border:1px solid #e5d4de;border-radius:11px;background:#fff;color:#6b6171;cursor:pointer}
 .os-controls .os-primary,.os-seg button[aria-pressed=true]{background:var(--bio-ui-accent);border-color:var(--bio-ui-accent);color:#fff}
 .os-seg{display:flex;flex-wrap:wrap;gap:6px}
-.os-range{display:flex;flex-direction:column;gap:3px;min-width:260px;flex:1 1 300px;max-width:440px}.os-range label{font-size:15px;font-weight:700;color:#475569;display:flex;justify-content:space-between;gap:8px}.os-range output{color:#7a2745}
-.os-range input{width:100%;accent-color:var(--bio-ui-accent)}.os-range small{display:flex;justify-content:space-between;font-size:13px;color:#8a7c83}
-.os-stage{border:1px solid #e5edf2;border-radius:20px;background:#f7fafc;overflow:hidden}.os-stage svg{display:block;width:100%;height:auto;max-height:560px}.os-stage svg text{paint-order:stroke;stroke:rgba(247,250,252,.92);stroke-width:5px;stroke-linejoin:round}.os-stage svg.os-dark text{stroke:none}
-.os-read{margin-top:14px;font-size:19px;line-height:1.75;color:#334155;min-height:3.5em}
+.os-range{display:flex;flex-direction:column;gap:3px;min-width:260px;flex:1 1 300px;max-width:440px}.os-range label{font-size:15px;font-weight:700;color:#6b6171;display:flex;justify-content:space-between;gap:8px}.os-range output{color:#7a2745}
+.os-range input{width:100%;accent-color:var(--bio-ui-accent)}.os-range small{display:flex;justify-content:space-between;font-size:13px;color:#756d74}
+.os-stage{border:1px solid #e5d4de;border-radius:18px;background:#fbf6f9;overflow:hidden}.os-stage svg{display:block;width:100%;height:auto;max-height:560px}.os-stage svg text{paint-order:stroke;stroke:rgba(251,246,249,.92);stroke-width:5px;stroke-linejoin:round}.os-stage svg.os-dark text{stroke:none}
+.os-read{margin-top:14px;font-size:19px;line-height:1.75;color:#342a38;min-height:3.5em}
 .os-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:14px}
-.os-fact{border-radius:14px;background:#f8f4f6;padding:13px 15px}.os-fact small{display:block;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#94647a}.os-fact strong{display:block;font-size:17px;line-height:1.5;color:#3e3440;margin-top:4px;font-weight:700}
-.os-foot{padding:0 26px 22px;font-size:14px;line-height:1.65;color:#8a7c83}
+.os-fact{border-radius:14px;background:#f8f4f6;padding:13px 15px}.os-fact small{display:block;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94647a}.os-fact strong{display:block;font-size:17px;line-height:1.5;color:#3e3440;margin-top:4px;font-weight:700}
+.os-foot{padding:0 26px 22px;font-size:14px;line-height:1.65;color:#756d74}
 .os-flow{stroke-dasharray:9 9;animation:osflow 1s linear infinite}.os-flow.rev{animation-direction:reverse}
 @keyframes osflow{to{stroke-dashoffset:-18}}
 @media(prefers-reduced-motion:reduce){.os-flow{animation:none}}
 @media(max-width:760px){.os-terms{grid-template-columns:1fr 1fr;padding-inline:16px}.os-intro,.os-body,.os-foot{padding-inline:16px}.os-nav{padding-inline:16px}.os-intro h3{font-size:25px}.os-nav .os-pause{margin-left:0}}
 @media(max-width:480px){.os-terms{grid-template-columns:1fr}}
 [data-theme="dark"] .os-stage svg text{stroke:rgba(24,18,30,.92)}[data-theme="dark"] .os-stage svg.os-dark text{stroke:none}[data-theme="dark"] .os-lab .os-read{color:#e4dbe4!important}
-.os-theory{padding:4px 26px 8px}.os-table-wrap{overflow-x:auto;border:1px solid #ecdde3;border-radius:16px}.os-table{width:100%;border-collapse:collapse;font-size:17px;line-height:1.5}.os-table th,.os-table td{padding:12px 14px;text-align:left;border-bottom:1px solid #f0e6ea;vertical-align:top}.os-table thead th{font-size:15px;color:#7a2745;background:#fbf6f8}.os-table tbody tr:last-child th,.os-table tbody tr:last-child td{border-bottom:0}.os-table tbody th{font-weight:800;color:#3e3440;min-width:190px}.os-theory .lesson-emphasis{margin-top:14px}
-.os-tasks{display:grid;gap:14px;margin-top:16px}.os-task{border:1px solid #ecdde3;border-radius:18px;padding:18px 20px;background:#fff}.os-task h5{font-size:20px;font-weight:800;color:#1e293b}.os-task p{font-size:19px;line-height:1.7;color:#334155;margin-top:8px}.os-task-open{margin-top:12px;font-size:15px;font-weight:700;padding:9px 14px;border:1px solid #e2d3da;border-radius:11px;background:#fff;color:#713b50;cursor:pointer}.os-task-open[aria-expanded=true]{background:var(--bio-ui-accent);border-color:var(--bio-ui-accent);color:#fff}.os-task-body ul{list-style:none;padding:0;margin-top:8px;display:grid;gap:8px}.os-task-body li{display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.6;color:#334155}.os-task-body input{margin-top:7px;width:18px;height:18px;accent-color:var(--bio-ui-accent);flex:none}.os-task-body .os-task-hint{font-size:16px;color:#8a7c83}.os-task-score{font-weight:700;color:#7a2745;min-height:1.6em}
+.os-theory{padding:4px 26px 8px}.os-table-wrap{overflow-x:auto;border:1px solid #e5d4de;border-radius:16px}.os-table{width:100%;border-collapse:collapse;font-size:17px;line-height:1.5}.os-table th,.os-table td{padding:12px 14px;text-align:left;border-bottom:1px solid #efe3ea;vertical-align:top}.os-table thead th{font-size:15px;color:#7a2745;background:#fbf6f8}.os-table tbody tr:last-child th,.os-table tbody tr:last-child td{border-bottom:0}.os-table tbody th{font-weight:700;color:#3e3440;min-width:190px}.os-theory .lesson-emphasis{margin-top:14px}
+.os-tasks{display:grid;gap:14px;margin-top:16px}.os-task{border:1px solid #e5d4de;border-radius:18px;padding:18px 20px;background:#fff}.os-task h5{font-size:20px;font-weight:700;color:#251c21}.os-task p{font-size:19px;line-height:1.7;color:#342a38;margin-top:8px}.os-task-open{margin-top:12px;font-size:15px;font-weight:600;padding:9px 14px;border:1px solid #e5d4de;border-radius:11px;background:#fff;color:#6b6171;cursor:pointer}.os-task-open[aria-expanded=true]{background:var(--bio-ui-accent);border-color:var(--bio-ui-accent);color:#fff}.os-task-body ul{list-style:none;padding:0;margin-top:8px;display:grid;gap:8px}.os-task-body li{display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.6;color:#342a38}.os-task-body input{margin-top:7px;width:18px;height:18px;accent-color:var(--bio-ui-accent);flex:none}.os-task-body .os-task-hint{font-size:16px;color:#756d74}.os-task-score{font-weight:700;color:#7a2745;min-height:1.6em}
 [data-theme="dark"] .os-task,[data-theme="dark"] .os-table-wrap{border-color:#4e3b4d;background:transparent}[data-theme="dark"] .os-task h5,[data-theme="dark"] .os-task p,[data-theme="dark"] .os-task-body li,[data-theme="dark"] .os-table tbody th{color:#e4dbe4!important}[data-theme="dark"] .os-table td{color:#d8cfd8}[data-theme="dark"] .os-table thead th{background:#2a2030;color:#ef9bb7}[data-theme="dark"] .os-table th,[data-theme="dark"] .os-table td{border-color:#4e3b4d}
 @media(max-width:760px){.os-theory{padding-inline:16px}}
 </style>
@@ -6214,7 +6213,7 @@ const NS='http://www.w3.org/2000/svg';
 const reducedMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),lerp=(a,b,t)=>a+(b-a)*t;
 function S(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
-function T(parent,x,y,text,size,fill,anchor,weight){return S('text',{x,y,'font-size':size||15,fill:fill||'#475569','text-anchor':anchor||'middle','font-weight':weight||700},parent).appendChild(document.createTextNode(text)),parent.lastChild;}
+function T(parent,x,y,text,size,fill,anchor,weight){return S('text',{x,y,'font-size':size||15,fill:fill||'#6b6171','text-anchor':anchor||'middle','font-weight':weight||700},parent).appendChild(document.createTextNode(text)),parent.lastChild;}
 function setT(el,text){if(el.textContent!==text)el.textContent=text;}
 function mix(a,b,t){return 'rgb('+Math.round(lerp(a[0],b[0],t))+','+Math.round(lerp(a[1],b[1],t))+','+Math.round(lerp(a[2],b[2],t))+')';}
 function btn(parent,text,fn,cls){const b=document.createElement('button');b.type='button';b.textContent=text;if(cls)b.className=cls;b.addEventListener('click',fn);parent.appendChild(b);return b;}
@@ -6229,21 +6228,21 @@ function chTube(body,api){
  const ui=shell(body,{h:450,title:'Вода идёт туда, где «солонее»',lead:'Слева и справа — вода, посередине — мембрана, которая пропускает воду, но не растворённое вещество (оранжевые шарики). Двигай ползунки и смотри, куда пойдёт вода.',aria:'Сосуд с полупроницаемой мембраной посередине: молекулы воды переходят туда, где больше растворённого вещества'});
  const svg=ui.svg,mx=380,L0=100,R0=660,B=372,U=2.5,R=4;
  let sL=0,sR=10,rLR=0,rRL=0,time=0,cLR=0,cRL=0;
- const bgL=S('rect',{fill:'#9fd3ef','fill-opacity':.55},svg),bgR=S('rect',{fill:'#9fd3ef','fill-opacity':.55},svg);
- const refLine=S('line',{x1:L0-14,x2:R0+14,stroke:'#94a3b8','stroke-width':1.5,'stroke-dasharray':'5 6'},svg);
+ const bgL=S('rect',{fill:'#c9bde6','fill-opacity':.55},svg),bgR=S('rect',{fill:'#c9bde6','fill-opacity':.55},svg);
+ const refLine=S('line',{x1:L0-14,x2:R0+14,stroke:'#b7a9b6','stroke-width':1.5,'stroke-dasharray':'5 6'},svg);
  const gap=S('g',{},svg);
- S('path',{d:'M'+L0+' 70V'+B+'H'+R0+'V70',fill:'none',stroke:'#64748b','stroke-width':6,'stroke-linejoin':'round'},svg);
+ S('path',{d:'M'+L0+' 70V'+B+'H'+R0+'V70',fill:'none',stroke:'#756d74','stroke-width':6,'stroke-linejoin':'round'},svg);
  S('line',{x1:mx,x2:mx,y1:70,y2:B,stroke:'#7153a6','stroke-width':5,'stroke-dasharray':'22 12'},svg);
  T(svg,mx,B+58,'полупроницаемая мембрана',15,'#5b3f85');
- T(svg,(L0+mx)/2,B+30,'раствор A',15,'#64748b');T(svg,(mx+R0)/2,B+30,'раствор B',15,'#64748b');
- const arrow=S('path',{fill:'none',stroke:'#2b7fb0','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
- const arrowT=T(svg,mx,62,'',15,'#2b6a94');
+ T(svg,(L0+mx)/2,B+30,'раствор A',15,'#756d74');T(svg,(mx+R0)/2,B+30,'раствор B',15,'#756d74');
+ const arrow=S('path',{fill:'none',stroke:'#6b5aa8','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
+ const arrowT=T(svg,mx,62,'',15,'#5b4a92');
  const pipe=S('g',{},svg);
  const W=[],O=[];
- for(let i=0;i<140;i++)W.push({el:S('circle',{r:3.6,fill:'#2f95cf'},svg),x:0,y:0,vx:0,vy:0,side:0,on:false});
- for(let i=0;i<44;i++)O.push({el:S('circle',{r:7.5,fill:'#e08a2f',stroke:'#9a5410','stroke-width':1.6},svg),x:0,y:0,vx:0,vy:0,side:i<22?0:1,on:false});
+ for(let i=0;i<140;i++)W.push({el:S('circle',{r:3.6,fill:'#6b5aa8'},svg),x:0,y:0,vx:0,vy:0,side:0,on:false});
+ for(let i=0;i<44;i++)O.push({el:S('circle',{r:7.5,fill:'#c4684a',stroke:'#9c4a2f','stroke-width':1.6},svg),x:0,y:0,vx:0,vy:0,side:i<22?0:1,on:false});
  const bracket=S('g',{},svg);
- const bLine=S('path',{fill:'none',stroke:'#8e2448','stroke-width':3},bracket),bT=T(bracket,R0+34,0,'Δ',20,'#8e2448','start',800),bT2=T(bracket,R0+20,0,'',13,'#8e2448','start');
+ const bLine=S('path',{fill:'none',stroke:'#8e2448','stroke-width':3},bracket),bT=T(bracket,R0+34,0,'Δ',20,'#8e2448','start',700),bT2=T(bracket,R0+20,0,'',13,'#8e2448','start');
  function xr(side){return side===0?[L0+R+4,mx-R-4]:[mx+R+4,R0-R-4];}
  function reset(){time=0;rLR=rRL=0;const nW=[60-sL,60-sR];let k=0;W.forEach(p=>{p.on=false;});for(let s=0;s<2;s++)for(let i=0;i<nW[s];i++){const p=W[k++];const [a,b]=xr(s);p.on=true;p.side=s;p.x=rnd(a,b);p.y=rnd(B-150,B-6);const an=rnd(0,6.28);p.vx=Math.cos(an)*60;p.vy=Math.sin(an)*60;}
   O.forEach((o,i)=>{const s=i<22?0:1,n=s?sR:sL,idx=i<22?i:i-22;o.on=idx<n;o.side=s;const [a,b]=xr(s);o.x=rnd(a+4,b-4);o.y=rnd(B-130,B-10);const an=rnd(0,6.28);o.vx=Math.cos(an)*40;o.vy=Math.sin(an)*40;});}
@@ -6302,22 +6301,22 @@ function chCell(body,api){
  const ui=shell(body,{title:'Три раствора: гипо-, изо-, гипертонический',lead:'Выбери клетку и меняй концентрацию раствора снаружи. Внутри клетки — условные 50: это точка, где вода ходит в обе стороны поровну.',aria:'Животная или растительная клетка в растворе разной концентрации: вода входит, выходит или обменивается поровну'});
  const svg=ui.svg,cx=380,cy=215;
  let kind='animal',c=50,v=1,p=1,lysed=false,lysT=0,t=0;
- const water=[207,233,246],salt=[240,190,110];
- const beaker=S('rect',{x:30,y:30,width:700,height:370,rx:30,stroke:'#94a3b8','stroke-width':4},svg);
- const outDots=[];for(let i=0;i<46;i++)outDots.push({el:S('circle',{r:6,fill:'#e08a2f',stroke:'#9a5410','stroke-width':1.4},svg),x:rnd(50,710),y:rnd(50,380),vx:rnd(-30,30),vy:rnd(-30,30)});
+ const water=[222,214,238],salt=[240,205,185];
+ const beaker=S('rect',{x:30,y:30,width:700,height:370,rx:30,stroke:'#b7a9b6','stroke-width':4},svg);
+ const outDots=[];for(let i=0;i<46;i++)outDots.push({el:S('circle',{r:6,fill:'#c4684a',stroke:'#9c4a2f','stroke-width':1.4},svg),x:rnd(50,710),y:rnd(50,380),vx:rnd(-30,30),vy:rnd(-30,30)});
  const gAnimal=S('g',{},svg),gPlant=S('g',{},svg),gLys=S('g',{},svg);
  const aBody=S('path',{fill:'#e3d5f6',stroke:'#9980ba','stroke-width':5,'stroke-linejoin':'round'},gAnimal),aNuc=S('circle',{fill:'#b098ce'},gAnimal);
  const wall=S('rect',{x:cx-125,y:cy-100,width:250,height:200,rx:16,'stroke-width':12,stroke:'#82a655'},gPlant);
- const proto=S('rect',{fill:'#eaf4dc',stroke:'#6aa045','stroke-width':3},gPlant),vac=S('rect',{fill:'#bfe4f3',stroke:'#5aa5c2','stroke-width':2.5},gPlant),pNuc=S('circle',{fill:'#8a6aa8'},gPlant);
+ const proto=S('rect',{fill:'#eaf4dc',stroke:'#6aa045','stroke-width':3},gPlant),vac=S('rect',{fill:'#dcd3ee',stroke:'#8f7fc0','stroke-width':2.5},gPlant),pNuc=S('circle',{fill:'#8a6aa8'},gPlant);
  const chl=[0,1,2].map(()=>S('ellipse',{rx:12,ry:7,fill:'#5fae4a',stroke:'#3b7a2c','stroke-width':1.5},gPlant));
  const gapLabel=T(gPlant,cx,cy-118,'щель плазмолиза заполнена наружным раствором',14,'#8a5a1e');
- const inDots=[];for(let i=0;i<16;i++){const a=rnd(0,6.28),r=Math.sqrt(Math.random())*.8;inDots.push({u:Math.cos(a)*r,w:Math.sin(a)*r,el:S('circle',{r:5.5,fill:'#e08a2f',stroke:'#9a5410','stroke-width':1.2},svg),vx:rnd(-.2,.2),vy:rnd(-.2,.2)});}
- const flux=[];for(let i=0;i<40;i++)flux.push({el:S('circle',{r:4,fill:'#2f95cf',opacity:0},svg),life:0,x0:0,y0:0,x1:0,y1:0});
- const gauge=S('g',{},svg);S('rect',{x:660,y:80,width:42,height:240,rx:10,fill:'#fff',stroke:'#cbd5e1','stroke-width':2},gauge);
- const gFill=S('rect',{x:664,width:34,rx:7,fill:'#8e2448'},gauge),gMark=S('line',{x1:654,x2:708,stroke:'#475569','stroke-width':3},gauge);
- const gLab=T(gauge,681,72,'',14,'#475569'),gLow=T(gauge,681,342,'',13,'#64748b'),gHigh=T(gauge,681,98-26,'',13,'#64748b');
- const envT=T(svg,60,66,'',17,'#475569','start',800);
- const dirT=T(svg,60,92,'',16,'#2b6a94','start',700);
+ const inDots=[];for(let i=0;i<16;i++){const a=rnd(0,6.28),r=Math.sqrt(Math.random())*.8;inDots.push({u:Math.cos(a)*r,w:Math.sin(a)*r,el:S('circle',{r:5.5,fill:'#c4684a',stroke:'#9c4a2f','stroke-width':1.2},svg),vx:rnd(-.2,.2),vy:rnd(-.2,.2)});}
+ const flux=[];for(let i=0;i<40;i++)flux.push({el:S('circle',{r:4,fill:'#6b5aa8',opacity:0},svg),life:0,x0:0,y0:0,x1:0,y1:0});
+ const gauge=S('g',{},svg);S('rect',{x:660,y:80,width:42,height:240,rx:10,fill:'#fff',stroke:'#e5d4de','stroke-width':2},gauge);
+ const gFill=S('rect',{x:664,width:34,rx:7,fill:'#8e2448'},gauge),gMark=S('line',{x1:654,x2:708,stroke:'#6b6171','stroke-width':3},gauge);
+ const gLab=T(gauge,681,72,'',14,'#6b6171'),gLow=T(gauge,681,342,'',13,'#756d74'),gHigh=T(gauge,681,98-26,'',13,'#756d74');
+ const envT=T(svg,60,66,'',17,'#6b6171','start',700);
+ const dirT=T(svg,60,92,'',16,'#5b4a92','start',700);
  const spawnAcc={in:0,out:0};
  function target(){if(kind==='animal')return c<=50?1+.45*(50-c)/50:1-.48*(c-50)/50;return c<=50?1:1-.4*(c-50)/50;}
  function geom(){return kind==='animal'?{r:78*Math.sqrt(v),rx:78*Math.sqrt(v),ry:78*Math.sqrt(v)}:{rx:(250-18)/2*p,ry:(200-18)/2*p};}
@@ -6384,17 +6383,17 @@ function chOnion(body,api){
  const ui=shell(body,{h:460,title:'Опыт с луком: плазмолиз и деплазмолиз',lead:'Ты смотришь в микроскоп на кожицу красного лука. Нанеси каплю крепкого раствора соли, потом промой препарат водой. А если клетки мёртвые?',aria:'Поле зрения микроскопа с клетками эпидермиса лука: протопласты сжимаются в растворе соли и расправляются в воде'});
  const svg=ui.svg,cols=5,rows=4,cw=84,chh=80,cx0=380-cols*cw/2,cy0=230-rows*chh/2;svg.classList.add('os-dark');
  const clipId='os-onion-clip';const defs=S('defs',{},svg);const cp=S('clipPath',{id:clipId},defs);S('circle',{cx:380,cy:230,r:185},cp);
- S('rect',{width:760,height:460,fill:'#1f2937'},svg);
+ S('rect',{width:760,height:460,fill:'#342a38'},svg);
  const field=S('g',{'clip-path':'url(#'+clipId+')'},svg);
  const bg=S('rect',{x:190,y:40,width:380,height:380},field);
  const cells=[];
  for(let r=0;r<rows+1;r++)for(let c=0;c<cols+1;c++){const x=cx0+c*cw-(r%2?cw/2:0)-cw/2,y=cy0+r*chh-chh/2;const o={x,y,p:1,alive:true,tp:rnd(.45,.68),speed:rnd(.28,.5)};
   o.wall=S('rect',{x,y,width:cw,height:chh,fill:'#f2e9ee',stroke:'#b7a2ad','stroke-width':3},field);
   o.proto=S('rect',{fill:'#e7d3e1',stroke:'#c8a5bb','stroke-width':1.5},field);o.vac=S('rect',{fill:'#b4568b','fill-opacity':.8},field);o.nuc=S('circle',{fill:'#7a4d78'},field);cells.push(o);}
- S('circle',{cx:380,cy:230,r:185,fill:'none',stroke:'#0f172a','stroke-width':14},svg);S('circle',{cx:380,cy:230,r:192,fill:'none',stroke:'#475569','stroke-width':3},svg);
- const medT=T(svg,380,26,'',17,'#e2e8f0','middle',800);const cntT=T(svg,380,446,'',16,'#e2e8f0','middle',700);
+ S('circle',{cx:380,cy:230,r:185,fill:'none',stroke:'#251c21','stroke-width':14},svg);S('circle',{cx:380,cy:230,r:192,fill:'none',stroke:'#6b6171','stroke-width':3},svg);
+ const medT=T(svg,380,26,'',17,'#e5d4de','middle',700);const cntT=T(svg,380,446,'',16,'#e5d4de','middle',700);
  let medium='water',killedAny=false,mixT=1;
- const waterC=[232,243,249],saltC=[247,214,160];
+ const waterC=[238,233,246],saltC=[246,224,208];
  function tick(dt){if(dt>.05)dt=.05;mixT=Math.min(1,mixT+dt*.9);
   bg.setAttribute('fill',mix(medium==='salt'?waterC:saltC,medium==='salt'?saltC:waterC,mixT));
   let pl=0,alive=0;
@@ -6430,22 +6429,22 @@ function chParamecium(body,api){
  const ui=shell(body,{title:'Одноклеточные: насос против потопа',lead:'Пресная вода для инфузории — гипотонический раствор: вода всё время входит. Выкачивает её сократительная вакуоль. Меняй солёность и выключай насос.',aria:'Инфузория-туфелька с двумя сократительными вакуолями в воде разной солёности'});
  const svg=ui.svg,cx=380,cy=212;
  let sal=0,blocked=false,vol=1,burst=false,burstT=0,t=0;
- const pond=S('rect',{x:20,y:20,width:720,height:380,rx:26,'stroke-width':3,stroke:'#94a3b8'},svg);
- const bubbles=[];for(let i=0;i<40;i++)bubbles.push({el:S('circle',{r:4,fill:'#2f95cf',opacity:0},svg),life:0,x0:0,y0:0,x1:0,y1:0});
- const saltD=[];for(let i=0;i<40;i++)saltD.push({el:S('circle',{r:5.5,fill:'#e08a2f',opacity:.8},svg),x:rnd(40,720),y:rnd(40,380),vx:rnd(-20,20),vy:rnd(-20,20)});
- const cell=S('g',{},svg),body_=S('ellipse',{fill:'#e8e0c8',stroke:'#a1915a','stroke-width':4},cell);
- const cilia=S('path',{fill:'none',stroke:'#a1915a','stroke-width':2,'stroke-linecap':'round'},cell);
+ const pond=S('rect',{x:20,y:20,width:720,height:380,rx:26,'stroke-width':3,stroke:'#b7a9b6'},svg);
+ const bubbles=[];for(let i=0;i<40;i++)bubbles.push({el:S('circle',{r:4,fill:'#6b5aa8',opacity:0},svg),life:0,x0:0,y0:0,x1:0,y1:0});
+ const saltD=[];for(let i=0;i<40;i++)saltD.push({el:S('circle',{r:5.5,fill:'#c4684a',opacity:.8},svg),x:rnd(40,720),y:rnd(40,380),vx:rnd(-20,20),vy:rnd(-20,20)});
+ const cell=S('g',{},svg),body_=S('ellipse',{fill:'#f3e6dc',stroke:'#b08a7a','stroke-width':4},cell);
+ const cilia=S('path',{fill:'none',stroke:'#b08a7a','stroke-width':2,'stroke-linecap':'round'},cell);
  const mac=S('ellipse',{fill:'#b79bd1',stroke:'#7a5aa6','stroke-width':2},cell),mic=S('circle',{fill:'#7a5aa6'},cell);
  const gv=S('g',{},cell);
- const vacs=[{x:-92,ph:0},{x:98,ph:.5}].map(o=>({o,canals:S('path',{fill:'none',stroke:'#7fb5d5','stroke-width':3,'stroke-linecap':'round'},cell),el:S('circle',{fill:'#bfe4f3',stroke:'#4d93b8','stroke-width':3},cell)}));
- const pores=[S('circle',{r:3,fill:'#4d93b8'},cell),S('circle',{r:3,fill:'#4d93b8'},cell)];
- const spurt=[0,1].map(()=>S('circle',{r:5,fill:'#2f95cf',opacity:0},svg));
- const lab=T(svg,380,48,'',17,'#475569','middle',800);const fl=T(svg,380,386,'',16,'#475569','middle',700);
+ const vacs=[{x:-92,ph:0},{x:98,ph:.5}].map(o=>({o,canals:S('path',{fill:'none',stroke:'#a99ad0','stroke-width':3,'stroke-linecap':'round'},cell),el:S('circle',{fill:'#dcd3ee',stroke:'#8f7fc0','stroke-width':3},cell)}));
+ const pores=[S('circle',{r:3,fill:'#8f7fc0'},cell),S('circle',{r:3,fill:'#8f7fc0'},cell)];
+ const spurt=[0,1].map(()=>S('circle',{r:5,fill:'#6b5aa8',opacity:0},svg));
+ const lab=T(svg,380,48,'',17,'#6b6171','middle',700);const fl=T(svg,380,386,'',16,'#6b6171','middle',700);
  const burstG=S('g',{},svg);
  let count=[0,0],ph=[0,.5],spurtT=[9,9];
  function infl(){return clamp((50-sal)/50,0,1);}
  function period(){const f=infl();return f<.08?Infinity:3.2/f;}
- function tick(dt){if(dt>.05)dt=.05;t+=dt;const f=infl();pond.setAttribute('fill',mix([214,236,248],[243,205,140],sal/60));
+ function tick(dt){if(dt>.05)dt=.05;t+=dt;const f=infl();pond.setAttribute('fill',mix([238,233,246],[240,215,195],sal/60));
   const vv=burst?1:vol;
   body_.setAttribute('cx',cx);body_.setAttribute('cy',cy);body_.setAttribute('rx',170*vv);body_.setAttribute('ry',66*vv);cell.setAttribute('transform','rotate(-8 '+cx+' '+cy+')');
   mac.setAttribute('cx',cx);mac.setAttribute('cy',cy-4);mac.setAttribute('rx',32);mac.setAttribute('ry',17);mic.setAttribute('cx',cx+48);mic.setAttribute('cy',cy+10);mic.setAttribute('r',6);
@@ -6457,7 +6456,7 @@ function chParamecium(body,api){
    pores[i].setAttribute('cx',x);pores[i].setAttribute('cy',cy+(i?1:-1)*66*vv*.98);pores[i].setAttribute('visibility',(blocked||!isFinite(P))?'hidden':'visible');
    if(!blocked&&isFinite(P)&&k>.82&&k<.86)spurtT[i]=0;spurtT[i]+=dt;const sp=spurt[i];if(spurtT[i]<.7){const side=i?1:-1;sp.setAttribute('opacity',1-spurtT[i]/.7);sp.setAttribute('cx',x+side*spurtT[i]*10);sp.setAttribute('cy',cy+(i?1:-1)*(66*vv+spurtT[i]*70));}else sp.setAttribute('opacity',0);}
   if(!burst){if(blocked&&f>.1)vol+=dt*.075*f;else if(!blocked)vol+=(1-vol)*dt*.8;if(vol>1.42){burst=true;burstT=0;}}else burstT+=dt;
-  if(burst){burstG.replaceChildren();for(let i=0;i<12;i++){const a=i/12*6.2832,r=Math.min(60+burstT*60,150);S('circle',{cx:cx+Math.cos(a)*r*1.9,cy:cy+Math.sin(a)*r*.85,r:7,fill:'#e8e0c8',stroke:'#a1915a','stroke-width':2,opacity:clamp(1-burstT*.15,.5,1)},burstG);}cell.setAttribute('visibility','hidden');}else{burstG.replaceChildren();cell.setAttribute('visibility','visible');}
+  if(burst){burstG.replaceChildren();for(let i=0;i<12;i++){const a=i/12*6.2832,r=Math.min(60+burstT*60,150);S('circle',{cx:cx+Math.cos(a)*r*1.9,cy:cy+Math.sin(a)*r*.85,r:7,fill:'#f3e6dc',stroke:'#b08a7a','stroke-width':2,opacity:clamp(1-burstT*.15,.5,1)},burstG);}cell.setAttribute('visibility','hidden');}else{burstG.replaceChildren();cell.setAttribute('visibility','visible');}
   saltD.forEach((d,i)=>{if(i>=sal*.8){d.el.setAttribute('visibility','hidden');return;}d.el.setAttribute('visibility','visible');d.vx+=(Math.random()-.5)*40*dt;d.vy+=(Math.random()-.5)*40*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;if(d.x<34||d.x>726)d.vx*=-1;if(d.y<34||d.y>390)d.vy*=-1;d.el.setAttribute('cx',d.x.toFixed(1));d.el.setAttribute('cy',d.y.toFixed(1));});
   if(!burst&&Math.random()<f*dt*14){const b=bubbles.find(q=>q.life<=0);if(b){const th=rnd(0,6.28);b.x0=cx+Math.cos(th)*(170*vv+50);b.y0=cy+Math.sin(th)*(66*vv+50);b.x1=cx+Math.cos(th)*(170*vv-6);b.y1=cy+Math.sin(th)*(66*vv-6);b.life=1;}}
   bubbles.forEach(b=>{if(b.life<=0){b.el.setAttribute('opacity',0);return;}b.life-=dt*1.1;const k=1-Math.max(b.life,0);b.el.setAttribute('cx',lerp(b.x0,b.x1,k).toFixed(1));b.el.setAttribute('cy',lerp(b.y0,b.y1,k).toFixed(1));b.el.setAttribute('opacity',Math.sin(Math.min(1,k)*3.14).toFixed(2));});
@@ -6488,35 +6487,35 @@ function chFish(body,api){
  const labs=S('g',{},svg);
  function draw(){
   fg.replaceChildren();arrows.replaceChildren();labs.replaceChildren();
-  const sea=env==='sea';bg.setAttribute('fill',sea?'#bfdcee':'#d9eef7');
+  const sea=env==='sea';bg.setAttribute('fill',sea?'#ded6ee':'#eee9f6');
   const ok=(fish==='fresh'&&env==='fresh')||(fish==='marine'&&env==='sea')||(fish==='shark'&&env==='sea');
   const IMG={shark:['063f8c0b45b1',438],fresh:['a42e277461d4',463],marine:['3c06edbd91e0',423],shark_sad:['798194d6e900',414],fresh_sad:['121dbcb6582e',465],marine_sad:['df1adb9b2e9e',413]};
   const pic=IMG[fish+(ok?'':'_sad')],iw=360,ih=Math.round(iw*pic[1]/720),iy=Math.round(222-ih/2);
   S('image',{x:215,y:iy,width:iw,height:ih,preserveAspectRatio:'xMidYMid meet'},fg).setAttribute('href','/assets/img/'+pic[0]+'.webp');
   const arrow=(x1,y1,x2,y2,color,w,rev,dashed)=>{const p=S('path',{d:'M'+x1+' '+y1+'L'+x2+' '+y2,stroke:color,'stroke-width':w,fill:'none','stroke-linecap':'round'},arrows);if(!dashed)p.setAttribute('class','os-flow'+(rev?' rev':''));else p.setAttribute('stroke-dasharray','4 8');const a=Math.atan2(y2-y1,x2-x1),h=11+w;S('path',{d:'M'+(x2-Math.cos(a-.5)*h)+' '+(y2-Math.sin(a-.5)*h)+'L'+x2+' '+y2+'L'+(x2-Math.cos(a+.5)*h)+' '+(y2-Math.sin(a+.5)*h),stroke:color,'stroke-width':w,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},arrows);};
-  const W='#2f95cf',SALT='#d97a1d',UR='#a58b2a';
+  const W='#6b5aa8',SALT='#c4684a',UR='#a07a3c';
   const intoBody=env==='fresh';
   // вода через тело (осмос)
   const water=fish==='shark'&&sea?0:1;
   if(water){const sz=fish==='shark'?2.5:4;[[360,140,360,172],[440,155,440,185],[360,288,360,254],[440,275,440,245]].forEach(([a,b,c,d])=>{const top=b<200;if(intoBody)arrow(a,b-10,c,d,W,sz,false);else arrow(c,d,a,b-(top?12:-12),W,sz,false);});}
   
-  T(labs,420,100,intoBody?(fish==='shark'?'осмос: вода входит':'осмос: вода входит в тело'):(water?'осмос: вода уходит из тела':'мочевина удерживает воду: вода почти не уходит'),15,'#2b6a94','middle',800);
+  T(labs,420,100,intoBody?(fish==='shark'?'осмос: вода входит':'осмос: вода входит в тело'):(water?'осмос: вода уходит из тела':'мочевина удерживает воду: вода почти не уходит'),15,'#5b4a92','middle',700);
   // приспособления
   const drawBig=fish==='marine'||fish==='shark'&&sea;
   // питьё
-  if(fish==='marine'){arrow(150,215,212,215,W,6,false,!ok&&env==='fresh');T(labs,120,196,'пьёт много',15,'#2b6a94');}
-  else if(fish==='fresh'){arrow(165,215,212,215,W,1.5,false,true);T(labs,120,196,'почти не пьёт',15,'#2b6a94');}
-  else T(labs,120,196,sea?'пьёт немного':'',15,'#2b6a94');
+  if(fish==='marine'){arrow(150,215,212,215,W,6,false,!ok&&env==='fresh');T(labs,120,196,'пьёт много',15,'#5b4a92');}
+  else if(fish==='fresh'){arrow(165,215,212,215,W,1.5,false,true);T(labs,120,196,'почти не пьёт',15,'#5b4a92');}
+  else T(labs,120,196,sea?'пьёт немного':'',15,'#5b4a92');
   // моча
-  if(fish==='fresh'){arrow(520,236,520,300,UR,8,false);T(labs,540,352,'много разбавленной мочи',15,'#7a6a1c');}
-  else if(fish==='marine'){arrow(520,236,520,288,UR,2.5,false);T(labs,540,340,'мало концентрированной мочи',15,'#7a6a1c');}
-  else{arrow(520,240,520,288,UR,3,false);T(labs,575,346,'мочи немного',15,'#7a6a1c');}
+  if(fish==='fresh'){arrow(520,236,520,300,UR,8,false);T(labs,540,352,'много разбавленной мочи',15,'#7a5a2a');}
+  else if(fish==='marine'){arrow(520,236,520,288,UR,2.5,false);T(labs,540,340,'мало концентрированной мочи',15,'#7a5a2a');}
+  else{arrow(520,240,520,288,UR,3,false);T(labs,575,346,'мочи немного',15,'#7a5a2a');}
   // соли в жабрах
-  if(fish==='fresh'){arrow(300,112,300,168,SALT,5,false);T(labs,300,130,'',14);T(labs,170,122,'жабры: соли внутрь',15,'#9a5410','middle',800);T(labs,170,142,'(активно, против градиента, АТФ)',14,'#9a5410');}
-  else if(fish==='marine'){arrow(300,172,300,112,SALT,5,false);T(labs,170,122,'жабры: соли наружу',15,'#9a5410','middle',800);T(labs,170,142,'(активно, против градиента, АТФ)',14,'#9a5410');}
-  else{arrow(440,246,440,292,SALT,4,false);T(labs,380,350,'ректальная железа выводит соли',14,'#9a5410','middle',800);}
+  if(fish==='fresh'){arrow(300,112,300,168,SALT,5,false);T(labs,300,130,'',14);T(labs,170,122,'жабры: соли внутрь',15,'#9c4a2f','middle',700);T(labs,170,142,'(активно, против градиента, АТФ)',14,'#9c4a2f');}
+  else if(fish==='marine'){arrow(300,172,300,112,SALT,5,false);T(labs,170,122,'жабры: соли наружу',15,'#9c4a2f','middle',700);T(labs,170,142,'(активно, против градиента, АТФ)',14,'#9c4a2f');}
+  else{arrow(440,246,440,292,SALT,4,false);T(labs,380,350,'ректальная железа выводит соли',14,'#9c4a2f','middle',700);}
   // подпись среды
-  T(labs,380,56,env==='sea'?'Морская вода: гипертонический раствор для клеток рыбы':'Пресная вода: гипотонический раствор для клеток рыбы',17,'#334155','middle',800);
+  T(labs,380,56,env==='sea'?'Морская вода: гипертонический раствор для клеток рыбы':'Пресная вода: гипотонический раствор для клеток рыбы',17,'#342a38','middle',700);
   let state,msg;
   if(fish==='fresh'&&env==='fresh'){state='Всё в порядке';msg='Пресная вода: гипотоническая среда, вода сама течёт в тело через жабры и кожу. Рыба почти не пьёт, выделяет много очень разбавленной мочи, а потерянные с мочой соли возвращает: специальные клетки жабр активно закачивают их из воды, это работа против градиента, нужна АТФ.';}
   else if(fish==='marine'&&env==='sea'){state='Всё в порядке';msg='Морская вода гипертонична: вода из тела стремится уйти наружу, рыба обезвоживается. Поэтому морская костистая рыба много пьёт, выделяет мало концентрированной мочи, а лишние соли, попавшие с водой, выводит клетками жабр активно, с затратой АТФ.';}
@@ -6524,7 +6523,7 @@ function chFish(body,api){
   else if(fish==='fresh'&&env==='sea'){state='Беда: обезвоживание';msg='Пресноводную рыбу бросили в море. Снаружи крепче, чем внутри, вода выходит из клеток, а все её приспособления работают в обратную сторону: пить она не умеет, солей закачивает не туда, где надо. Обезвоживание и гибель.';}
   else if(fish==='marine'&&env==='fresh'){state='Беда: клетки набухают';msg='Морскую рыбу выпустили в пресную воду. Вода хлынет в тело, а соли начнут вымываться. Она пьёт много (как привыкла), выделяет мало мочи и накачивает воду в себя. Клетки набухают и лопаются.';}
   else{state='Не приспособлена';msg='Морская акула в пресной воде: мочевины в тканях много, концентрация внутри выше, чем снаружи, вода будет входить непрерывно. У пресноводных хрящевых рыб в тканях мочевины заметно меньше, поэтому они там и живут.';}
-  const sb=T(labs,380,380,'Статус: '+state,18,ok?'#256a3c':'#a3223f','middle',800);
+  const sb=T(labs,380,380,'Статус: '+state,18,ok?'#256a3c':'#a3223f','middle',700);
   ui.read.textContent=msg;
  }
  const fs=seg(ui.controls,[['fresh','Пресноводная рыба'],['marine','Морская костистая'],['shark','Хрящевая (акула)']],id=>{fish=id;draw();},'fresh');
@@ -6539,16 +6538,16 @@ function chStomata(body,api){
  const ui=shell(body,{title:'Устьица: тургор открывает «дверь»',lead:'Две замыкающие клетки открывают щель, когда набирают воду. Воду они набирают не просто так: сначала в них накачивают ионы калия K⁺ (тратится АТФ).',aria:'Две замыкающие клетки устьица: чем больше калия и воды внутри, тем шире устьичная щель'});
  const svg=ui.svg,cx=380,cy=215;let K=0,water=true,open=0;
  S('rect',{x:20,y:20,width:720,height:380,rx:26,fill:'#eef7e8'},svg);
- S('rect',{x:20,y:20,width:720,height:70,fill:'#e0f0f8'},svg);S('rect',{x:20,y:330,width:720,height:70,fill:'#d9ecc9'},svg);
- T(svg,60,58,'воздух',16,'#4b7da0','start',800);T(svg,60,372,'ткань листа',16,'#4a7a2d','start',800);
+ S('rect',{x:20,y:20,width:720,height:70,fill:'#eee9f6'},svg);S('rect',{x:20,y:330,width:720,height:70,fill:'#d9ecc9'},svg);
+ T(svg,60,58,'воздух',16,'#7f70b0','start',700);T(svg,60,372,'ткань листа',16,'#4a7a2d','start',700);
  const left=S('path',{fill:'#9fd18a',stroke:'#4c8a3a','stroke-width':3},svg),right=S('path',{fill:'#9fd18a',stroke:'#4c8a3a','stroke-width':3},svg);
  const innerL=S('path',{fill:'none',stroke:'#2f6a24','stroke-width':8,'stroke-linecap':'round'},svg),innerR=S('path',{fill:'none',stroke:'#2f6a24','stroke-width':8,'stroke-linecap':'round'},svg);
  const chl=[];for(let i=0;i<6;i++)chl.push(S('ellipse',{rx:9,ry:5.5,fill:'#3f8f38',stroke:'#2a6a26','stroke-width':1.2},svg));
- const ions=[];for(let i=0;i<18;i++)ions.push({el:S('circle',{r:7,fill:'#e08a2f',stroke:'#9a5410','stroke-width':1.4},svg),a:rnd(0,6.28),b:rnd(0,1),side:i%2});
- const watr=[];for(let i=0;i<30;i++)watr.push({el:S('circle',{r:4,fill:'#2f95cf',opacity:0},svg),life:0,x0:0,y0:0,x1:0,y1:0});
- const gas=[];for(let i=0;i<10;i++)gas.push({el:S('text',{'font-size':14,'font-weight':800,fill:'#4b7da0',opacity:0,'text-anchor':'middle'},svg),life:0,k:i%2});
- const atp=T(svg,480,372,'',15,'#9a5410','middle',800);const gl=T(svg,cx,66,'',17,'#2f6a24','middle',800);
- const wallNote=T(svg,cx+200,196,'внутренняя стенка толще',14,'#2f6a24','start',800);const wallNote2=T(svg,cx+200,216,'→ клетки изгибаются',14,'#2f6a24','start',700);
+ const ions=[];for(let i=0;i<18;i++)ions.push({el:S('circle',{r:7,fill:'#c4684a',stroke:'#9c4a2f','stroke-width':1.4},svg),a:rnd(0,6.28),b:rnd(0,1),side:i%2});
+ const watr=[];for(let i=0;i<30;i++)watr.push({el:S('circle',{r:4,fill:'#6b5aa8',opacity:0},svg),life:0,x0:0,y0:0,x1:0,y1:0});
+ const gas=[];for(let i=0;i<10;i++)gas.push({el:S('text',{'font-size':14,'font-weight':800,fill:'#7f70b0',opacity:0,'text-anchor':'middle'},svg),life:0,k:i%2});
+ const atp=T(svg,480,372,'',15,'#9c4a2f','middle',700);const gl=T(svg,cx,66,'',17,'#2f6a24','middle',700);
+ const wallNote=T(svg,cx+200,196,'внутренняя стенка толще',14,'#2f6a24','start',700);const wallNote2=T(svg,cx+200,216,'→ клетки изгибаются',14,'#2f6a24','start',700);
  let acc=0,gacc=0,tt=0;
  function shape(side,o){const d=side?1:-1,y0=cy-92,y1=cy+92,ex=cx+d*16,mid=cx+d*(5+34*o),outer=cx+d*(78+22*o),ctrl=2*mid-ex;
   const path='M'+ex+' '+y0+'C'+(cx+d*(120+36*o))+' '+(y0+30)+' '+(cx+d*(120+36*o))+' '+(y1-30)+' '+ex+' '+y1+'Q'+ctrl+' '+cy+' '+ex+' '+y0+'Z';
@@ -6561,7 +6560,7 @@ function chStomata(body,api){
   const flow=(K/100)*(water?1:.12)*Math.max(0,1-open*.8);
   acc+=flow*10*dt;while(acc>=1){acc--;const w=watr.find(q=>q.life<=0);if(!w)break;const s=Math.random()<.5?-1:1;w.x0=cx+s*(100+tur*40)+rnd(-18,18);w.y0=cy+rnd(120,148);w.x1=cx+s*(66+tur*30);w.y1=cy+rnd(-30,30);w.life=1;}
   watr.forEach(w=>{if(w.life<=0){w.el.setAttribute('opacity',0);return;}w.life-=dt*.7;const k=1-Math.max(w.life,0);w.el.setAttribute('cx',lerp(w.x0,w.x1,k).toFixed(1));w.el.setAttribute('cy',lerp(w.y0,w.y1,k).toFixed(1));w.el.setAttribute('opacity',Math.sin(Math.min(1,k)*3.14).toFixed(2));});
-  gacc+=open*3*dt;while(gacc>=1){gacc--;const g=gas.find(q=>q.life<=0);if(!g)break;g.life=1;g.el.textContent=g.k?'H₂O':'CO₂';g.el.setAttribute('fill',g.k?'#4b7da0':'#6b5b3a');g.dir=g.k?-1:1;g.x=cx+rnd(-8,8);}
+  gacc+=open*3*dt;while(gacc>=1){gacc--;const g=gas.find(q=>q.life<=0);if(!g)break;g.life=1;g.el.textContent=g.k?'H₂O':'CO₂';g.el.setAttribute('fill',g.k?'#7f70b0':'#6b5b3a');g.dir=g.k?-1:1;g.x=cx+rnd(-8,8);}
   gas.forEach(g=>{if(g.life<=0){g.el.setAttribute('opacity',0);return;}g.life-=dt*.55;const k=1-Math.max(g.life,0);g.el.setAttribute('x',(g.x+(g.dir>0?-46:46)).toFixed(1));g.el.setAttribute('y',(g.dir>0?(100+k*110):(210-k*112)).toFixed(1));g.el.setAttribute('opacity',Math.sin(Math.min(1,k)*3.14).toFixed(2));});
   setT(atp,K>8?'в замыкающие клетки закачивается K⁺ (насос, АТФ)':'');setT(gl,open>.55?'устьице открыто':open>.15?'щель приоткрыта':'устьице закрыто');
   wallNote.setAttribute('visibility',open>.08?'visible':'hidden');wallNote2.setAttribute('visibility',open>.08?'visible':'hidden');
