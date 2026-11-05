@@ -6222,7 +6222,7 @@ function facts(box,list){box.innerHTML='';list.forEach(([k,v])=>{const d=documen
 
 /* ---------- 1. Осмос в сосуде ---------- */
 function chTube(body,api){
- const ui=shell(body,{title:'Вода идёт туда, где «солонее»',lead:'Слева и справа — вода, посередине — мембрана, которая пропускает воду, но не растворённое вещество (оранжевые шарики). Двигай ползунки и смотри, куда пойдёт вода.',aria:'Сосуд с полупроницаемой мембраной посередине: молекулы воды переходят туда, где больше растворённого вещества'});
+ const ui=shell(body,{h:450,title:'Вода идёт туда, где «солонее»',lead:'Слева и справа — вода, посередине — мембрана, которая пропускает воду, но не растворённое вещество (оранжевые шарики). Двигай ползунки и смотри, куда пойдёт вода.',aria:'Сосуд с полупроницаемой мембраной посередине: молекулы воды переходят туда, где больше растворённого вещества'});
  const svg=ui.svg,mx=380,L0=100,R0=660,B=372,U=2.5,R=4;
  let sL=0,sR=10,rLR=0,rRL=0,time=0,cLR=0,cRL=0;
  const bgL=S('rect',{fill:'#9fd3ef','fill-opacity':.55},svg),bgR=S('rect',{fill:'#9fd3ef','fill-opacity':.55},svg);
@@ -6230,10 +6230,10 @@ function chTube(body,api){
  const gap=S('g',{},svg);
  S('path',{d:'M'+L0+' 70V'+B+'H'+R0+'V70',fill:'none',stroke:'#64748b','stroke-width':6,'stroke-linejoin':'round'},svg);
  S('line',{x1:mx,x2:mx,y1:70,y2:B,stroke:'#7153a6','stroke-width':5,'stroke-dasharray':'22 12'},svg);
- T(svg,mx,52,'полупроницаемая мембрана',15,'#5b3f85');
+ T(svg,mx,B+58,'полупроницаемая мембрана',15,'#5b3f85');
  T(svg,(L0+mx)/2,B+30,'раствор A',15,'#64748b');T(svg,(mx+R0)/2,B+30,'раствор B',15,'#64748b');
  const arrow=S('path',{fill:'none',stroke:'#2b7fb0','stroke-width':6,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
- const arrowT=T(svg,mx,112,'',15,'#2b6a94');
+ const arrowT=T(svg,mx,62,'',15,'#2b6a94');
  const pipe=S('g',{},svg);
  const W=[],O=[];
  for(let i=0;i<140;i++)W.push({el:S('circle',{r:3.6,fill:'#2f95cf'},svg),x:0,y:0,vx:0,vy:0,side:0,on:false});
@@ -6272,8 +6272,8 @@ function chTube(body,api){
   for(const p of W){if(!p.on){p.el.setAttribute('visibility','hidden');continue;}p.el.setAttribute('visibility','visible');p.el.setAttribute('cx',p.x.toFixed(1));p.el.setAttribute('cy',p.y.toFixed(1));}
   for(const o of O){if(!o.on){o.el.setAttribute('visibility','hidden');continue;}o.el.setAttribute('visibility','visible');o.el.setAttribute('cx',o.x.toFixed(1));o.el.setAttribute('cy',o.y.toFixed(1));}
   const net=rLR-rRL,mag=clamp(Math.abs(net)/6,0,1);
-  if(Math.abs(net)>1.2&&time>.8){const dir=net>0?1:-1,len=24+mag*50;arrow.setAttribute('d','M'+(mx-dir*len/2)+' 92H'+(mx+dir*len/2)+'m'+(-dir*12)+' -10 '+(dir*12)+' 10 '+(-dir*12)+' 10');arrowT.textContent='вода в основном идёт '+(net>0?'вправо':'влево');}
-  else{arrow.setAttribute('d','M'+(mx-30)+' 92H'+(mx+30)+'M'+(mx-18)+' 80 '+(mx-30)+' 92 '+(mx-18)+' 104M'+(mx+18)+' 80 '+(mx+30)+' 92 '+(mx+18)+' 104');arrowT.textContent=time>.8?'потоки в обе стороны почти равны':'';}
+  if(Math.abs(net)>1.2&&time>.8){const dir=net>0?1:-1,len=24+mag*50;arrow.setAttribute('d','M'+(mx-dir*len/2)+' 30H'+(mx+dir*len/2)+'m'+(-dir*12)+' -10 '+(dir*12)+' 10 '+(-dir*12)+' 10');arrowT.textContent='вода в основном идёт '+(net>0?'вправо':'влево');}
+  else{arrow.setAttribute('d','M'+(mx-30)+' 30H'+(mx+30)+'M'+(mx-18)+' 18 '+(mx-30)+' 30 '+(mx-18)+' 42M'+(mx+18)+' 18 '+(mx+30)+' 30 '+(mx+18)+' 42');arrowT.textContent=time>.8?'потоки в обе стороны почти равны':'';}
   const dh=(yL-yR);if(Math.abs(dh)>6){const top=Math.min(yL,yR),bot=Math.max(yL,yR);bLine.setAttribute('d','M'+(R0+12)+' '+top+'h12v'+(bot-top)+'h-12');bT.setAttribute('y',(top+bot)/2+7);bT2.setAttribute('y',(top+bot)/2+28);setT(bT2,'');setT(bT,'Δ');bracket.setAttribute('visibility','visible');}else bracket.setAttribute('visibility','hidden');
   let msg;
   if(sL===sR)msg='Растворённого вещества поровну → воды «свободной» тоже поровну. Молекулы бегают через мембрану в обе стороны с одной скоростью, уровни стоят. Это и есть динамическое равновесие, а не «ничего не происходит».';
@@ -6335,10 +6335,10 @@ function chCell(body,api){
    pNuc.setAttribute('cx',cx-w*.4);pNuc.setAttribute('cy',cy-h*.05);pNuc.setAttribute('r',9*p);chl.forEach((e,i)=>{e.setAttribute('cx',cx+(i-1)*w*.3);e.setAttribute('cy',cy-h*.42+(i%2)*h*.84);e.setAttribute('rx',11*p);e.setAttribute('ry',6.5*p);});
    wall.setAttribute('fill',col);const gp=p<.93;gapLabel.setAttribute('visibility',gp?'visible':'hidden');gapLabel.setAttribute('y',cy+128);}
   else gapLabel.setAttribute('visibility','hidden');
-  inDots.forEach(d=>{if(kind==='animal'&&lysed){const k=1+lysT*1.1;d.el.setAttribute('cx',(cx+d.u*78*k+Math.sin(t*2+d.u*9)*lysT*6).toFixed(1));d.el.setAttribute('cy',(cy+d.w*78*k).toFixed(1));d.el.setAttribute('opacity',clamp(1-lysT*.25,.15,1));return;}
+  inDots.forEach(d=>{if(kind==='animal'&&lysed){const k=Math.min(1+lysT*1.1,2.1);d.el.setAttribute('cx',(cx+d.u*78*k+Math.sin(t*2+d.u*9)*Math.min(lysT,3)*6).toFixed(1));d.el.setAttribute('cy',(cy+d.w*78*k).toFixed(1));d.el.setAttribute('opacity',clamp(1-lysT*.25,.15,1));return;}
    d.el.setAttribute('opacity',1);d.u+=d.vx*dt;d.w+=d.vy*dt;if(d.u*d.u+d.w*d.w>.64){d.vx*=-1;d.vy*=-1;d.u*=.97;d.w*=.97;}
    let X,Y;if(kind==='animal'){X=cx+d.u*g.r*.95;Y=cy+d.w*g.r*.95;}else{X=cx+d.u*g.rx*.86;Y=cy+d.w*g.ry*.86;}d.el.setAttribute('cx',X.toFixed(1));d.el.setAttribute('cy',Y.toFixed(1));});
-  if(kind==='animal'&&lysed){const k=1+lysT*.5;for(let i=0;i<9;i++){const a0=i/9*6.2832+.1,a1=a0+.4,r=78*1.38*k,tx=Math.cos(a0+.2)*lysT*7,ty=Math.sin(a0+.2)*lysT*7;S('path',{d:'M'+(cx+Math.cos(a0)*r+tx)+' '+(cy+Math.sin(a0)*r+ty)+'A'+r+' '+r+' 0 0 1 '+(cx+Math.cos(a1)*r+tx)+' '+(cy+Math.sin(a1)*r+ty),fill:'none',stroke:'#9980ba','stroke-width':5,'stroke-linecap':'round',opacity:clamp(1-lysT*.15,.4,1)},gLys);}}
+  if(kind==='animal'&&lysed){const k=Math.min(1+lysT*.5,1.35);for(let i=0;i<9;i++){const a0=i/9*6.2832+.1,a1=a0+.4,r=78*1.38*k,tx=Math.cos(a0+.2)*Math.min(lysT,3)*7,ty=Math.sin(a0+.2)*Math.min(lysT,3)*7;S('path',{d:'M'+(cx+Math.cos(a0)*r+tx)+' '+(cy+Math.sin(a0)*r+ty)+'A'+r+' '+r+' 0 0 1 '+(cx+Math.cos(a1)*r+tx)+' '+(cy+Math.sin(a1)*r+ty),fill:'none',stroke:'#9980ba','stroke-width':5,'stroke-linecap':'round',opacity:clamp(1-lysT*.15,.4,1)},gLys);}}
   const net=(c-50)/50,rate=Math.abs(net)*10;
   if(!(kind==='animal'&&lysed)){const rin=1.6+(c<50?rate:0),rout=1.6+(c>50?rate:0);spawnAcc.in+=rin*dt;spawnAcc.out+=rout*dt;
    const sp=(dir)=>{const f=flux.find(q=>q.life<=0);if(!f)return;const th=rnd(0,6.28),a=edge(th,dir>0?44:-8),b=edge(th,dir>0?-8:44);f.x0=a[0];f.y0=a[1];f.x1=b[0];f.y1=b[1];f.life=1;};
@@ -6453,11 +6453,11 @@ function chParamecium(body,api){
    pores[i].setAttribute('cx',x);pores[i].setAttribute('cy',cy+(i?1:-1)*66*vv*.98);pores[i].setAttribute('visibility',(blocked||!isFinite(P))?'hidden':'visible');
    if(!blocked&&isFinite(P)&&k>.82&&k<.86)spurtT[i]=0;spurtT[i]+=dt;const sp=spurt[i];if(spurtT[i]<.7){const side=i?1:-1;sp.setAttribute('opacity',1-spurtT[i]/.7);sp.setAttribute('cx',x+side*spurtT[i]*10);sp.setAttribute('cy',cy+(i?1:-1)*(66*vv+spurtT[i]*70));}else sp.setAttribute('opacity',0);}
   if(!burst){if(blocked&&f>.1)vol+=dt*.075*f;else if(!blocked)vol+=(1-vol)*dt*.8;if(vol>1.42){burst=true;burstT=0;}}else burstT+=dt;
-  if(burst){burstG.replaceChildren();for(let i=0;i<12;i++){const a=i/12*6.2832,r=60+burstT*90;S('circle',{cx:cx+Math.cos(a)*r*2,cy:cy+Math.sin(a)*r*.9,r:7,fill:'#e8e0c8',stroke:'#a1915a','stroke-width':2,opacity:clamp(1-burstT*.3,.2,1)},burstG);}cell.setAttribute('visibility','hidden');}else{burstG.replaceChildren();cell.setAttribute('visibility','visible');}
+  if(burst){burstG.replaceChildren();for(let i=0;i<12;i++){const a=i/12*6.2832,r=Math.min(60+burstT*60,150);S('circle',{cx:cx+Math.cos(a)*r*1.9,cy:cy+Math.sin(a)*r*.85,r:7,fill:'#e8e0c8',stroke:'#a1915a','stroke-width':2,opacity:clamp(1-burstT*.15,.5,1)},burstG);}cell.setAttribute('visibility','hidden');}else{burstG.replaceChildren();cell.setAttribute('visibility','visible');}
   saltD.forEach((d,i)=>{if(i>=sal*.8){d.el.setAttribute('visibility','hidden');return;}d.el.setAttribute('visibility','visible');d.vx+=(Math.random()-.5)*40*dt;d.vy+=(Math.random()-.5)*40*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;if(d.x<34||d.x>726)d.vx*=-1;if(d.y<34||d.y>390)d.vy*=-1;d.el.setAttribute('cx',d.x.toFixed(1));d.el.setAttribute('cy',d.y.toFixed(1));});
   if(!burst&&Math.random()<f*dt*14){const b=bubbles.find(q=>q.life<=0);if(b){const th=rnd(0,6.28);b.x0=cx+Math.cos(th)*(170*vv+50);b.y0=cy+Math.sin(th)*(66*vv+50);b.x1=cx+Math.cos(th)*(170*vv-6);b.y1=cy+Math.sin(th)*(66*vv-6);b.life=1;}}
   bubbles.forEach(b=>{if(b.life<=0){b.el.setAttribute('opacity',0);return;}b.life-=dt*1.1;const k=1-Math.max(b.life,0);b.el.setAttribute('cx',lerp(b.x0,b.x1,k).toFixed(1));b.el.setAttribute('cy',lerp(b.y0,b.y1,k).toFixed(1));b.el.setAttribute('opacity',Math.sin(Math.min(1,k)*3.14).toFixed(2));});
-  setT(lab,'Вода снаружи: '+(sal<8?'пресная':sal>=48?'почти как цитоплазма':'слегка солоноватая'));
+  setT(lab,burst?'Клетка лопнула':'Вода снаружи: '+(sal<8?'пресная':sal>=48?'почти как цитоплазма':'слегка солоноватая'));
   const P=period();setT(fl,blocked?'Вакуоли выключены':isFinite(P)?'Ритм вакуоли: '+(f>.75?'частый':f>.4?'средний':'редкий'):'Вакуоль почти не нужна: концентрации выровнены');
   let msg;
   if(burst)msg='Клетка лопнула: вода продолжала входить, а выводить её было некому. У инфузории нет клеточной стенки, как у растения, поэтому спасает только насос.';
@@ -6494,8 +6494,8 @@ function chFish(body,api){
   // вода через тело (осмос)
   const water=fish==='shark'&&sea?0:1;
   if(water){const sz=fish==='shark'?2.5:4;[[360,140,360,172],[440,155,440,185],[360,288,360,254],[440,275,440,245]].forEach(([a,b,c,d])=>{const top=b<200;if(intoBody)arrow(a,b-10,c,d,W,sz,false);else arrow(c,d,a,b-(top?12:-12),W,sz,false);});}
-  else{T(labs,420,172,'вода почти не уходит',14,'#2b6a94');}
-  T(labs,420,100,intoBody?(fish==='shark'?'осмос: вода входит':'осмос: вода входит в тело'):(water?'осмос: вода уходит из тела':'мочевина удерживает воду'),15,'#2b6a94','middle',800);
+  
+  T(labs,420,100,intoBody?(fish==='shark'?'осмос: вода входит':'осмос: вода входит в тело'):(water?'осмос: вода уходит из тела':'мочевина удерживает воду: вода почти не уходит'),15,'#2b6a94','middle',800);
   // приспособления
   const ok=(fish==='fresh'&&env==='fresh')||(fish==='marine'&&env==='sea')||(fish==='shark'&&env==='sea');
   const drawBig=fish==='marine'||fish==='shark'&&sea;
@@ -6506,11 +6506,11 @@ function chFish(body,api){
   // моча
   if(fish==='fresh'){arrow(520,236,520,300,UR,8,false);T(labs,520,330,'много разбавленной мочи',15,'#7a6a1c');}
   else if(fish==='marine'){arrow(520,236,520,288,UR,2.5,false);T(labs,520,318,'мало концентрированной мочи',15,'#7a6a1c');}
-  else{arrow(520,236,520,288,UR,3,false);T(labs,520,318,'мочи немного',15,'#7a6a1c');}
+  else{arrow(520,236,520,288,UR,3,false);T(labs,455,318,'мочи немного',15,'#7a6a1c');}
   // соли в жабрах
   if(fish==='fresh'){arrow(300,112,300,168,SALT,5,false);T(labs,300,130,'',14);T(labs,170,122,'активно: соли внутрь',15,'#9a5410','middle',800);T(labs,170,142,'(против градиента, АТФ)',14,'#9a5410');}
   else if(fish==='marine'){arrow(300,172,300,112,SALT,5,false);T(labs,170,122,'активно: соли наружу',15,'#9a5410','middle',800);T(labs,170,142,'(против градиента, АТФ)',14,'#9a5410');}
-  else{arrow(538,222,586,262,SALT,4,false);T(labs,600,312,'ректальная железа выводит соли',14,'#9a5410','middle',800);}
+  else{arrow(538,222,586,262,SALT,4,false);T(labs,650,312,'ректальная железа',14,'#9a5410','middle',800);T(labs,650,332,'выводит соли',14,'#9a5410','middle',800);}
   // подпись среды
   T(labs,380,56,env==='sea'?'Морская вода: гипертонический раствор для клеток рыбы':'Пресная вода: гипотонический раствор для клеток рыбы',17,'#334155','middle',800);
   let state,msg;
