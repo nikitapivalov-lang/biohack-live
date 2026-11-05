@@ -1,6 +1,6 @@
 import http from 'node:http';
-import {readFileSync} from 'node:fs';
-import {randomBytes} from 'node:crypto';
+import {readFileSync,readdirSync} from 'node:fs';
+import {randomBytes,createHash} from 'node:crypto';
 import {gzipSync} from 'node:zlib';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {dirname,join} from 'node:path';
@@ -23,16 +23,22 @@ export function createBiohackServer(){
  // Only the announcement is public; unreleased game code and styles stay offline.
  heartAssets.set('/assets/genetic-files-preview.png',{type:'image/png',body:readFileSync(join(root,'assets/genetic-files-preview.png'))});
  heartAssets.set('/assets/genetic-files-line-art-v1.png',{type:'image/png',body:readFileSync(join(root,'assets/genetic-files-line-art-v1.png'))});
+ // Lesson images live in assets/img (hash-named files are immutable, so browsers may cache them for a year).
+ const imgDir=join(root,'assets','img'),imgTypes={'.webp':'image/webp','.jpg':'image/jpeg','.png':'image/png','.gif':'image/gif'};
+ for(const name of readdirSync(imgDir)){const type=imgTypes[name.slice(name.lastIndexOf('.'))];if(type)heartAssets.set('/assets/img/'+name,{type,body:readFileSync(join(imgDir,name)),immutable:/^[0-9a-f]{12}\./.test(name)});}
+ const etagOf=body=>'"'+createHash('sha1').update(body).digest('hex').slice(0,20)+'"';
+ const htmlEtag=etagOf(html);
  const wss=new WebSocketServer({noServer:true,maxPayload:16*1024*1024,perMessageDeflate:false});
  const server=http.createServer((req,res)=>{
   const path=new URL(req.url,'http://localhost').pathname;
   const common={'Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'};
   if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405,common);res.end();return;}
-  if(heartAssets.has(path)){const asset=heartAssets.get(path);res.writeHead(200,{...common,'Content-Type':asset.type});res.end(req.method==='HEAD'?undefined:asset.body);return;}
+  if(heartAssets.has(path)){const asset=heartAssets.get(path);asset.etag??=etagOf(asset.body);const cache={'Cache-Control':asset.immutable?'public, max-age=31536000, immutable':'no-cache','ETag':asset.etag};if(req.headers['if-none-match']===asset.etag){res.writeHead(304,{...common,...cache});res.end();return;}res.writeHead(200,{...common,...cache,'Content-Type':asset.type});res.end(req.method==='HEAD'?undefined:asset.body);return;}
   if(path==='/health'){res.writeHead(200,{...common,'Content-Type':'application/json'});res.end(JSON.stringify({status:'ok'}));return;}
   if(path===prefix||path===prefix+'index.html'){
-   const gzip=/\bgzip\b/.test(req.headers['accept-encoding']||'');
-   res.writeHead(200,{...common,'Content-Type':'text/html; charset=utf-8','Vary':'Accept-Encoding',...(gzip?{'Content-Encoding':'gzip'}:{})});res.end(req.method==='HEAD'?undefined:gzip?compressed:html);return;
+   const gzip=/\bgzip\b/.test(req.headers['accept-encoding']||''),cache={'Cache-Control':'no-cache','ETag':htmlEtag};
+   if(req.headers['if-none-match']===htmlEtag){res.writeHead(304,{...common,...cache,'Vary':'Accept-Encoding'});res.end();return;}
+   res.writeHead(200,{...common,...cache,'Content-Type':'text/html; charset=utf-8','Vary':'Accept-Encoding',...(gzip?{'Content-Encoding':'gzip'}:{})});res.end(req.method==='HEAD'?undefined:gzip?compressed:html);return;
   }
   if(path===prefix+'vendor/live.mjs'){res.writeHead(200,{...common,'Content-Type':'text/javascript; charset=utf-8'});res.end(req.method==='HEAD'?undefined:bridge);return;}
   res.writeHead(404,{...common,'Content-Type':'text/plain; charset=utf-8'});res.end('Страница не найдена. Откройте полную ссылку из окна запуска BioHack.');
