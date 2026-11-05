@@ -7079,10 +7079,10 @@ html[data-theme="dark"] #en-view-uptake{--up-outside:#17212d;--up-inside:#302534
  for(const [id,a]of Object.entries(g.atoms).sort()){
   if(excluded.has(id))continue;
   if(highlight.includes(id))highlights+=`<circle data-gly-highlight="${id}" cx="${a.x}" cy="${a.y}" r="25" fill="var(--en-accent)" fill-opacity=".08" stroke="var(--en-accent)" stroke-width="1.5" stroke-dasharray="4 4"/>`;
-  const n=a.number,origin=a.origin,mark=n===origin?String(n):n+'·g'+origin;
+  const n=a.number,origin=a.origin,mark=String(n);
   atoms+=`<g data-gly-atom="${id}" ${a.element==='C'?`data-carbon="${n}" data-origin="${origin}"`:''} opacity="${a.opacity}" transform="translate(${a.x} ${a.y})"><title>${a.element==='C'?'C'+n+'; из C'+origin+' исходной глюкозы':a.label}</title>`;
   if(a.element==='P')atoms+=glyPGlyph(0,0,id);
-  else{const atomLabel=a.element==='O'&&a.hydrogen>.5?'OH':a.label;atoms+=text(0,6,atomLabel,20,ink,'middle');if(n)atoms+=text(a.nx??(mark.includes('·g')?-27:-22),a.ny??(mark.includes('·g')?-19:-13),mark,mark.includes('·g')?12:13,'var(--en-accent)','middle');if(a.charge)atoms+=text(atomLabel==='OH'?25:17,-1,a.charge,15,ink);}
+  else{const atomLabel=a.element==='O'&&a.hydrogen>.5?'OH':a.label;atoms+=text(0,6,atomLabel,20,ink,'middle');if(n)atoms+=text(a.nx??-22,a.ny??-13,mark,13,'var(--en-accent)','middle');if(a.charge)atoms+=text(atomLabel==='OH'?25:17,-1,a.charge,15,ink);}
   atoms+='</g>';
  }
  return `<g data-gly-molecule="true" transform="translate(${x} ${y}) scale(${scale})" stroke-linecap="round"><g data-gly-highlights="true">${highlights}</g><g data-gly-bonds="true">${bonds}</g><g data-gly-atoms="true">${atoms}</g></g>`;
@@ -7144,8 +7144,8 @@ html[data-theme="dark"] #en-view-uptake{--up-outside:#17212d;--up-inside:#302534
  if(i===9)extras+=text(488,389,q<.68?'Передача P на АДФ':'Енол → кетон',18,'var(--en-accent)','middle');
  v+=`<g data-gly-actors="true" data-reaction-in="true" opacity="${ease((q-.14)/.12)}">${actors}</g><g data-gly-motion="true">${motion}</g><g data-gly-extras="true">${extras}</g>`;
  v+=text(550,514,glyActions[i][stage],19,'var(--en-accent)','middle');
- const note=i===3?'ДГАФ: C1←g3, C2←g2, C3←g1 · Г3Ф: C1←g4, C2←g5, C3←g6':i===7?'Упрощённая схема суммарного превращения, не механизм фосфоглицератмутазы.':i>=5?'Показана одна молекула; обе ветви глюкозы проходят реакцию: ×2.':'Кольцо ⇄ открытая форма; промежуточные комплексы с ферментом опущены.';
- v+=text(550,544,'Участники: '+glycolysis[i].co,15,'var(--en-blue)','middle')+text(550,575,note,13,'var(--en-muted)','middle')+text(550,603,'P — фосфатная группа, связь через O · C — номер в веществе, g — исходный атом глюкозы · H⁻ — гидрид',12,'var(--en-muted)','middle')+(i>=6?text(550,619,'Карбоксильная группа показана ионизированной (COO⁻); в таблице реакций — кислотная форма (COOH)',12,'var(--en-muted)','middle'):'');
+ const note=i===3?'Из атомов C1–C3 получается ДГАФ, из C4–C6 — Г3Ф':i===7?'Упрощённая схема суммарного превращения, не механизм фосфоглицератмутазы.':i>=5?'Показана одна молекула; обе ветви глюкозы проходят реакцию: ×2.':'Кольцо ⇄ открытая форма; промежуточные комплексы с ферментом опущены.';
+ v+=text(550,544,'Участники: '+glycolysis[i].co,15,'var(--en-blue)','middle')+text(550,575,note,13,'var(--en-muted)','middle')+text(550,603,'P — фосфатная группа, связь через O · C — номер в веществе · H⁻ — гидрид',12,'var(--en-muted)','middle')+(i>=6?text(550,619,'Карбоксильная группа показана ионизированной (COO⁻); в таблице реакций — кислотная форма (COOH)',12,'var(--en-muted)','middle'):'');
  return svg(v,glycolysis[i].name+'; '+glycolysis[i].enzyme+'; '+(reversible?'обратимая реакция':'необратимая реакция')+'; '+glyActions[i][stage],1100,630);
  }
  function glyDraw(p){return glyScene==='entry'?glyEntrySvg(p):root.dataset.level==='ege'?glySchoolSvg(p):glyAdvancedSvg(p);}
