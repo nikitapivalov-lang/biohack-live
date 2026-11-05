@@ -6207,6 +6207,8 @@ function mbMount(root){
 .os-tasks{display:grid;gap:14px;margin-top:16px}.os-task{border:1px solid #e5d4de;border-radius:18px;padding:18px 20px;background:#fff}.os-task h5{font-size:20px;font-weight:700;color:#251c21}.os-task p{font-size:19px;line-height:1.7;color:#342a38;margin-top:8px}.os-task-open{margin-top:12px;font-size:15px;font-weight:600;padding:9px 14px;border:1px solid #e5d4de;border-radius:11px;background:#fff;color:#6b6171;cursor:pointer}.os-task-open[aria-expanded=true]{background:var(--bio-ui-accent);border-color:var(--bio-ui-accent);color:#fff}.os-task-body ul{list-style:none;padding:0;margin-top:8px;display:grid;gap:8px}.os-task-body li{display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.6;color:#342a38}.os-task-body input{margin-top:7px;width:18px;height:18px;accent-color:var(--bio-ui-accent);flex:none}.os-task-body .os-task-hint{font-size:16px;color:#756d74}.os-task-score{font-weight:700;color:var(--bio-ui-accent);min-height:1.6em}
 [data-theme="dark"] .os-task,[data-theme="dark"] .os-table-wrap{border-color:#4e3b4d;background:transparent}[data-theme="dark"] .os-task h5,[data-theme="dark"] .os-task p,[data-theme="dark"] .os-task-body li,[data-theme="dark"] .os-table tbody th{color:#e4dbe4!important}[data-theme="dark"] .os-table td{color:#d8cfd8}[data-theme="dark"] .os-table thead th{background:#2a2030;color:#ef9bb7}[data-theme="dark"] .os-table th,[data-theme="dark"] .os-table td{border-color:#4e3b4d}
 @media(max-width:760px){.os-theory{padding-inline:16px}}
+
+.os-fact[data-bad="true"]{background:#fbeceb}.os-fact[data-bad="true"] small{color:#a3223f}[data-theme="dark"] .os-fact[data-bad="true"]{background:#3a1f26}[data-theme="dark"] .os-fact[data-bad="true"] small{color:#f2a0ae}
 </style>
 <script id="biohack-osmosis">(function(){
 const NS='http://www.w3.org/2000/svg';
@@ -6502,22 +6504,16 @@ function chFish(body,api){
   if(water){const sz=fish==='shark'?2.5:4;[[360,140,360,172],[440,155,440,185],[360,288,360,254],[440,275,440,245]].forEach(([a,b,c,d])=>{const top=b<200;if(intoBody)arrow(a,b-10,c,d,W,sz,false);else arrow(c,d,a,b-(top?12:-12),W,sz,false);});}
   
   T(labs,420,100,intoBody?(fish==='shark'?'осмос: вода входит':'осмос: вода входит в тело'):(water?'осмос: вода уходит из тела':'мочевина удерживает воду: вода почти не уходит'),15,'#2b6a94','middle',800);
-  // приспособления
-  const drawBig=fish==='marine'||fish==='shark'&&sea;
-  // питьё
-  if(fish==='marine'){arrow(150,215,212,215,W,6,false,!ok&&env==='fresh');T(labs,120,196,'пьёт много',15,'#2b6a94');}
-  else if(fish==='fresh'){arrow(165,215,212,215,W,1.5,false,true);T(labs,120,196,'почти не пьёт',15,'#2b6a94');}
-  else T(labs,120,196,sea?'пьёт немного':'',15,'#2b6a94');
-  // моча
-  if(fish==='fresh'){arrow(520,236,520,300,UR,8,false);T(labs,540,352,'много разбавленной мочи',15,'#7a6a1c');}
-  else if(fish==='marine'){arrow(520,236,520,288,UR,2.5,false);T(labs,540,340,'мало концентрированной мочи',15,'#7a6a1c');}
-  else{arrow(520,240,520,288,UR,3,false);T(labs,575,346,'мочи немного',15,'#7a6a1c');}
-  // соли в жабрах
-  if(fish==='fresh'){arrow(300,112,300,168,SALT,5,false);T(labs,300,130,'',14);T(labs,170,122,'жабры: соли внутрь',15,'#9a5410','middle',800);T(labs,170,142,'(активно, против градиента, АТФ)',14,'#9a5410');}
-  else if(fish==='marine'){arrow(300,172,300,112,SALT,5,false);T(labs,170,122,'жабры: соли наружу',15,'#9a5410','middle',800);T(labs,170,142,'(активно, против градиента, АТФ)',14,'#9a5410');}
-  else{arrow(440,246,440,292,SALT,4,false);T(labs,380,350,'ректальная железа выводит соли',14,'#9a5410','middle',800);}
   // подпись среды
-  T(labs,380,56,env==='sea'?'Морская вода: гипертонический раствор для клеток рыбы':'Пресная вода: гипотонический раствор для клеток рыбы',17,'#334155','middle',800);
+  T(labs,380,56,env==='sea'?'Морская вода · гипертоническая среда':'Пресная вода · гипотоническая среда',18,'#334155','middle',800);
+  const R_={
+   'fresh|fresh':[['Вода (осмос)','Входит в тело через жабры и кожу',0],['Питьё','Почти не пьёт',0],['Моча','Много, сильно разбавленная',0],['Жабры и соли','Активно забирают соли из воды (нужна АТФ)',0]],
+   'fresh|sea':[['Вода (осмос)','Уходит из тела: снаружи крепче',1],['Питьё','Почти не пьёт: воду не восполнить',1],['Моча','Много и разбавленная: теряет ещё воду',1],['Жабры и соли','Закачивают соли внутрь: соли и так избыток',1]],
+   'marine|sea':[['Вода (осмос)','Уходит из тела наружу',0],['Питьё','Много: восполняет потерю воды',0],['Моча','Мало, концентрированная',0],['Жабры и соли','Активно выводят лишние соли (нужна АТФ)',0]],
+   'marine|fresh':[['Вода (осмос)','Входит в тело: клетки набухают',1],['Питьё','Пьёт много, как привыкла: воды и так избыток',1],['Моча','Мало: не успевает вывести воду',1],['Жабры и соли','Выводят соли наружу: соли вымываются',1]],
+   'shark|sea':[['Вода (осмос)','Почти не уходит: внутри много мочевины',0],['Питьё','Немного',0],['Моча','Мало',0],['Соли','Выводит ректальная железа (нужна АТФ)',0]],
+   'shark|fresh':[['Вода (осмос)','Входит непрерывно: внутри крепче, чем снаружи',1],['Питьё','Немного',0],['Моча','Мало: воду не вывести',1],['Соли','Ректальная железа здесь почти не нужна',1]]};
+  ui.facts.replaceChildren();(R_[fish+'|'+env]||[]).forEach(([k,v,bad])=>{const d=document.createElement('div');d.className='os-fact';d.dataset.bad=bad?'true':'false';const a=document.createElement('small');a.textContent=k;const b=document.createElement('strong');b.textContent=v;d.append(a,b);ui.facts.appendChild(d);});
   let state,msg;
   if(fish==='fresh'&&env==='fresh'){state='Всё в порядке';msg='Пресная вода: гипотоническая среда, вода сама течёт в тело через жабры и кожу. Рыба почти не пьёт, выделяет много очень разбавленной мочи, а потерянные с мочой соли возвращает: специальные клетки жабр активно закачивают их из воды, это работа против градиента, нужна АТФ.';}
   else if(fish==='marine'&&env==='sea'){state='Всё в порядке';msg='Морская вода гипертонична: вода из тела стремится уйти наружу, рыба обезвоживается. Поэтому морская костистая рыба много пьёт, выделяет мало концентрированной мочи, а лишние соли, попавшие с водой, выводит клетками жабр активно, с затратой АТФ.';}
@@ -6530,7 +6526,6 @@ function chFish(body,api){
  }
  const fs=seg(ui.controls,[['fresh','Пресноводная рыба'],['marine','Морская костистая'],['shark','Хрящевая (акула)']],id=>{fish=id;draw();},'fresh');
  const es=seg(ui.controls,[['fresh','В пресную воду'],['sea','В морскую воду']],id=>{env=id;draw();},'fresh');
- facts(ui.facts,[['Пресная вода','Вода входит → выделяет много мочи, соли активно забирает жабрами'],['Морская вода','Вода выходит → пьёт много, мало мочи, соли активно выводит жабрами'],['Общее','Соли переносят против градиента: клеткам жабр нужны митохондрии (АТФ)']]);
  draw();
  return {tick(){},destroy(){}};
 }
