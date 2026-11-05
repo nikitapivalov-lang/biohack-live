@@ -6212,6 +6212,7 @@ function mbMount(root){
 .os-body .os-pause{display:block;margin:14px 0 0 auto;font-size:14px;font-weight:600;padding:8px 14px;border:1px solid #e5d4de;border-radius:12px;background:#fff;color:#6b6171;cursor:pointer}
 .os-fact[data-bad="true"]{background:rgba(var(--bio-ui-accent-rgb),.08);border-color:rgba(var(--bio-ui-accent-rgb),.2)}.os-fact[data-bad="true"] small{color:var(--bio-ui-accent)}
 [data-theme="dark"] .os-fact{background:transparent;border-color:#4e3b4d}[data-theme="dark"] .os-fact strong{color:#e4dbe4}[data-theme="dark"] .os-fact small{color:#bdb0c1}[data-theme="dark"] .os-fact[data-bad="true"] small{color:#ef9bb7}
+.os-facts.os-accent .os-fact{background:rgba(var(--bio-ui-accent-rgb),.08);border-color:rgba(var(--bio-ui-accent-rgb),.2)}.os-facts.os-accent .os-fact small{color:var(--bio-ui-accent)}[data-theme="dark"] .os-facts.os-accent .os-fact{background:rgba(var(--bio-ui-accent-rgb),.16);border-color:rgba(var(--bio-ui-accent-rgb),.35)}[data-theme="dark"] .os-facts.os-accent .os-fact small{color:#ef9bb7}
 </style>
 <script id="biohack-osmosis">(function(){
 const NS='http://www.w3.org/2000/svg';
@@ -6297,7 +6298,7 @@ function chTube(body,api){
  const preset=document.createElement('div');preset.className='os-seg';
  const rs=[];
  btn(ui.controls,'Заново',()=>{reset();api.nudge();},'os-primary');
- reset();facts(ui.facts,[['Что движется','Вода — через мембрану. Растворённое вещество не проходит'],['Куда','К раствору, где частиц растворённого вещества больше'],['Энергия','АТФ не тратится: это пассивный транспорт']]);
+ reset();facts(ui.facts,[['Что движется','Вода — через мембрану. Растворённое вещество не проходит'],['Куда','К раствору, где частиц растворённого вещества больше'],['Энергия','АТФ не тратится: это пассивный транспорт']]);ui.facts.classList.add('os-accent');
  api.paintOnce=()=>{const c=counts();draw(c,B-(c.nwL+c.nsL)*U,B-(c.nwR+c.nsR)*U);};
  api.paintOnce();
  return {tick:step,destroy(){}};
