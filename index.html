@@ -6195,7 +6195,7 @@ function mbMount(root){
 .os-stage{border:1px solid #e5edf2;border-radius:20px;background:#f7fafc;overflow:hidden}.os-stage svg{display:block;width:100%;height:auto;max-height:560px}.os-stage svg text{paint-order:stroke;stroke:rgba(247,250,252,.92);stroke-width:5px;stroke-linejoin:round}.os-stage svg.os-dark text{stroke:none}
 .os-read{margin-top:14px;font-size:19px;line-height:1.75;color:#342a38;min-height:3.5em}
 .os-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:14px}
-.os-fact{border-radius:14px;background:#f8f4f6;padding:13px 15px}.os-fact small{display:block;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--bio-ui-accent)}.os-fact strong{display:block;font-size:17px;line-height:1.5;color:#342a38;margin-top:4px;font-weight:700}
+.os-fact{border-radius:14px;background:#fff;border:1px solid #e5d4de;padding:13px 15px}.os-fact small{display:block;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#756d74}.os-fact strong{display:block;font-size:17px;line-height:1.5;color:#342a38;margin-top:4px;font-weight:700}
 .os-foot{padding:0 26px 22px;font-size:14px;line-height:1.65;color:#756d74}
 .os-flow{stroke-dasharray:9 9;animation:osflow 1s linear infinite}.os-flow.rev{animation-direction:reverse}
 @keyframes osflow{to{stroke-dashoffset:-18}}
@@ -6208,9 +6208,10 @@ function mbMount(root){
 [data-theme="dark"] .os-task,[data-theme="dark"] .os-table-wrap{border-color:#4e3b4d;background:transparent}[data-theme="dark"] .os-task h5,[data-theme="dark"] .os-task p,[data-theme="dark"] .os-task-body li,[data-theme="dark"] .os-table tbody th{color:#e4dbe4!important}[data-theme="dark"] .os-table td{color:#d8cfd8}[data-theme="dark"] .os-table thead th{background:#2a2030;color:#ef9bb7}[data-theme="dark"] .os-table th,[data-theme="dark"] .os-table td{border-color:#4e3b4d}
 @media(max-width:760px){.os-theory{padding-inline:16px}}
 
-.os-fact[data-bad="true"]{background:#fbeceb}.os-fact[data-bad="true"] small{color:#a3223f}[data-theme="dark"] .os-fact[data-bad="true"]{background:#3a1f26}[data-theme="dark"] .os-fact[data-bad="true"] small{color:#f2a0ae}
 
 .os-body .os-pause{display:block;margin:14px 0 0 auto;font-size:14px;font-weight:600;padding:8px 14px;border:1px solid #e5d4de;border-radius:12px;background:#fff;color:#6b6171;cursor:pointer}
+.os-fact[data-bad="true"]{background:rgba(var(--bio-ui-accent-rgb),.08);border-color:rgba(var(--bio-ui-accent-rgb),.2)}.os-fact[data-bad="true"] small{color:var(--bio-ui-accent)}
+[data-theme="dark"] .os-fact{background:transparent;border-color:#4e3b4d}[data-theme="dark"] .os-fact strong{color:#e4dbe4}[data-theme="dark"] .os-fact small{color:#bdb0c1}[data-theme="dark"] .os-fact[data-bad="true"] small{color:#ef9bb7}
 </style>
 <script id="biohack-osmosis">(function(){
 const NS='http://www.w3.org/2000/svg';
@@ -6489,6 +6490,7 @@ function chFish(body,api){
  const svg=ui.svg;let fish='fresh',env='fresh';
  const bg=S('rect',{x:20,y:20,width:720,height:380,rx:26},svg);
  const fg=S('g',{},svg);
+ const dropG=S('g',{},svg);let drops=[],tt=0;
  const arrows=S('g',{},svg);
  const labs=S('g',{},svg);
  function draw(){
@@ -6497,7 +6499,16 @@ function chFish(body,api){
   const ok=(fish==='fresh'&&env==='fresh')||(fish==='marine'&&env==='sea')||(fish==='shark'&&env==='sea');
   const IMG={shark:['063f8c0b45b1',438],fresh:['a42e277461d4',463],marine:['3c06edbd91e0',423],shark_sad:['798194d6e900',414],fresh_sad:['121dbcb6582e',465],marine_sad:['df1adb9b2e9e',413]};
   const pic=IMG[fish+(ok?'':'_sad')],iw=360,ih=Math.round(iw*pic[1]/720),iy=Math.round(222-ih/2);
-  S('image',{x:215,y:iy,width:iw,height:ih,preserveAspectRatio:'xMidYMid meet'},fg).setAttribute('href','/assets/img/'+pic[0]+'.webp');
+  const dry=!ok&&sea,swell=!ok&&!sea,cx=395,cy=222;
+  if(dry||swell){const g0=S('ellipse',{cx:cx,cy:cy,rx:182,ry:Math.round(ih*.5),fill:'none',stroke:'#2b6a94','stroke-width':2,'stroke-dasharray':'7 7',opacity:.6},fg);T(fg,cx-185,cy+Math.round(ih*.5)+22,'обычный объём',13,'#2b6a94','start',700);}
+  const fgb=S('g',{},fg);
+  if(dry)fgb.setAttribute('transform','translate('+cx+' '+cy+') scale(.86 .72) translate('+(-cx)+' '+(-cy)+')');
+  if(swell)fgb.setAttribute('transform','translate('+cx+' '+cy+') scale(1.08 1.15) translate('+(-cx)+' '+(-cy)+')');
+  const im=S('image',{x:215,y:iy,width:iw,height:ih,preserveAspectRatio:'xMidYMid meet'},fgb);im.setAttribute('href','/assets/img/'+pic[0]+'.webp');
+  if(dry)im.setAttribute('style','filter:saturate(.45) brightness(.93) sepia(.25)');
+  if(swell)im.setAttribute('style','filter:saturate(1.15) brightness(1.04)');
+  drops=[];dropG.replaceChildren();
+  if(dry||swell){for(let i=0;i<9;i++){const top=i%2===0;drops.push({el:S('path',{d:'M0 -5C3 -1 4 1 4 3A4 4 0 0 1 -4 3C-4 1 -3 -1 0 -5Z',fill:'#2f95cf',opacity:0},dropG),x:290+(i*23)%190+(top?0:12),top,ph:i/9,dry});}}
   const arrow=(x1,y1,x2,y2,color,w,rev,dashed)=>{const p=S('path',{d:'M'+x1+' '+y1+'L'+x2+' '+y2,stroke:color,'stroke-width':w,fill:'none','stroke-linecap':'round'},arrows);if(!dashed)p.setAttribute('class','os-flow'+(rev?' rev':''));else p.setAttribute('stroke-dasharray','4 8');const a=Math.atan2(y2-y1,x2-x1),h=11+w;S('path',{d:'M'+(x2-Math.cos(a-.5)*h)+' '+(y2-Math.sin(a-.5)*h)+'L'+x2+' '+y2+'L'+(x2-Math.cos(a+.5)*h)+' '+(y2-Math.sin(a+.5)*h),stroke:color,'stroke-width':w,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},arrows);};
   const W='#2f95cf',SALT='#d97a1d',UR='#a58b2a';
   const intoBody=env==='fresh';
@@ -6523,13 +6534,13 @@ function chFish(body,api){
   else if(fish==='fresh'&&env==='sea'){state='Беда: обезвоживание';msg='Пресноводную рыбу бросили в море. Снаружи крепче, чем внутри, вода выходит из клеток, а все её приспособления работают в обратную сторону: пить она не умеет, солей закачивает не туда, где надо. Обезвоживание и гибель.';}
   else if(fish==='marine'&&env==='fresh'){state='Беда: клетки набухают';msg='Морскую рыбу выпустили в пресную воду. Вода хлынет в тело, а соли начнут вымываться. Она пьёт много (как привыкла), выделяет мало мочи и накачивает воду в себя. Клетки набухают и лопаются.';}
   else{state='Не приспособлена';msg='Морская акула в пресной воде: мочевины в тканях много, концентрация внутри выше, чем снаружи, вода будет входить непрерывно. У пресноводных хрящевых рыб в тканях мочевины заметно меньше, поэтому они там и живут.';}
-  const sb=T(labs,380,380,'Статус: '+state,18,ok?'#256a3c':'#a3223f','middle',800);
+  const sb=T(labs,380,380,(ok?'✓ ':'')+'Статус: '+state,18,ok?'#342a38':'#800020','middle',800);
   ui.read.textContent=msg;
  }
  const fs=seg(ui.controls,[['fresh','Пресноводная рыба'],['marine','Морская костистая'],['shark','Хрящевая (акула)']],id=>{fish=id;draw();},'fresh');
  const es=seg(ui.controls,[['fresh','В пресную воду'],['sea','В морскую воду']],id=>{env=id;draw();},'fresh');
  draw();
- return {tick(){},destroy(){}};
+ return {tick(dt){tt+=dt;drops.forEach(d=>{const p=(tt*.45+d.ph)%1,edge=d.dry?78:100,dist=d.dry?p*46:(1-p)*46,dir=d.top?-1:1,y=222+dir*(edge+dist);d.el.setAttribute('transform','translate('+d.x+' '+y+')'+(d.top?'':' rotate(180)'));d.el.setAttribute('opacity',(Math.sin(p*Math.PI)*.9).toFixed(2));});},destroy(){}};
 }
 
 /* ---------- 6. Устьица ---------- */
