@@ -8732,6 +8732,10 @@ html[data-theme="dark"] #tab-mendel .md-locus-b{color:#92d4c5}
 #tab-mendel .md-outcome>span{font-size:18px;color:var(--gb-muted)}
 #tab-mendel .md-outcome .md-cell-probability{font-size:22px;font-weight:750}
 #tab-mendel .md-outcome[aria-pressed=true]{background:rgba(var(--bio-ui-accent-rgb),.08);border-color:var(--gb-accent);color:var(--gb-ink)}
+/* Selected buttons have a solid accent background; nested labels need their own contrast. */
+#tab-mendel :is(button.md-allele-chip,button.md-outcome)[aria-pressed=true] .md-locus-a{color:#fff}
+#tab-mendel :is(button.md-allele-chip,button.md-outcome)[aria-pressed=true] .md-locus-b{color:#a7f3d0}
+#tab-mendel .md-gamete-choices button[aria-pressed=true] small,#tab-mendel button.md-outcome[aria-pressed=true]>span{color:#fff}
 #tab-mendel .md-genotype-summary{padding:24px 0;border-top:1px solid var(--gb-line)}
 #tab-mendel .md-summary-chips{display:flex;gap:16px;flex-wrap:wrap}
 #tab-mendel .md-summary-chips>div{display:flex;flex:1;min-width:120px;flex-direction:column;gap:10px;text-align:center;padding:18px;background:var(--gb-card);border:1px solid var(--gb-line);border-radius:16px}
