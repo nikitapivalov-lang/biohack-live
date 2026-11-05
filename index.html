@@ -6203,6 +6203,7 @@ function mbMount(root){
 @media(prefers-reduced-motion:reduce){.os-flow{animation:none}}
 @media(max-width:760px){.os-terms{grid-template-columns:1fr 1fr;padding-inline:16px}.os-intro,.os-body,.os-foot{padding-inline:16px}.os-nav{padding-inline:16px}.os-intro h3{font-size:25px}.os-nav .os-pause{margin-left:0}}
 @media(max-width:480px){.os-terms{grid-template-columns:1fr}}
+[data-theme="dark"] .os-stage svg text{stroke:rgba(24,18,30,.92)}[data-theme="dark"] .os-stage svg.os-dark text{stroke:none}[data-theme="dark"] .os-lab .os-read{color:#e4dbe4!important}
 </style>
 <script id="biohack-osmosis">
 (function(){
@@ -6485,9 +6486,18 @@ function chFish(body,api){
  function draw(){
   fg.replaceChildren();arrows.replaceChildren();labs.replaceChildren();
   const sea=env==='sea';bg.setAttribute('fill',sea?'#bfdcee':'#d9eef7');
-  const body_=S('path',{d:'M215 215C265 135 400 135 500 200L590 145 570 215 590 285 500 230C400 295 265 295 215 215Z',fill:fish==='shark'?'#98a8b8':'#8fb3d9',stroke:'#46688f','stroke-width':4,'stroke-linejoin':'round'},fg);
-  S('circle',{cx:255,cy:200,r:6,fill:'#1e293b'},fg);S('path',{d:'M300 175Q318 215 300 255',fill:'none',stroke:'#46688f','stroke-width':4,'stroke-linecap':'round'},fg);
-  T(labs,300,300,'жабры',14,'#46688f');
+  if(fish==='shark'){
+   S('path',{d:'M300 248C282 282 270 304 252 320C300 314 338 292 354 260Z',fill:'#7f8fa1',stroke:'#3f4f63','stroke-width':4,'stroke-linejoin':'round'},fg);
+   S('path',{d:'M205 218C250 168 330 152 400 156L390 106C426 116 452 138 464 158C512 168 546 178 580 110L566 190L594 264C548 240 510 238 470 248C420 280 300 270 250 245C226 236 212 228 205 218Z',fill:'#8d9bab',stroke:'#3f4f63','stroke-width':4,'stroke-linejoin':'round'},fg);
+   S('path',{d:'M214 224C262 254 332 270 432 264C360 246 280 242 214 224Z',fill:'#dfe6ee'},fg);
+   for(const x of [288,299,310,321,332])S('path',{d:'M'+x+' 186Q'+(x+6)+' 212 '+x+' 238',fill:'none',stroke:'#3f4f63','stroke-width':3,'stroke-linecap':'round'},fg);
+   S('circle',{cx:250,cy:203,r:5.5,fill:'#0f172a'},fg);S('path',{d:'M222 233Q246 244 272 237',fill:'none',stroke:'#3f4f63','stroke-width':3,'stroke-linecap':'round'},fg);
+   T(labs,306,142,'жабры',14,'#3f4f63');
+  }else{
+   S('path',{d:'M215 215C265 135 400 135 500 200L590 145 570 215 590 285 500 230C400 295 265 295 215 215Z',fill:'#8fb3d9',stroke:'#46688f','stroke-width':4,'stroke-linejoin':'round'},fg);
+   S('circle',{cx:255,cy:200,r:6,fill:'#1e293b'},fg);S('path',{d:'M300 175Q318 215 300 255',fill:'none',stroke:'#46688f','stroke-width':4,'stroke-linecap':'round'},fg);
+   T(labs,300,300,'жабры',14,'#46688f');
+  }
   const arrow=(x1,y1,x2,y2,color,w,rev,dashed)=>{const p=S('path',{d:'M'+x1+' '+y1+'L'+x2+' '+y2,stroke:color,'stroke-width':w,fill:'none','stroke-linecap':'round'},arrows);if(!dashed)p.setAttribute('class','os-flow'+(rev?' rev':''));else p.setAttribute('stroke-dasharray','4 8');const a=Math.atan2(y2-y1,x2-x1),h=11+w;S('path',{d:'M'+(x2-Math.cos(a-.5)*h)+' '+(y2-Math.sin(a-.5)*h)+'L'+x2+' '+y2+'L'+(x2-Math.cos(a+.5)*h)+' '+(y2-Math.sin(a+.5)*h),stroke:color,'stroke-width':w,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},arrows);};
   const W='#2f95cf',SALT='#d97a1d',UR='#a58b2a';
   const intoBody=env==='fresh';
@@ -6506,11 +6516,11 @@ function chFish(body,api){
   // моча
   if(fish==='fresh'){arrow(520,236,520,300,UR,8,false);T(labs,520,330,'много разбавленной мочи',15,'#7a6a1c');}
   else if(fish==='marine'){arrow(520,236,520,288,UR,2.5,false);T(labs,520,318,'мало концентрированной мочи',15,'#7a6a1c');}
-  else{arrow(520,236,520,288,UR,3,false);T(labs,455,318,'мочи немного',15,'#7a6a1c');}
+  else{arrow(520,240,520,288,UR,3,false);T(labs,575,318,'мочи немного',15,'#7a6a1c');}
   // соли в жабрах
   if(fish==='fresh'){arrow(300,112,300,168,SALT,5,false);T(labs,300,130,'',14);T(labs,170,122,'активно: соли внутрь',15,'#9a5410','middle',800);T(labs,170,142,'(против градиента, АТФ)',14,'#9a5410');}
   else if(fish==='marine'){arrow(300,172,300,112,SALT,5,false);T(labs,170,122,'активно: соли наружу',15,'#9a5410','middle',800);T(labs,170,142,'(против градиента, АТФ)',14,'#9a5410');}
-  else{arrow(538,222,586,262,SALT,4,false);T(labs,650,312,'ректальная железа',14,'#9a5410','middle',800);T(labs,650,332,'выводит соли',14,'#9a5410','middle',800);}
+  else{arrow(440,246,440,292,SALT,4,false);T(labs,380,320,'ректальная железа',14,'#9a5410','middle',800);T(labs,380,340,'выводит соли',14,'#9a5410','middle',800);}
   // подпись среды
   T(labs,380,56,env==='sea'?'Морская вода: гипертонический раствор для клеток рыбы':'Пресная вода: гипотонический раствор для клеток рыбы',17,'#334155','middle',800);
   let state,msg;
