@@ -6227,7 +6227,7 @@ function facts(box,list){box.innerHTML='';list.forEach(([k,v])=>{const d=documen
 function chTube(body,api){
  const ui=shell(body,{h:450,title:'Вода идёт туда, где «солонее»',lead:'Слева и справа — вода, посередине — мембрана, которая пропускает воду, но не растворённое вещество (оранжевые шарики). Двигай ползунки и смотри, куда пойдёт вода.',aria:'Сосуд с полупроницаемой мембраной посередине: молекулы воды переходят туда, где больше растворённого вещества'});
  const svg=ui.svg,mx=380,L0=100,R0=660,B=372,U=2.5,R=4;
- let sL=0,sR=10,rLR=0,rRL=0,time=0,cLR=0,cRL=0;
+ let sL=0,sR=10,rLR=0,rRL=0,netS=0,accL=0,accR=0,yLd=B,yRd=B,time=0,cLR=0,cRL=0;
  const bgL=S('rect',{fill:'#9fd3ef','fill-opacity':.55},svg),bgR=S('rect',{fill:'#9fd3ef','fill-opacity':.55},svg);
  const refLine=S('line',{x1:L0-14,x2:R0+14,stroke:'#94a3b8','stroke-width':1.5,'stroke-dasharray':'5 6'},svg);
  const gap=S('g',{},svg);
@@ -6244,28 +6244,30 @@ function chTube(body,api){
  const bracket=S('g',{},svg);
  const bLine=S('path',{fill:'none',stroke:'#8e2448','stroke-width':3},bracket),bT=T(bracket,R0+34,0,'Δ',20,'#8e2448','start',800),bT2=T(bracket,R0+20,0,'',13,'#8e2448','start');
  function xr(side){return side===0?[L0+R+4,mx-R-4]:[mx+R+4,R0-R-4];}
- function reset(){time=0;rLR=rRL=0;const nW=[60-sL,60-sR];let k=0;W.forEach(p=>{p.on=false;});for(let s=0;s<2;s++)for(let i=0;i<nW[s];i++){const p=W[k++];const [a,b]=xr(s);p.on=true;p.side=s;p.x=rnd(a,b);p.y=rnd(B-150,B-6);const an=rnd(0,6.28);p.vx=Math.cos(an)*60;p.vy=Math.sin(an)*60;}
+ function reset(){time=0;rLR=rRL=0;netS=0;accL=accR=0;yLd=B-60*U;yRd=B-60*U;const nW=[60-sL,60-sR];let k=0;W.forEach(p=>{p.on=false;});for(let s=0;s<2;s++)for(let i=0;i<nW[s];i++){const p=W[k++];const [a,b]=xr(s);p.on=true;p.side=s;p.x=rnd(a,b);p.y=rnd(B-150,B-6);const an=rnd(0,6.28);p.vx=Math.cos(an)*60;p.vy=Math.sin(an)*60;}
   O.forEach((o,i)=>{const s=i<22?0:1,n=s?sR:sL,idx=i<22?i:i-22;o.on=idx<n;o.side=s;const [a,b]=xr(s);o.x=rnd(a+4,b-4);o.y=rnd(B-130,B-10);const an=rnd(0,6.28);o.vx=Math.cos(an)*40;o.vy=Math.sin(an)*40;});}
  function counts(){const c={nwL:0,nwR:0};W.forEach(p=>{if(p.on){if(p.side)c.nwR++;else c.nwL++;}});c.nsL=sL;c.nsR=sR;return c;}
  function step(dt){
   if(dt>.05)dt=.05;time+=dt;const c=counts();
-  const hL=(c.nwL+c.nsL)*U,hR=(c.nwR+c.nsR)*U,yL=B-hL,yR=B-hR;
+  const tL=B-(c.nwL+c.nsL)*U,tR=B-(c.nwR+c.nsR)*U,kk=Math.min(1,dt*7);yLd+=(tL-yLd)*kk;yRd+=(tR-yRd)*kk;const yL=yLd,yR=yRd;
   const xw=[c.nwL/(c.nwL+c.nsL||1),c.nwR/(c.nwR+c.nsR||1)],hn=[(c.nwL+c.nsL)/100,(c.nwR+c.nsR)/100];
-  const pc=[(xw[0]+hn[0])*.3,(xw[1]+hn[1])*.3];
-  let eLR=0,eRL=0;
+  const K=22;rLR=K*(xw[0]+hn[0]);rRL=K*(xw[1]+hn[1]);accL+=rLR*dt;accR+=rRL*dt;
+   const hop=(from,to)=>{const best=[];for(const p of W)if(p.on&&p.side===from)best.push(p);if(!best.length)return;best.sort((a,b)=>from===0?b.x-a.x:a.x-b.x);const p=best[Math.floor(Math.random()*Math.min(5,best.length))];p.side=to;p.x=to?mx+R+3:mx-R-3;p.vx=to?Math.abs(p.vx):-Math.abs(p.vx);p.y=Math.max(p.y,(to?yR:yL)+R+1);};
+   let guard=0;while(accL>=1&&guard++<4){accL-=1;hop(0,1);}while(accR>=1&&guard++<8){accR-=1;hop(1,0);}if(accL>3)accL=0;if(accR>3)accR=0;
+  
   for(const p of W){if(!p.on)continue;
    p.vx+=(Math.random()-.5)*500*dt;p.vy+=(Math.random()-.5)*500*dt;let sp=Math.hypot(p.vx,p.vy);if(sp>95){p.vx*=95/sp;p.vy*=95/sp;}else if(sp<40){p.vx*=40/(sp||1);p.vy*=40/(sp||1);}
    p.x+=p.vx*dt;p.y+=p.vy*dt;const top=p.side?yR:yL,[a,b]=xr(p.side);
    if(p.y<top+R){p.y=top+R;p.vy=Math.abs(p.vy);}if(p.y>B-R){p.y=B-R;p.vy=-Math.abs(p.vy);}
    if(p.x<a){p.x=a;p.vx=Math.abs(p.vx);}
-   if(p.side===0&&p.x>b){ if(Math.random()<pc[0]){p.side=1;p.x=mx+R+2;p.y=Math.max(p.y,yR+R);eLR++;}else{p.x=b;p.vx=-Math.abs(p.vx);} }
-   else if(p.side===1&&p.x<a){ if(Math.random()<pc[1]){p.side=0;p.x=mx-R-2;p.y=Math.max(p.y,yL+R);eRL++;}else{p.x=a;p.vx=Math.abs(p.vx);} }
+   if(p.side===0&&p.x>b){p.x=b;p.vx=-Math.abs(p.vx);}
+   else if(p.side===1&&p.x<a){p.x=a;p.vx=Math.abs(p.vx);}
    if(p.side===0&&p.x>b)p.x=b;if(p.side===1&&p.x>R0-R-4){p.x=R0-R-4;p.vx=-Math.abs(p.vx);}
   }
   for(const o of O){if(!o.on)continue;o.vx+=(Math.random()-.5)*300*dt;o.vy+=(Math.random()-.5)*300*dt;let sp=Math.hypot(o.vx,o.vy);if(sp>55){o.vx*=55/sp;o.vy*=55/sp;}
    o.x+=o.vx*dt;o.y+=o.vy*dt;const top=o.side?yR:yL,[a,b]=xr(o.side);
    if(o.y<top+9){o.y=top+9;o.vy=Math.abs(o.vy);}if(o.y>B-9){o.y=B-9;o.vy=-Math.abs(o.vy);}if(o.x<a+4){o.x=a+4;o.vx=Math.abs(o.vx);}if(o.x>b-4){o.x=b-4;o.vx=-Math.abs(o.vx);}}
-  const k=Math.min(1,dt*.9);rLR+=(eLR/dt-rLR)*k;rRL+=(eRL/dt-rRL)*k;
+  netS+=((rLR-rRL)-netS)*Math.min(1,dt*2.5);
   draw(c,yL,yR);
  }
  function draw(c,yL,yR){
@@ -6274,15 +6276,15 @@ function chTube(body,api){
   const y0=B-60*U;refLine.setAttribute('y1',y0);refLine.setAttribute('y2',y0);
   for(const p of W){if(!p.on){p.el.setAttribute('visibility','hidden');continue;}p.el.setAttribute('visibility','visible');p.el.setAttribute('cx',p.x.toFixed(1));p.el.setAttribute('cy',p.y.toFixed(1));}
   for(const o of O){if(!o.on){o.el.setAttribute('visibility','hidden');continue;}o.el.setAttribute('visibility','visible');o.el.setAttribute('cx',o.x.toFixed(1));o.el.setAttribute('cy',o.y.toFixed(1));}
-  const net=rLR-rRL,mag=clamp(Math.abs(net)/6,0,1);
-  if(Math.abs(net)>1.2&&time>.8){const dir=net>0?1:-1,len=24+mag*50;arrow.setAttribute('d','M'+(mx-dir*len/2)+' 30H'+(mx+dir*len/2)+'m'+(-dir*12)+' -10 '+(dir*12)+' 10 '+(-dir*12)+' 10');arrowT.textContent='вода в основном идёт '+(net>0?'вправо':'влево');}
-  else{arrow.setAttribute('d','M'+(mx-30)+' 30H'+(mx+30)+'M'+(mx-18)+' 18 '+(mx-30)+' 30 '+(mx-18)+' 42M'+(mx+18)+' 18 '+(mx+30)+' 30 '+(mx+18)+' 42');arrowT.textContent=time>.8?'потоки в обе стороны почти равны':'';}
-  const dh=(yL-yR);if(Math.abs(dh)>6){const top=Math.min(yL,yR),bot=Math.max(yL,yR);bLine.setAttribute('d','M'+(R0+12)+' '+top+'h12v'+(bot-top)+'h-12');bT.setAttribute('y',(top+bot)/2+7);bT2.setAttribute('y',(top+bot)/2+28);setT(bT2,'');setT(bT,'Δ');bracket.setAttribute('visibility','visible');}else bracket.setAttribute('visibility','hidden');
+  const net=netS,mag=clamp(Math.abs(net)/5,0,1);
+  if(Math.abs(net)>.55&&time>.8){const dir=net>0?1:-1,len=24+mag*50;arrow.setAttribute('d','M'+(mx-dir*len/2)+' 30H'+(mx+dir*len/2)+'m'+(-dir*12)+' -10 '+(dir*12)+' 10 '+(-dir*12)+' 10');setT(arrowT,'вода в основном идёт '+(net>0?'вправо':'влево'));}
+  else{arrow.setAttribute('d','M'+(mx-30)+' 30H'+(mx+30)+'M'+(mx-18)+' 18 '+(mx-30)+' 30 '+(mx-18)+' 42M'+(mx+18)+' 18 '+(mx+30)+' 30 '+(mx+18)+' 42');setT(arrowT,time>.8?'потоки в обе стороны почти равны':'');}
+  const dh=(yL-yR);if(Math.abs(dh)>7){const top=Math.min(yL,yR),bot=Math.max(yL,yR);bLine.setAttribute('d','M'+(R0+12)+' '+top+'h12v'+(bot-top)+'h-12');bT.setAttribute('y',(top+bot)/2+7);bT2.setAttribute('y',(top+bot)/2+28);setT(bT2,'');setT(bT,'Δ');bracket.setAttribute('visibility','visible');}else bracket.setAttribute('visibility','hidden');
   let msg;
   if(sL===sR)msg='Растворённого вещества поровну → воды «свободной» тоже поровну. Молекулы бегают через мембрану в обе стороны с одной скоростью, уровни стоят. Это и есть динамическое равновесие, а не «ничего не происходит».';
-  else{const more=sR>sL?'справа':'слева',up=sR>sL?'правый':'левый';const settled=time>6&&Math.abs(net)<1.6;
+  else{const more=sR>sL?'справа':'слева',up=sR>sL?'правый':'левый';const settled=time>4&&Math.abs(net)<.55;
    msg=settled?'Вода перестала накапливаться: давление лишнего столба жидкости теперь выталкивает воду обратно так же сильно, как осмос затягивает. Разница уровней Δ — это и есть мерка осмотического давления.':'Растворённое вещество через мембрану не проходит, а вода проходит. Где частиц больше ('+more+'), там воды на единицу объёма меньше, поэтому оттуда её уходит меньше, чем приходит. Итог: '+up+' уровень растёт.';}
-  ui.read.textContent=msg;
+  setT(ui.read,msg);
  }
  const state=document.createElement('span');
  range(ui.controls,'Растворённое вещество в A',0,20,sL,v=>{sL=v;reset();api.nudge();},v=>v+' ч.');
