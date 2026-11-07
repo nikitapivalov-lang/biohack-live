@@ -3701,9 +3701,17 @@ class BioHackGroupRoster {
     const copy=doc.importNode(next,true);old.replaceWith(copy);return copy;
    }
    if(old.nodeType!==1){if(old.nodeValue!==next.nodeValue)old.nodeValue=next.nodeValue;return old;}
-   if(old.tagName.toLowerCase()==='svg'){if(old.outerHTML!==next.outerHTML){const copy=doc.importNode(next,true);old.replaceWith(copy);return copy;}return old;}
+   const isSvg=old.tagName.toLowerCase()==='svg';
+   const motionRun=next.getAttribute('data-live-motion-run');
+   const keepTimeline=isSvg&&motionRun!==null&&motionRun===old.getAttribute('data-live-motion-run');
+   if(isSvg&&!keepTimeline){
+    if(old.outerHTML!==next.outerHTML){const copy=doc.importNode(next,true);old.replaceWith(copy);return copy;}
+    return old;
+   }
    for(const a of [...old.attributes])if(!next.hasAttribute(a.name))old.removeAttribute(a.name);
    for(const a of [...next.attributes])if(old.getAttribute(a.name)!==a.value)old.setAttribute(a.name,a.value);
+   // The guest's SVG already plays this run. Update layout without restarting its timeline.
+   if(keepTimeline)return old;
    const pending=S.pendingFields.get(next.dataset.liveAction),keep=ownsControl()&&pending&&pending.seq>ack;
    if(editable(old)){
     const value=keep?pending.value:next.value;
@@ -3946,8 +3954,8 @@ class BioHackGroupRoster {
  const motionSampler=setInterval(()=>{
   if(S.role!=='host'||!S.ready)return;
   const root=lessonRoot();if(!root)return;
-  const cssMoving=typeof root.getAnimations==='function'&&root.getAnimations({subtree:true}).some(a=>a.playState==='running');
-  const svgMoving=Array.from(root.querySelectorAll('animate,animateTransform,animateMotion')).some(a=>{try{const t=smilTiming(a);return Number.isFinite(t.elapsed)&&t.elapsed<t.duration;}catch{return false;}});
+  const cssMoving=typeof root.getAnimations==='function'&&root.getAnimations({subtree:true}).some(a=>a.playState==='running'&&!a.effect?.target?.closest?.('[data-live-motion-run]'));
+  const svgMoving=Array.from(root.querySelectorAll('animate,animateTransform,animateMotion')).some(a=>{if(a.ownerSVGElement?.hasAttribute('data-live-motion-run'))return false;try{const t=smilTiming(a);return Number.isFinite(t.elapsed)&&t.elapsed<t.duration;}catch{return false;}});
   const moving=cssMoving||svgMoving;if(moving||motionWasActive)scheduleCapture();motionWasActive=moving;
  },150);
 
@@ -5220,7 +5228,10 @@ function tlTrnaPairing(content){
  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return content;
  return '<g opacity="0"><animate data-tl-motion="pairing" data-tl-delay="1.2" attributeName="opacity" from="0" to="1" dur=".15s" begin="indefinite" fill="freeze"/>'+content+'</g>';
 }
+let tlMotionRun=0;
 function tlStartTrnaMotion(scene){
+ // Each step or explicit replay starts a new browser-native timeline for viewers.
+ scene.dataset.liveMotionRun=String(++tlMotionRun);
  scene.querySelectorAll('[data-tl-motion]').forEach(animation=>{
   const delay=Number(animation.dataset.tlDelay)||0;
   if(delay)animation.beginElementAt(delay);else animation.beginElement();

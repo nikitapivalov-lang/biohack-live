@@ -145,6 +145,40 @@ test('actual group UI module: participant list, three cursors, teacher control a
   previous=teacher.BioHackLive.doc().getMap('lesson').get('scene');
   await waitFor(()=>teacher.BioHackLive.doc().getMap('lesson').get('scene')!==previous);
   lesson.getAnimations=()=>[];animated.getAnimations=()=>[];
+  // Translation plays the native SVG timeline on the guest. A later scene
+  // snapshot must not replace that SVG unless the teacher starts a new run.
+  const translation=teacher.document.createElementNS(svg.namespaceURI,'svg');
+  translation.id='tl-scene';
+  translation.dataset.liveMotionRun='1';
+  const translationMotion=motion.cloneNode(true);
+  translationMotion.dataset.liveSmilStart='0';
+  const translationStart=Date.now();
+  translation.getCurrentTime=()=>.1+(Date.now()-translationStart)/1000;
+  translationMotion.setAttribute('dur','4s');
+  translation.append(translationMotion);
+  lesson.append(translation);
+  const readGuestScene=()=>JSON.parse(guest.BioHackLive.doc().getMap('lesson').get('scene')).html;
+  await waitFor(()=>readGuestScene().includes('data-live-motion-run="1"'));
+  const firstSnapshot=readGuestScene();
+  await delay(500);
+  assert.equal(readGuestScene(),firstSnapshot,'native motion does not stream intermediate snapshots');
+
+  const guestMotion=new JSDOM(firstSnapshot);
+  try {
+   const doc=guestMotion.window.document;
+   const original=doc.getElementById('tl-scene');
+   translation.style.minWidth='900px';
+   await waitFor(()=>readGuestScene().includes('min-width: 900px'));
+   const parse=()=>new guest.DOMParser().parseFromString(readGuestScene(),'text/html').body;
+   guest.__control.patch(doc,parse(),0);
+   assert.equal(doc.getElementById('tl-scene'),original,'same run keeps the guest timeline alive');
+   assert.equal(original.style.minWidth,'900px','scene resizing still reaches the guest');
+   translation.dataset.liveMotionRun='2';
+   await waitFor(()=>readGuestScene().includes('data-live-motion-run="2"'));
+   guest.__control.patch(doc,parse(),0);
+   assert.notEqual(doc.getElementById('tl-scene'),original,'replay starts a new guest timeline');
+  } finally {guestMotion.window.close();}
+
   windows[2].document.querySelector('#live-leave').click();await waitFor(()=>teacher.BioHackLive.participants().length===2);
   assert.equal(teacher.document.querySelectorAll('.live-cursor:not([hidden])').length,2);assert.equal(teacher.document.querySelectorAll('#live-participant-list li').length,3);
   assert.equal(errors.length,0);
